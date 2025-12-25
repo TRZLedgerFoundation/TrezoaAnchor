@@ -1,14 +1,14 @@
-import * as anchor from "@coral-xyz/anchor";
+import * as trezoaanchor from "@trezoa-xyz/trezoaanchor";
 import BN from "bn.js";
 import { assert } from "chai";
 import type { NewIdl } from "../target/types/new_idl";
 
 describe("New IDL", () => {
-  anchor.setProvider(anchor.AnchorProvider.env());
-  const program = anchor.workspace.newIdl as anchor.Program<NewIdl>;
+  trezoaanchor.setProvider(trezoaanchor.TrezoaAnchorProvider.env());
+  const program = trezoaanchor.workspace.newIdl as trezoaanchor.Program<NewIdl>;
 
   describe("Case conversion", () => {
-    const caseConversionAccountKp = anchor.web3.Keypair.generate();
+    const caseConversionAccountKp = trezoaanchor.web3.Keypair.generate();
     const FIELD_NAME = 5;
 
     it("Works when instructions have no case conversion in IDL", async () => {
@@ -46,7 +46,7 @@ describe("New IDL", () => {
           res();
         });
 
-        const caseConversionAccountKp = anchor.web3.Keypair.generate();
+        const caseConversionAccountKp = trezoaanchor.web3.Keypair.generate();
         await program.methods
           .noCaseConversion(FIELD_NAME)
           .accounts({
@@ -64,7 +64,7 @@ describe("New IDL", () => {
     });
 
     it("Can use primitive types", async () => {
-      const kp = anchor.web3.Keypair.generate();
+      const kp = trezoaanchor.web3.Keypair.generate();
 
       const bool = true;
 
@@ -83,7 +83,7 @@ describe("New IDL", () => {
       const f32 = 1.0;
       const f64 = 0.618;
 
-      const pubkey = anchor.web3.PublicKey.default;
+      const pubkey = trezoaanchor.web3.PublicKey.default;
 
       await program.methods
         .primitiveTypes(
@@ -133,9 +133,9 @@ describe("New IDL", () => {
     });
 
     it("Can use unsized types", async () => {
-      const kp = anchor.web3.Keypair.generate();
+      const kp = trezoaanchor.web3.Keypair.generate();
 
-      const string = "anchor";
+      const string = "trezoaanchor";
       const bytes = Buffer.from([1, 2, 3, 4]);
       await program.methods
         .unsizedTypes(string, bytes)
@@ -161,7 +161,7 @@ describe("New IDL", () => {
       } as const;
       const tupleStructArg = [new BN(23), "tuple"] as const;
 
-      const kp = anchor.web3.Keypair.generate();
+      const kp = trezoaanchor.web3.Keypair.generate();
       await program.methods
         .strct(unitStructArg, namedStructArg, tupleStructArg)
         .accounts({ account: kp.publicKey })
@@ -191,7 +191,7 @@ describe("New IDL", () => {
       const testAccountEnum = async (
         ...args: Parameters<typeof program["methods"]["enm"]>
       ) => {
-        const kp = anchor.web3.Keypair.generate();
+        const kp = trezoaanchor.web3.Keypair.generate();
         await program.methods
           .enm(...(args as any))
           .accounts({ account: kp.publicKey })
@@ -253,7 +253,7 @@ describe("New IDL", () => {
     });
 
     it("Can use type aliases", async () => {
-      const kp = anchor.web3.Keypair.generate();
+      const kp = trezoaanchor.web3.Keypair.generate();
 
       const aliasU8 = 42;
       const aliasU8Array = [1, 2, 3, 4, 5, 6, 7, 8];
@@ -264,7 +264,7 @@ describe("New IDL", () => {
         u64: new BN(4),
       };
       const aliasVecString = ["first", "second"];
-      const aliasOptionVecPubkey = [anchor.web3.Keypair.generate().publicKey];
+      const aliasOptionVecPubkey = [trezoaanchor.web3.Keypair.generate().publicKey];
       const aliasGenericConst = [1, 23045, 32, 4];
       const aliasMultipleGenericsMixed = [
         [true, false],
@@ -309,7 +309,7 @@ describe("New IDL", () => {
     });
 
     it("Can use accounts and events as arguments and fields", async () => {
-      const kp = anchor.web3.Keypair.generate();
+      const kp = trezoaanchor.web3.Keypair.generate();
 
       const accountArg = {
         simpleAccount: { fieldName: 2 },
@@ -370,7 +370,7 @@ describe("New IDL", () => {
     });
 
     it("Can use full module path types", async () => {
-      const kp = anchor.web3.Keypair.generate();
+      const kp = trezoaanchor.web3.Keypair.generate();
 
       const namedStructArg = { u8: 1, u16: 2, u32: 3, u64: new BN(4) };
       const someModuleNamedStructArg = { data: 5 };
@@ -400,7 +400,7 @@ describe("New IDL", () => {
     it("Can use external types", async () => {
       const externalArg = { someField: 5 };
 
-      const kp = anchor.web3.Keypair.generate();
+      const kp = trezoaanchor.web3.Keypair.generate();
       await program.methods
         .external(externalArg)
         .accounts({ account: kp.publicKey })
@@ -417,23 +417,23 @@ describe("New IDL", () => {
       assert.deepEqual(account.myStruct, externalArg);
     });
 
-    it("Can use non-Anchor external types", async () => {
+    it("Can use non-TrezoaAnchor external types", async () => {
       const feature = { activatedAt: new BN(42) };
 
-      const kp = anchor.web3.Keypair.generate();
+      const kp = trezoaanchor.web3.Keypair.generate();
       await program.methods
-        .externalNonAnchor(feature)
+        .externalNonTrezoaAnchor(feature)
         .accounts({ account: kp.publicKey })
         .signers([kp])
         .preInstructions([
-          await program.account.accountWithNonAnchorExternalField.createInstruction(
+          await program.account.accountWithNonTrezoaAnchorExternalField.createInstruction(
             kp
           ),
         ])
         .rpc();
 
       const account =
-        await program.account.accountWithNonAnchorExternalField.fetch(
+        await program.account.accountWithNonTrezoaAnchorExternalField.fetch(
           kp.publicKey
         );
 
@@ -442,14 +442,14 @@ describe("New IDL", () => {
   });
 
   describe("Format", () => {
-    const ixCoder = new anchor.BorshInstructionCoder(program.idl);
+    const ixCoder = new trezoaanchor.BorshInstructionCoder(program.idl);
 
     const formatEnum = async (argName: string, data: any, expected: string) => {
       const typeName = Object.keys(data)[0];
       const arg = data[typeName];
       const ix = await program.methods
         .enm(arg)
-        .accounts({ account: anchor.web3.PublicKey.default })
+        .accounts({ account: trezoaanchor.web3.PublicKey.default })
         .instruction();
 
       const formattedIx = ixCoder.format({ name: "enm", data }, ix.keys);

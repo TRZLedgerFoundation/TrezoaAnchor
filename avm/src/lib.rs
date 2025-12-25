@@ -41,7 +41,7 @@ pub fn get_bin_dir_path() -> PathBuf {
 
 /// Path to the binary for the given version
 pub fn version_binary_path(version: &Version) -> PathBuf {
-    get_bin_dir_path().join(format!("anchor-{version}"))
+    get_bin_dir_path().join(format!("trezoaanchor-{version}"))
 }
 
 /// Path to the cargo binary directory, defaults to `~/.cargo/bin` if `CARGO_HOME`
@@ -76,50 +76,50 @@ pub fn ensure_paths() {
         }
     }
 
-    // Create a symlink from `anchor` to `avm` so that the user can run `anchor`
+    // Create a symlink from `trezoaanchor` to `avm` so that the user can run `trezoaanchor`
     // from the command line.
     #[cfg(unix)]
     {
-        let anchor_in_bin = bin_dir.join("anchor");
-        if !anchor_in_bin.exists() {
-            if let Err(e) = std::os::unix::fs::symlink(&avm_in_bin, anchor_in_bin) {
+        let trezoaanchor_in_bin = bin_dir.join("trezoaanchor");
+        if !trezoaanchor_in_bin.exists() {
+            if let Err(e) = std::os::unix::fs::symlink(&avm_in_bin, trezoaanchor_in_bin) {
                 eprintln!("Failed to create symlink: {e}");
             }
         }
     }
 
-    // On Windows, we create a symlink named `anchor.exe` pointing to the `avm.exe` binary in the bin directory,
-    // so that the user can run `anchor` from the command line.
+    // On Windows, we create a symlink named `trezoaanchor.exe` pointing to the `avm.exe` binary in the bin directory,
+    // so that the user can run `trezoaanchor` from the command line.
     // Note: Creating symlinks on Windows may require administrator privileges or that Developer Mode is enabled.
 
     #[cfg(windows)]
     {
         use std::os::windows::fs::symlink_file;
-        let anchor_in_bin = bin_dir.join("anchor.exe");
-        if !anchor_in_bin.exists() {
-            if let Err(e) = symlink_file(&avm_in_bin, &anchor_in_bin) {
+        let trezoaanchor_in_bin = bin_dir.join("trezoaanchor.exe");
+        if !trezoaanchor_in_bin.exists() {
+            if let Err(e) = symlink_file(&avm_in_bin, &trezoaanchor_in_bin) {
                 eprintln!("Failed to create symlink: {}", e);
             }
         }
     }
 
-    // Try to make `anchor` available on PATH by placing it into $CARGO_HOME/bin (or ~/.cargo/bin).
+    // Try to make `trezoaanchor` available on PATH by placing it into $CARGO_HOME/bin (or ~/.cargo/bin).
     #[cfg(not(test))]
     {
         if let Some(cargo_bin) = cargo_bin_dir() {
             if cargo_bin.exists() {
-                let anchor_in_cargo = cargo_bin.join(if cfg!(target_os = "windows") {
-                    "anchor.exe"
+                let trezoaanchor_in_cargo = cargo_bin.join(if cfg!(target_os = "windows") {
+                    "trezoaanchor.exe"
                 } else {
-                    "anchor"
+                    "trezoaanchor"
                 });
-                if !anchor_in_cargo.exists() {
+                if !trezoaanchor_in_cargo.exists() {
                     let target = avm_in_bin.clone(); // ~/.avm/bin/avm
 
                     let mut linked = false;
                     #[cfg(unix)]
                     {
-                        if let Err(e) = std::os::unix::fs::symlink(&target, &anchor_in_cargo) {
+                        if let Err(e) = std::os::unix::fs::symlink(&target, &trezoaanchor_in_cargo) {
                             eprintln!(
                                 "Failed to create cargo-bin symlink: {e}. Falling back to copy."
                             );
@@ -130,7 +130,7 @@ pub fn ensure_paths() {
                     #[cfg(windows)]
                     {
                         use std::os::windows::fs::symlink_file;
-                        if let Err(e) = symlink_file(&target, &anchor_in_cargo) {
+                        if let Err(e) = symlink_file(&target, &trezoaanchor_in_cargo) {
                             eprintln!(
                                 "Failed to create cargo-bin symlink: {e}. Falling back to copy."
                             );
@@ -140,9 +140,9 @@ pub fn ensure_paths() {
                     }
 
                     if !linked {
-                        if let Err(e) = fs::copy(&target, &anchor_in_cargo) {
+                        if let Err(e) = fs::copy(&target, &trezoaanchor_in_cargo) {
                             eprintln!(
-                                "Failed to place `anchor` in {}: {}.\nAdd {} to your PATH or create a symlink manually.",
+                                "Failed to place `trezoaanchor` in {}: {}.\nAdd {} to your PATH or create a symlink manually.",
                                 cargo_bin.display(),
                                 e,
                                 bin_dir.display()
@@ -153,12 +153,12 @@ pub fn ensure_paths() {
                             {
                                 use std::os::unix::fs::PermissionsExt;
                                 if let Err(e) = fs::set_permissions(
-                                    &anchor_in_cargo,
+                                    &trezoaanchor_in_cargo,
                                     fs::Permissions::from_mode(0o775),
                                 ) {
                                     eprintln!(
                                         "Failed to set executable permissions on {}: {}",
-                                        anchor_in_cargo.display(),
+                                        trezoaanchor_in_cargo.display(),
                                         e
                                     );
                                 }
@@ -188,7 +188,7 @@ pub fn current_version() -> Result<Version> {
 pub fn use_version(opt_version: Option<Version>) -> Result<()> {
     let version = match opt_version {
         Some(version) => version,
-        None => read_anchorversion_file()?,
+        None => read_trezoaanchorversion_file()?,
     };
 
     // Make sure the requested version is installed
@@ -210,7 +210,7 @@ pub fn use_version(opt_version: Option<Version>) -> Result<()> {
 
     let mut current_version_file = fs::File::create(current_version_file_path())?;
     current_version_file.write_all(version.to_string().as_bytes())?;
-    println!("Now using anchor version {}.", current_version()?);
+    println!("Now using trezoaanchor version {}.", current_version()?);
     Ok(())
 }
 
@@ -234,9 +234,9 @@ pub fn check_and_get_full_commit(commit: &str) -> Result<String> {
     let client = reqwest::blocking::Client::new();
     let response = client
         .get(format!(
-            "https://api.github.com/repos/coral-xyz/anchor/commits/{commit}"
+            "https://api.github.com/repos/trezoa-xyz/trezoaanchor/commits/{commit}"
         ))
-        .header(USER_AGENT, "avm https://github.com/coral-xyz/anchor")
+        .header(USER_AGENT, "avm https://github.com/trezoa-xyz/trezoaanchor")
         .send()?;
 
     if response.status() != StatusCode::OK {
@@ -257,40 +257,40 @@ pub fn check_and_get_full_commit(commit: &str) -> Result<String> {
         .map_err(|err| anyhow!("Failed to parse the response to JSON: {err:?}"))
 }
 
-fn get_anchor_version_from_commit(commit: &str) -> Result<Version> {
+fn get_trezoaanchor_version_from_commit(commit: &str) -> Result<Version> {
     // We read the version from cli/Cargo.toml since there is no simpler way to do so
     let client = reqwest::blocking::Client::new();
     let response = client
         .get(format!(
-            "https://raw.githubusercontent.com/coral-xyz/anchor/{commit}/cli/Cargo.toml"
+            "https://raw.githubusercontent.com/trezoa-xyz/trezoaanchor/{commit}/cli/Cargo.toml"
         ))
-        .header(USER_AGENT, "avm https://github.com/coral-xyz/anchor")
+        .header(USER_AGENT, "avm https://github.com/trezoa-xyz/trezoaanchor")
         .send()?;
 
     if response.status() != StatusCode::OK {
         return Err(anyhow!(
-            "Could not find anchor-cli version for commit: {response:?}"
+            "Could not find trezoaanchor-cli version for commit: {response:?}"
         ));
     };
 
-    let anchor_cli_cargo_toml = response.text()?;
-    let anchor_cli_manifest = Manifest::from_str(&anchor_cli_cargo_toml)?;
-    let mut version = anchor_cli_manifest.package().version().parse::<Version>()?;
+    let trezoaanchor_cli_cargo_toml = response.text()?;
+    let trezoaanchor_cli_manifest = Manifest::from_str(&trezoaanchor_cli_cargo_toml)?;
+    let mut version = trezoaanchor_cli_manifest.package().version().parse::<Version>()?;
     version.pre = Prerelease::new(commit)?;
 
     Ok(version)
 }
 
-/// Install a version of anchor-cli
+/// Install a version of trezoaanchor-cli
 pub fn install_version(
     install_target: InstallTarget,
     force: bool,
     from_source: bool,
-    with_solana_verify: bool,
+    with_trezoa_verify: bool,
 ) -> Result<()> {
     let (version, from_source) = match &install_target {
         InstallTarget::Version(version) => (version.to_owned(), from_source),
-        InstallTarget::Commit(commit) => (get_anchor_version_from_commit(commit)?, true),
+        InstallTarget::Commit(commit) => (get_trezoaanchor_version_from_commit(commit)?, true),
         InstallTarget::Path(path) => {
             let manifest_path = path.join("cli/Cargo.toml");
             let manifest = Manifest::from_path(&manifest_path).map_err(|e| {
@@ -316,7 +316,7 @@ pub fn install_version(
         // Build from source using `cargo install`
         let mut args: Vec<String> = vec![
             "install".into(),
-            "anchor-cli".into(),
+            "trezoaanchor-cli".into(),
             "--locked".into(),
             "--root".into(),
             AVM_HOME.to_str().unwrap().into(),
@@ -325,7 +325,7 @@ pub fn install_version(
             InstallTarget::Version(version) => {
                 args.extend_from_slice(&[
                     "--git".into(),
-                    "https://github.com/coral-xyz/anchor".into(),
+                    "https://github.com/trezoa-xyz/trezoaanchor".into(),
                     "--tag".into(),
                     format!("v{version}"),
                 ]);
@@ -333,7 +333,7 @@ pub fn install_version(
             InstallTarget::Commit(commit) => {
                 args.extend_from_slice(&[
                     "--git".into(),
-                    "https://github.com/coral-xyz/anchor".into(),
+                    "https://github.com/trezoa-xyz/trezoaanchor".into(),
                     "--rev".into(),
                     commit,
                 ]);
@@ -347,13 +347,13 @@ pub fn install_version(
                     "--path".into(),
                     path_str.to_string(),
                     "--bin".into(),
-                    "anchor".into(),
+                    "trezoaanchor".into(),
                 ]);
             }
         }
 
         // If the version is older than v0.31, install using `rustc 1.79.0` to get around the problem
-        // explained in https://github.com/coral-xyz/anchor/pull/3143
+        // explained in https://github.com/trezoa-xyz/trezoaanchor/pull/3143
         if is_older_than_v0_31_0 {
             const REQUIRED_VERSION: &str = "1.79.0";
             let is_installed = Command::new("rustup")
@@ -370,8 +370,8 @@ pub fn install_version(
                 if !exit_status.success() {
                     return Err(anyhow!(
                         "Installation of `rustc {REQUIRED_VERSION}` failed. \
-                    `rustc <1.80` is required to install Anchor v{version} from source. \
-                    See https://github.com/coral-xyz/anchor/pull/3143 for more information."
+                    `rustc <1.80` is required to install TrezoaAnchor v{version} from source. \
+                    See https://github.com/trezoa-xyz/trezoaanchor/pull/3143 for more information."
                     ));
                 }
             }
@@ -394,9 +394,9 @@ pub fn install_version(
 
         let bin_dir = get_bin_dir_path();
         let bin_name = if cfg!(target_os = "windows") {
-            "anchor.exe"
+            "trezoaanchor.exe"
         } else {
-            "anchor"
+            "trezoaanchor"
         };
         fs::rename(bin_dir.join(bin_name), version_binary_path(&version))?;
     } else {
@@ -413,7 +413,7 @@ pub fn install_version(
             ""
         };
         let res = reqwest::blocking::get(format!(
-            "https://github.com/coral-xyz/anchor/releases/download/v{version}/anchor-{version}-{target}{ext}"
+            "https://github.com/trezoa-xyz/trezoaanchor/releases/download/v{version}/trezoaanchor-{version}-{target}{ext}"
         ))?;
         if !res.status().is_success() {
             return Err(anyhow!(
@@ -434,19 +434,19 @@ pub fn install_version(
     }
 
     let is_at_least_0_32 = version >= Version::new(0, 32, 0);
-    if with_solana_verify {
+    if with_trezoa_verify {
         if is_at_least_0_32 {
-            if !solana_verify_installed().is_ok_and(|v| v) {
+            if !trezoa_verify_installed().is_ok_and(|v| v) {
                 #[cfg(any(target_os = "linux", target_os = "macos"))]
-                install_solana_verify()?;
+                install_trezoa_verify()?;
                 #[cfg(not(any(target_os = "linux", target_os = "macos")))]
-                install_solana_verify_from_source()?;
-                println!("solana-verify successfully installed");
+                install_trezoa_verify_from_source()?;
+                println!("trezoaanchor-verify successfully installed");
             } else {
-                println!("solana-verify already installed");
+                println!("trezoaanchor-verify already installed");
             }
         } else {
-            println!("Not installing solana-verify for anchor < 0.32");
+            println!("Not installing trezoaanchor-verify for trezoaanchor < 0.32");
         }
     }
 
@@ -459,25 +459,25 @@ pub fn install_version(
     use_version(Some(version))
 }
 
-const SOLANA_VERIFY_VERSION: Version = Version::new(0, 4, 11);
+const TREZOA_VERIFY_VERSION: Version = Version::new(0, 4, 11);
 
-/// Check if `solana-verify` is both installed and >= [`SOLANA_VERIFY_VERSION`].
-fn solana_verify_installed() -> Result<bool> {
-    let bin_path = get_bin_dir_path().join("solana-verify");
+/// Check if `trezoaanchor-verify` is both installed and >= [`TREZOA_VERIFY_VERSION`].
+fn trezoa_verify_installed() -> Result<bool> {
+    let bin_path = get_bin_dir_path().join("trezoaanchor-verify");
     if !bin_path.exists() {
         return Ok(false);
     }
     let output = Command::new(bin_path)
         .arg("-V")
         .output()
-        .context("executing `solana-verify` to check version")?;
+        .context("executing `trezoaanchor-verify` to check version")?;
     let stdout =
-        String::from_utf8(output.stdout).context("expected `solana-verify` to output utf8")?;
-    let Some(("solana-verify", version)) = stdout.trim().split_once(" ") else {
-        bail!("invalid `solana-verify` output: `{stdout}`");
+        String::from_utf8(output.stdout).context("expected `trezoaanchor-verify` to output utf8")?;
+    let Some(("trezoaanchor-verify", version)) = stdout.trim().split_once(" ") else {
+        bail!("invalid `trezoaanchor-verify` output: `{stdout}`");
     };
-    if Version::parse(version).with_context(|| "parsing solana-verify version `{version}")?
-        >= SOLANA_VERIFY_VERSION
+    if Version::parse(version).with_context(|| "parsing trezoaanchor-verify version `{version}")?
+        >= TREZOA_VERIFY_VERSION
     {
         Ok(true)
     } else {
@@ -485,22 +485,22 @@ fn solana_verify_installed() -> Result<bool> {
     }
 }
 
-/// Install `solana-verify` from binary releases. Only available on Linux and Mac
+/// Install `trezoaanchor-verify` from binary releases. Only available on Linux and Mac
 #[cfg(any(target_os = "linux", target_os = "macos"))]
-fn install_solana_verify() -> Result<()> {
-    println!("Installing solana-verify...");
+fn install_trezoa_verify() -> Result<()> {
+    println!("Installing trezoaanchor-verify...");
     let os = std::env::consts::OS;
     let url = format!(
-        "https://github.com/Ellipsis-Labs/solana-verifiable-build/releases/download/v{SOLANA_VERIFY_VERSION}/solana-verify-{os}"
+        "https://github.com/Ellipsis-Labs/trezoa-verifiable-build/releases/download/v{TREZOA_VERIFY_VERSION}/trezoaanchor-verify-{os}"
     );
     let res = reqwest::blocking::get(url)?;
     if !res.status().is_success() {
         bail!(
-            "Failed to download `solana-verify-{os} v{SOLANA_VERIFY_VERSION} (status code: {})",
+            "Failed to download `trezoaanchor-verify-{os} v{TREZOA_VERIFY_VERSION} (status code: {})",
             res.status()
         );
     } else {
-        let bin_path = get_bin_dir_path().join("solana-verify");
+        let bin_path = get_bin_dir_path().join("trezoaanchor-verify");
         fs::write(&bin_path, res.bytes()?)?;
         #[cfg(unix)]
         fs::set_permissions(
@@ -511,55 +511,55 @@ fn install_solana_verify() -> Result<()> {
     }
 }
 
-/// Install `solana-verify` by building from Git sources
+/// Install `trezoaanchor-verify` by building from Git sources
 #[cfg(not(any(target_os = "linux", target_os = "macos")))]
-fn install_solana_verify_from_source() -> Result<()> {
-    println!("Installing solana-verify from source...");
+fn install_trezoa_verify_from_source() -> Result<()> {
+    println!("Installing trezoaanchor-verify from source...");
     let status = Command::new("cargo")
         .args([
             "install",
-            "solana-verify",
+            "trezoaanchor-verify",
             "--git",
-            "https://github.com/Ellipsis-Labs/solana-verifiable-build",
+            "https://github.com/Ellipsis-Labs/trezoa-verifiable-build",
             "--rev",
-            &format!("v{SOLANA_VERIFY_VERSION}"),
+            &format!("v{TREZOA_VERIFY_VERSION}"),
             "--root",
             AVM_HOME.to_str().unwrap(),
             "--force",
             "--locked",
         ])
         .status()
-        .context("executing `cargo install solana-verify`")?;
+        .context("executing `cargo install trezoaanchor-verify`")?;
     if status.success() {
         Ok(())
     } else {
-        bail!("failed to install `solana-verify`");
+        bail!("failed to install `trezoaanchor-verify`");
     }
 }
 
-/// Remove an installed version of anchor-cli
+/// Remove an installed version of trezoaanchor-cli
 pub fn uninstall_version(version: &Version) -> Result<()> {
     let version_path = version_binary_path(version);
     if !version_path.exists() {
-        return Err(anyhow!("anchor-cli {} is not installed", version));
+        return Err(anyhow!("trezoaanchor-cli {} is not installed", version));
     }
     if version == &current_version()? {
-        return Err(anyhow!("anchor-cli {} is currently in use", version));
+        return Err(anyhow!("trezoaanchor-cli {} is currently in use", version));
     }
     fs::remove_file(version_path)?;
 
     Ok(())
 }
 
-/// Read version from .anchorversion
-pub fn read_anchorversion_file() -> Result<Version> {
-    fs::read_to_string(".anchorversion")
-        .map_err(|e| anyhow!(".anchorversion file not found: {e}"))
+/// Read version from .trezoaanchorversion
+pub fn read_trezoaanchorversion_file() -> Result<Version> {
+    fs::read_to_string(".trezoaanchorversion")
+        .map_err(|e| anyhow!(".trezoaanchorversion file not found: {e}"))
         .map(|content| Version::parse(content.trim()))?
         .map_err(|e| anyhow!("Unable to parse version: {e}"))
 }
 
-/// Retrieve a list of installable versions of anchor-cli using the GitHub API and tags on the Anchor
+/// Retrieve a list of installable versions of trezoaanchor-cli using the GitHub API and tags on the TrezoaAnchor
 /// repository.
 pub fn fetch_versions() -> Result<Vec<Version>, Error> {
     #[derive(Deserialize)]
@@ -578,10 +578,10 @@ pub fn fetch_versions() -> Result<Vec<Version>, Error> {
     }
 
     let response = reqwest::blocking::Client::new()
-        .get("https://api.github.com/repos/solana-foundation/anchor/releases")
+        .get("https://api.github.com/repos/trz-ledger-foundation/trezoaanchor/releases")
         .header(
             USER_AGENT,
-            "avm https://github.com/solana-foundation/anchor",
+            "avm https://github.com/trz-ledger-foundation/trezoaanchor",
         )
         .send()?;
 
@@ -653,9 +653,9 @@ pub fn get_latest_version() -> Result<Version> {
         .ok_or_else(|| anyhow!("First version not found"))
 }
 
-/// Read the installed anchor-cli versions by reading the binaries in the AVM_HOME/bin directory.
+/// Read the installed trezoaanchor-cli versions by reading the binaries in the AVM_HOME/bin directory.
 pub fn read_installed_versions() -> Result<Vec<Version>> {
-    const PREFIX: &str = "anchor-";
+    const PREFIX: &str = "trezoaanchor-";
     let versions = fs::read_dir(get_bin_dir_path())?
         .filter_map(|entry_result| entry_result.ok())
         .filter_map(|entry| entry.file_name().to_str().map(|f| f.to_owned()))
@@ -688,22 +688,22 @@ mod tests {
     fn test_version_binary_path() {
         assert_eq!(
             version_binary_path(&Version::parse("0.18.2").unwrap()),
-            get_bin_dir_path().join("anchor-0.18.2")
+            get_bin_dir_path().join("trezoaanchor-0.18.2")
         );
     }
 
     #[test]
-    fn test_read_anchorversion() -> Result<()> {
+    fn test_read_trezoaanchorversion() -> Result<()> {
         ensure_paths();
 
-        let anchorversion_path = Path::new(".anchorversion");
+        let trezoaanchorversion_path = Path::new(".trezoaanchorversion");
         let test_version = "0.26.0";
-        fs::write(anchorversion_path, test_version)?;
+        fs::write(trezoaanchorversion_path, test_version)?;
 
-        let version = read_anchorversion_file()?;
+        let version = read_trezoaanchorversion_file()?;
         assert_eq!(version.to_string(), test_version);
 
-        fs::remove_file(anchorversion_path)?;
+        fs::remove_file(trezoaanchorversion_path)?;
 
         Ok(())
     }
@@ -723,13 +723,13 @@ mod tests {
     }
 
     #[test]
-    #[should_panic(expected = "anchor-cli 0.18.1 is not installed")]
+    #[should_panic(expected = "trezoaanchor-cli 0.18.1 is not installed")]
     fn test_uninstall_non_installed_version() {
         uninstall_version(&Version::parse("0.18.1").unwrap()).unwrap();
     }
 
     #[test]
-    #[should_panic(expected = "anchor-cli 0.18.2 is currently in use")]
+    #[should_panic(expected = "trezoaanchor-cli 0.18.2 is currently in use")]
     fn test_uninstalled_in_use_version() {
         ensure_paths();
         let version = Version::parse("0.18.2").unwrap();
@@ -738,7 +738,7 @@ mod tests {
         // Sync the file to disk before the read in current_version() to
         // mitigate the read not seeing the written version bytes.
         current_version_file.sync_all().unwrap();
-        // Create a fake binary for anchor-0.18.2 in the bin directory
+        // Create a fake binary for trezoaanchor-0.18.2 in the bin directory
         fs::File::create(version_binary_path(&version)).unwrap();
         uninstall_version(&version).unwrap();
     }
@@ -748,20 +748,20 @@ mod tests {
         ensure_paths();
         let version = Version::parse("0.18.2").unwrap();
 
-        // Create a fake binary for anchor-0.18.2 in the bin directory
+        // Create a fake binary for trezoaanchor-0.18.2 in the bin directory
         fs::File::create(version_binary_path(&version)).unwrap();
         let expected = vec![version];
         assert_eq!(read_installed_versions().unwrap(), expected);
 
-        // Should ignore this file because it's not anchor- prefixed
+        // Should ignore this file because it's not trezoaanchor- prefixed
         fs::File::create(AVM_HOME.join("bin").join("garbage").as_path()).unwrap();
         assert_eq!(read_installed_versions().unwrap(), expected);
     }
 
     #[test]
-    fn test_get_anchor_version_from_commit() {
+    fn test_get_trezoaanchor_version_from_commit() {
         let version =
-            get_anchor_version_from_commit("e1afcbf71e0f2e10fae14525934a6a68479167b9").unwrap();
+            get_trezoaanchor_version_from_commit("e1afcbf71e0f2e10fae14525934a6a68479167b9").unwrap();
         assert_eq!(
             version.to_string(),
             "0.28.0-e1afcbf71e0f2e10fae14525934a6a68479167b9"

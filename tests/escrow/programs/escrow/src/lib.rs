@@ -1,11 +1,11 @@
 //! An example of an escrow program, inspired by PaulX tutorial seen here
-//! https://paulx.dev/blog/2021/01/14/programming-on-solana-an-introduction/
+//! https://paulx.dev/blog/2021/01/14/programming-on-trezoa-an-introduction/
 //! This example has some changes to implementation, but more or less should be the same overall
-//! Also gives examples on how to use some newer anchor features and CPI
+//! Also gives examples on how to use some newer trezoaanchor features and CPI
 //!
 //! User (Initializer) constructs an escrow deal:
-//! - SPL token (X) they will offer and amount
-//! - SPL token (Y) count they want in return and amount
+//! - TPL token (X) they will offer and amount
+//! - TPL token (Y) count they want in return and amount
 //! - Program will take ownership of initializer's token X account
 //!
 //! Once this escrow is initialised, either:
@@ -15,8 +15,8 @@
 //! 2. If no one has exchanged, the initializer can close the escrow account
 //! - Initializer will get back ownership of their token X account
 
-use anchor_lang::prelude::*;
-use anchor_spl::{
+use trezoaanchor-lang::prelude::*;
+use trezoaanchor_spl::{
     token_2022::spl_token_2022::instruction::AuthorityType,
     token_interface::{self, Mint, SetAuthority, TokenAccount, TokenInterface, TransferChecked},
 };

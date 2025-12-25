@@ -1,18 +1,18 @@
 const assert = require("assert");
-const anchor = require("@coral-xyz/anchor");
-const { SystemProgram } = anchor.web3;
+const trezoaanchor = require("@trezoa-xyz/trezoaanchor");
+const { SystemProgram } = trezoaanchor.web3;
 
 describe("basic-2", () => {
-  const provider = anchor.AnchorProvider.local();
+  const provider = trezoaanchor.TrezoaAnchorProvider.local();
 
   // Configure the client to use the local cluster.
-  anchor.setProvider(provider);
+  trezoaanchor.setProvider(provider);
 
   // Counter for the tests.
-  const counter = anchor.web3.Keypair.generate();
+  const counter = trezoaanchor.web3.Keypair.generate();
 
   // Program for the tests.
-  const program = anchor.workspace.Basic2;
+  const program = trezoaanchor.workspace.Basic2;
 
   it("Creates a counter", async () => {
     await program.methods

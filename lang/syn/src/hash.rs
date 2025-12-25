@@ -1,5 +1,5 @@
-// Utility hashing module copied from `solana_program::program::hash`, since we
-// can't import solana_program for compile time hashing for some reason.
+// Utility hashing module copied from `trezoa_program::program::hash`, since we
+// can't import trezoa_program for compile time hashing for some reason.
 
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};

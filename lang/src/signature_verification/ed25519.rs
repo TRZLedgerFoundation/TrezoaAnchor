@@ -1,10 +1,10 @@
 use crate::error::ErrorCode;
 use crate::prelude::*;
-use crate::solana_program::instruction::Instruction;
-use solana_sdk_ids::ed25519_program;
+use crate::trezoa_program::instruction::Instruction;
+use trezoa_sdk_ids::ed25519_program;
 
 /// Verifies an Ed25519 signature instruction assuming the signature, public key,
-/// and message bytes are embedded directly inside the instruction data (Solana's
+/// and message bytes are embedded directly inside the instruction data (Trezoa's
 /// default encoding). Prefer [`verify_ed25519_ix_with_instruction_index`] when
 /// working with custom instructions that point at external instruction data.
 pub fn verify_ed25519_ix(

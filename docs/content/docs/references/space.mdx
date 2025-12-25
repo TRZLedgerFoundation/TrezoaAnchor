@@ -11,7 +11,7 @@ This only applies to accounts that don't use `zero-copy`. `zero-copy` uses
 `repr(C)` with a pointer cast, so there the `C` layout applies.
 
 In addition to the space for the account data, you have to add `8` to the
-`space` constraint for Anchor's internal discriminator (see the example).
+`space` constraint for TrezoaAnchor's internal discriminator (see the example).
 
 ## Type chart
 
@@ -48,7 +48,7 @@ impl MyData {
     pub const MAX_SIZE: usize = 2 + (1 + 32) + (4 + 10 * 32);
 }
 
-#[derive(AnchorSerialize, AnchorDeserialize, Clone, PartialEq, Eq)]
+#[derive(TrezoaAnchorSerialize, TrezoaAnchorDeserialize, Clone, PartialEq, Eq)]
 pub enum GameState {
     Active,
     Tie,
@@ -57,7 +57,7 @@ pub enum GameState {
 
 #[derive(Accounts)]
 pub struct InitializeMyData<'info> {
-    // Note that we have to add 8 to the space for the internal anchor
+    // Note that we have to add 8 to the space for the internal trezoaanchor
     // [!code highlight]
     #[account(init, payer = signer, space = 8 + MyData::MAX_SIZE)]
     pub acc: Account<'info, MyData>,

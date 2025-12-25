@@ -1,15 +1,15 @@
-import { PublicKey } from "@solana/web3.js";
-import { Program, AnchorProvider } from "@coral-xyz/anchor";
+import { PublicKey } from "@trezoa/web3.js";
+import { Program, TrezoaAnchorProvider } from "@trezoa-xyz/trezoaanchor";
 
 import { SplTokenLendingCoder } from "./coder";
 
-export const SPL_TOKEN_LENDING_PROGRAM_ID = new PublicKey(
+export const TPL_TOKEN_LENDING_PROGRAM_ID = new PublicKey(
   "FJAwitEMXUEUibVHXXwpikL7Ct1xTujaY2XMtccUBSoK"
 );
 
 interface GetProgramParams {
   programId?: PublicKey;
-  provider?: AnchorProvider;
+  provider?: TrezoaAnchorProvider;
 }
 
 export function splTokenLendingProgram(
@@ -17,7 +17,7 @@ export function splTokenLendingProgram(
 ): Program<SplTokenLending> {
   return new Program<SplTokenLending>(
     IDL,
-    params?.programId ?? SPL_TOKEN_LENDING_PROGRAM_ID,
+    params?.programId ?? TPL_TOKEN_LENDING_PROGRAM_ID,
     params?.provider,
     new SplTokenLendingCoder(IDL)
   );

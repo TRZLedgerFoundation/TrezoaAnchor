@@ -31,14 +31,14 @@ pub fn parse(program_mod: &syn::ItemMod) -> ParseResult<(Vec<Ix>, Option<Fallbac
             let docs = docs::parse(&method.attrs);
             let cfgs = parse_cfg(method);
             let returns = parse_return(method)?;
-            let anchor_ident = ctx_accounts_ident(&ctx.raw_arg)?;
+            let trezoaanchor_ident = ctx_accounts_ident(&ctx.raw_arg)?;
             Ok(Ix {
                 raw_method: method.clone(),
                 ident: method.sig.ident.clone(),
                 docs,
                 cfgs,
                 args,
-                anchor_ident,
+                trezoaanchor_ident,
                 returns,
                 interface_discriminator,
                 overrides,

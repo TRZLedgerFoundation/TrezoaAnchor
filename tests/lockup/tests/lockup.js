@@ -1,22 +1,22 @@
-const anchor = require("@coral-xyz/anchor");
-const serumCmn = require("@project-serum/common");
-const { TOKEN_PROGRAM_ID } = require("@solana/spl-token");
+const trezoaanchor = require("@trezoa-xyz/trezoaanchor");
+const serumCmn = require("@trezoa-serum/common");
+const { TOKEN_PROGRAM_ID } = require("@trezoa/tpl-token");
 const utils = require("./utils");
 const { assert } = require("chai");
 const nativeAssert = require("assert");
 
 describe("Lockup and Registry", () => {
   // Read the provider from the configured environments.
-  const provider = anchor.AnchorProvider.env();
+  const provider = trezoaanchor.TrezoaAnchorProvider.env();
   // hack so we don't have to update serum-common library
-  // to the new AnchorProvider class and Provider interface
+  // to the new TrezoaAnchorProvider class and Provider interface
   provider.send = provider.sendAndConfirm;
 
   // Configure the client to use the provider.
-  anchor.setProvider(provider);
+  trezoaanchor.setProvider(provider);
 
-  const lockup = anchor.workspace.Lockup;
-  const registry = anchor.workspace.Registry;
+  const lockup = trezoaanchor.workspace.Lockup;
+  const registry = trezoaanchor.workspace.Registry;
 
   let lockupAddress = null;
   const WHITELIST_SIZE = 10;
@@ -27,7 +27,7 @@ describe("Lockup and Registry", () => {
   it("Sets up initial test state", async () => {
     const [_mint, _god] = await serumCmn.createMintAndVault(
       provider,
-      new anchor.BN(1000000)
+      new trezoaanchor.BN(1000000)
     );
     mint = _mint;
     god = _god;
@@ -46,12 +46,12 @@ describe("Lockup and Registry", () => {
     assert.isTrue(lockupAccount.authority.equals(provider.wallet.publicKey));
     assert.strictEqual(lockupAccount.whitelist.length, WHITELIST_SIZE);
     lockupAccount.whitelist.forEach((e) => {
-      assert.isTrue(e.programId.equals(anchor.web3.PublicKey.default));
+      assert.isTrue(e.programId.equals(trezoaanchor.web3.PublicKey.default));
     });
   });
 
   it("Deletes the default whitelisted addresses", async () => {
-    const defaultEntry = { programId: anchor.web3.PublicKey.default };
+    const defaultEntry = { programId: trezoaanchor.web3.PublicKey.default };
     await lockup.state.rpc.whitelistDelete(defaultEntry, {
       accounts: {
         authority: provider.wallet.publicKey,
@@ -60,7 +60,7 @@ describe("Lockup and Registry", () => {
   });
 
   it("Sets a new authority", async () => {
-    const newAuthority = anchor.web3.Keypair.generate();
+    const newAuthority = trezoaanchor.web3.Keypair.generate();
     await lockup.state.rpc.setAuthority(newAuthority.publicKey, {
       accounts: {
         authority: provider.wallet.publicKey,
@@ -85,7 +85,7 @@ describe("Lockup and Registry", () => {
 
   it("Adds to the whitelist", async () => {
     const generateEntry = async () => {
-      let programId = anchor.web3.Keypair.generate().publicKey;
+      let programId = trezoaanchor.web3.Keypair.generate().publicKey;
       return {
         programId,
       };
@@ -137,20 +137,20 @@ describe("Lockup and Registry", () => {
     assert.deepStrictEqual(lockupAccount.whitelist, entries.slice(1));
   });
 
-  const vesting = anchor.web3.Keypair.generate();
+  const vesting = trezoaanchor.web3.Keypair.generate();
   let vestingAccount = null;
   let vestingSigner = null;
 
   it("Creates a vesting account", async () => {
-    const startTs = new anchor.BN(Date.now() / 1000);
-    const endTs = new anchor.BN(startTs.toNumber() + 5);
-    const periodCount = new anchor.BN(2);
+    const startTs = new trezoaanchor.BN(Date.now() / 1000);
+    const endTs = new trezoaanchor.BN(startTs.toNumber() + 5);
+    const periodCount = new trezoaanchor.BN(2);
     const beneficiary = provider.wallet.publicKey;
-    const depositAmount = new anchor.BN(100);
+    const depositAmount = new trezoaanchor.BN(100);
 
-    const vault = anchor.web3.Keypair.generate();
+    const vault = trezoaanchor.web3.Keypair.generate();
     let [_vestingSigner, nonce] =
-      await anchor.web3.PublicKey.findProgramAddress(
+      await trezoaanchor.web3.PublicKey.findProgramAddress(
         [vesting.publicKey.toBuffer()],
         lockup.programId
       );
@@ -171,8 +171,8 @@ describe("Lockup and Registry", () => {
           depositor: god,
           depositorAuthority: provider.wallet.publicKey,
           tokenProgram: TOKEN_PROGRAM_ID,
-          rent: anchor.web3.SYSVAR_RENT_PUBKEY,
-          clock: anchor.web3.SYSVAR_CLOCK_PUBKEY,
+          rent: trezoaanchor.web3.SYSVAR_RENT_PUBKEY,
+          clock: trezoaanchor.web3.SYSVAR_CLOCK_PUBKEY,
         },
         signers: [vesting, vault],
         instructions: [
@@ -194,9 +194,9 @@ describe("Lockup and Registry", () => {
     assert.isTrue(vestingAccount.grantor.equals(provider.wallet.publicKey));
     assert.isTrue(vestingAccount.outstanding.eq(depositAmount));
     assert.isTrue(vestingAccount.startBalance.eq(depositAmount));
-    assert.isTrue(vestingAccount.whitelistOwned.eq(new anchor.BN(0)));
+    assert.isTrue(vestingAccount.whitelistOwned.eq(new trezoaanchor.BN(0)));
     assert.strictEqual(vestingAccount.nonce, nonce);
-    assert.isTrue(vestingAccount.createdTs.gt(new anchor.BN(0)));
+    assert.isTrue(vestingAccount.createdTs.gt(new trezoaanchor.BN(0)));
     assert.isTrue(vestingAccount.startTs.eq(startTs));
     assert.isTrue(vestingAccount.endTs.eq(endTs));
     assert.isNull(vestingAccount.realizor);
@@ -205,7 +205,7 @@ describe("Lockup and Registry", () => {
   it("Fails to withdraw from a vesting account before vesting", async () => {
     await nativeAssert.rejects(
       async () => {
-        await lockup.rpc.withdraw(new anchor.BN(100), {
+        await lockup.rpc.withdraw(new trezoaanchor.BN(100), {
           accounts: {
             vesting: vesting.publicKey,
             beneficiary: provider.wallet.publicKey,
@@ -213,7 +213,7 @@ describe("Lockup and Registry", () => {
             vault: vestingAccount.vault,
             vestingSigner: vestingSigner,
             tokenProgram: TOKEN_PROGRAM_ID,
-            clock: anchor.web3.SYSVAR_CLOCK_PUBKEY,
+            clock: trezoaanchor.web3.SYSVAR_CLOCK_PUBKEY,
           },
         });
       },
@@ -239,7 +239,7 @@ describe("Lockup and Registry", () => {
       provider.wallet.publicKey
     );
 
-    await lockup.rpc.withdraw(new anchor.BN(100), {
+    await lockup.rpc.withdraw(new trezoaanchor.BN(100), {
       accounts: {
         vesting: vesting.publicKey,
         beneficiary: provider.wallet.publicKey,
@@ -247,27 +247,27 @@ describe("Lockup and Registry", () => {
         vault: vestingAccount.vault,
         vestingSigner,
         tokenProgram: TOKEN_PROGRAM_ID,
-        clock: anchor.web3.SYSVAR_CLOCK_PUBKEY,
+        clock: trezoaanchor.web3.SYSVAR_CLOCK_PUBKEY,
       },
     });
 
     vestingAccount = await lockup.account.vesting.fetch(vesting.publicKey);
-    assert.isTrue(vestingAccount.outstanding.eq(new anchor.BN(0)));
+    assert.isTrue(vestingAccount.outstanding.eq(new trezoaanchor.BN(0)));
 
     const vaultAccount = await serumCmn.getTokenAccount(
       provider,
       vestingAccount.vault
     );
-    assert.isTrue(vaultAccount.amount.eq(new anchor.BN(0)));
+    assert.isTrue(vaultAccount.amount.eq(new trezoaanchor.BN(0)));
 
     const tokenAccount = await serumCmn.getTokenAccount(provider, token);
-    assert.isTrue(tokenAccount.amount.eq(new anchor.BN(100)));
+    assert.isTrue(tokenAccount.amount.eq(new trezoaanchor.BN(100)));
   });
 
-  const registrar = anchor.web3.Keypair.generate();
-  const rewardQ = anchor.web3.Keypair.generate();
-  const withdrawalTimelock = new anchor.BN(4);
-  const stakeRate = new anchor.BN(2);
+  const registrar = trezoaanchor.web3.Keypair.generate();
+  const rewardQ = trezoaanchor.web3.Keypair.generate();
+  const withdrawalTimelock = new trezoaanchor.BN(4);
+  const stakeRate = new trezoaanchor.BN(2);
   const rewardQLen = 170;
   let registrarAccount = null;
   let registrarSigner = null;
@@ -276,7 +276,7 @@ describe("Lockup and Registry", () => {
 
   it("Creates registry genesis", async () => {
     const [_registrarSigner, _nonce] =
-      await anchor.web3.PublicKey.findProgramAddress(
+      await trezoaanchor.web3.PublicKey.findProgramAddress(
         [registrar.publicKey.toBuffer()],
         registry.programId
       );
@@ -317,7 +317,7 @@ describe("Lockup and Registry", () => {
           registrar: registrar.publicKey,
           poolMint,
           rewardEventQ: rewardQ.publicKey,
-          rent: anchor.web3.SYSVAR_RENT_PUBKEY,
+          rent: trezoaanchor.web3.SYSVAR_RENT_PUBKEY,
         },
         signers: [registrar, rewardQ],
         instructions: [
@@ -340,7 +340,7 @@ describe("Lockup and Registry", () => {
     assert.isTrue(registrarAccount.withdrawalTimelock.eq(withdrawalTimelock));
   });
 
-  const member = anchor.web3.Keypair.generate();
+  const member = trezoaanchor.web3.Keypair.generate();
   let memberAccount = null;
   let memberSigner = null;
   let balances = null;
@@ -348,7 +348,7 @@ describe("Lockup and Registry", () => {
 
   it("Creates a member", async () => {
     const [_memberSigner, nonce] =
-      await anchor.web3.PublicKey.findProgramAddress(
+      await trezoaanchor.web3.PublicKey.findProgramAddress(
         [registrar.publicKey.toBuffer(), member.publicKey.toBuffer()],
         registry.programId
       );
@@ -377,7 +377,7 @@ describe("Lockup and Registry", () => {
         balances,
         balancesLocked,
         tokenProgram: TOKEN_PROGRAM_ID,
-        rent: anchor.web3.SYSVAR_RENT_PUBKEY,
+        rent: trezoaanchor.web3.SYSVAR_RENT_PUBKEY,
       },
       instructions: [await registry.account.member.createInstruction(member)],
     });
@@ -392,7 +392,7 @@ describe("Lockup and Registry", () => {
 
     assert.isTrue(memberAccount.registrar.equals(registrar.publicKey));
     assert.isTrue(memberAccount.beneficiary.equals(provider.wallet.publicKey));
-    assert.isTrue(memberAccount.metadata.equals(anchor.web3.PublicKey.default));
+    assert.isTrue(memberAccount.metadata.equals(trezoaanchor.web3.PublicKey.default));
     assert.strictEqual(
       JSON.stringify(memberAccount.balances),
       JSON.stringify(balances)
@@ -402,11 +402,11 @@ describe("Lockup and Registry", () => {
       JSON.stringify(balancesLocked)
     );
     assert.strictEqual(memberAccount.rewardsCursor, 0);
-    assert.isTrue(memberAccount.lastStakeTs.eq(new anchor.BN(0)));
+    assert.isTrue(memberAccount.lastStakeTs.eq(new trezoaanchor.BN(0)));
   });
 
   it("Deposits (unlocked) to a member", async () => {
-    const depositAmount = new anchor.BN(120);
+    const depositAmount = new trezoaanchor.BN(120);
     await registry.rpc.deposit(depositAmount, {
       accounts: {
         depositor: god,
@@ -427,7 +427,7 @@ describe("Lockup and Registry", () => {
 
   /*
   it("Stakes to a member (unlocked)", async () => {
-    const stakeAmount = new anchor.BN(10);
+    const stakeAmount = new trezoaanchor.BN(10);
     await registry.rpc.stake(stakeAmount, false, {
       accounts: {
         // Stake instance.
@@ -443,7 +443,7 @@ describe("Lockup and Registry", () => {
         memberSigner,
         registrarSigner,
         // Misc.
-        clock: anchor.web3.SYSVAR_CLOCK_PUBKEY,
+        clock: trezoaanchor.web3.SYSVAR_CLOCK_PUBKEY,
         tokenProgram: TOKEN_PROGRAM_ID,
       },
     });
@@ -461,23 +461,23 @@ describe("Lockup and Registry", () => {
       memberAccount.balances.spt
     );
 
-    assert.isTrue(vault.amount.eq(new anchor.BN(100)));
-    assert.isTrue(vaultStake.amount.eq(new anchor.BN(20)));
-    assert.isTrue(spt.amount.eq(new anchor.BN(10)));
+    assert.isTrue(vault.amount.eq(new trezoaanchor.BN(100)));
+    assert.isTrue(vaultStake.amount.eq(new trezoaanchor.BN(20)));
+    assert.isTrue(spt.amount.eq(new trezoaanchor.BN(10)));
   });
 
-  const unlockedVendor = anchor.web3.Keypair.generate();
-  const unlockedVendorVault = anchor.web3.Keypair.generate();
+  const unlockedVendor = trezoaanchor.web3.Keypair.generate();
+  const unlockedVendorVault = trezoaanchor.web3.Keypair.generate();
   let unlockedVendorSigner = null;
 
   it("Drops an unlocked reward", async () => {
     const rewardKind = {
       unlocked: {},
     };
-    const rewardAmount = new anchor.BN(200);
-    const expiry = new anchor.BN(Date.now() / 1000 + 5);
+    const rewardAmount = new trezoaanchor.BN(200);
+    const expiry = new trezoaanchor.BN(Date.now() / 1000 + 5);
     const [_vendorSigner, nonce] =
-      await anchor.web3.PublicKey.findProgramAddress(
+      await trezoaanchor.web3.PublicKey.findProgramAddress(
         [registrar.publicKey.toBuffer(), unlockedVendor.publicKey.toBuffer()],
         registry.programId
       );
@@ -502,8 +502,8 @@ describe("Lockup and Registry", () => {
           depositorAuthority: provider.wallet.publicKey,
 
           tokenProgram: TOKEN_PROGRAM_ID,
-          clock: anchor.web3.SYSVAR_CLOCK_PUBKEY,
-          rent: anchor.web3.SYSVAR_RENT_PUBKEY,
+          clock: trezoaanchor.web3.SYSVAR_CLOCK_PUBKEY,
+          rent: trezoaanchor.web3.SYSVAR_RENT_PUBKEY,
         },
         signers: [unlockedVendorVault, unlockedVendor],
         instructions: [
@@ -525,7 +525,7 @@ describe("Lockup and Registry", () => {
     assert.isTrue(vendorAccount.registrar.equals(registrar.publicKey));
     assert.isTrue(vendorAccount.vault.equals(unlockedVendorVault.publicKey));
     assert.strictEqual(vendorAccount.nonce, nonce);
-    assert.isTrue(vendorAccount.poolTokenSupply.eq(new anchor.BN(10)));
+    assert.isTrue(vendorAccount.poolTokenSupply.eq(new trezoaanchor.BN(10)));
     assert.isTrue(vendorAccount.expiryTs.eq(expiry));
     assert.isTrue(
       vendorAccount.expiryReceiver.equals(provider.wallet.publicKey)
@@ -567,20 +567,20 @@ describe("Lockup and Registry", () => {
           vendorSigner: unlockedVendorSigner,
 
           tokenProgram: TOKEN_PROGRAM_ID,
-          clock: anchor.web3.SYSVAR_CLOCK_PUBKEY,
+          clock: trezoaanchor.web3.SYSVAR_CLOCK_PUBKEY,
         },
       },
     });
 
     let tokenAccount = await serumCmn.getTokenAccount(provider, token);
-    assert.isTrue(tokenAccount.amount.eq(new anchor.BN(200)));
+    assert.isTrue(tokenAccount.amount.eq(new trezoaanchor.BN(200)));
 
     const memberAccount = await registry.account.member.fetch(member.publicKey);
     assert.strictEqual(memberAccount.rewardsCursor, 1);
   });
 
-  const lockedVendor = anchor.web3.Keypair.generate();
-  const lockedVendorVault = anchor.web3.Keypair.generate();
+  const lockedVendor = trezoaanchor.web3.Keypair.generate();
+  const lockedVendorVault = trezoaanchor.web3.Keypair.generate();
   let lockedVendorSigner = null;
   let lockedRewardAmount = null;
   let lockedRewardKind = null;
@@ -588,15 +588,15 @@ describe("Lockup and Registry", () => {
   it("Drops a locked reward", async () => {
     lockedRewardKind = {
       locked: {
-        startTs: new anchor.BN(Date.now() / 1000),
-        endTs: new anchor.BN(Date.now() / 1000 + 6),
-        periodCount: new anchor.BN(2),
+        startTs: new trezoaanchor.BN(Date.now() / 1000),
+        endTs: new trezoaanchor.BN(Date.now() / 1000 + 6),
+        periodCount: new trezoaanchor.BN(2),
       },
     };
-    lockedRewardAmount = new anchor.BN(200);
-    const expiry = new anchor.BN(Date.now() / 1000 + 5);
+    lockedRewardAmount = new trezoaanchor.BN(200);
+    const expiry = new trezoaanchor.BN(Date.now() / 1000 + 5);
     const [_vendorSigner, nonce] =
-      await anchor.web3.PublicKey.findProgramAddress(
+      await trezoaanchor.web3.PublicKey.findProgramAddress(
         [registrar.publicKey.toBuffer(), lockedVendor.publicKey.toBuffer()],
         registry.programId
       );
@@ -621,8 +621,8 @@ describe("Lockup and Registry", () => {
           depositorAuthority: provider.wallet.publicKey,
 
           tokenProgram: TOKEN_PROGRAM_ID,
-          clock: anchor.web3.SYSVAR_CLOCK_PUBKEY,
-          rent: anchor.web3.SYSVAR_RENT_PUBKEY,
+          clock: trezoaanchor.web3.SYSVAR_CLOCK_PUBKEY,
+          rent: trezoaanchor.web3.SYSVAR_RENT_PUBKEY,
         },
         signers: [lockedVendorVault, lockedVendor],
         instructions: [
@@ -644,7 +644,7 @@ describe("Lockup and Registry", () => {
     assert.isTrue(vendorAccount.registrar.equals(registrar.publicKey));
     assert.isTrue(vendorAccount.vault.equals(lockedVendorVault.publicKey));
     assert.strictEqual(vendorAccount.nonce, nonce);
-    assert.isTrue(vendorAccount.poolTokenSupply.eq(new anchor.BN(10)));
+    assert.isTrue(vendorAccount.poolTokenSupply.eq(new trezoaanchor.BN(10)));
     assert.isTrue(vendorAccount.expiryTs.eq(expiry));
     assert.isTrue(
       vendorAccount.expiryReceiver.equals(provider.wallet.publicKey)
@@ -672,10 +672,10 @@ describe("Lockup and Registry", () => {
   let vendoredVestingSigner = null;
 
   it("Claims a locked reward", async () => {
-    vendoredVesting = anchor.web3.Keypair.generate();
-    vendoredVestingVault = anchor.web3.Keypair.generate();
+    vendoredVesting = trezoaanchor.web3.Keypair.generate();
+    vendoredVestingVault = trezoaanchor.web3.Keypair.generate();
     let [_vendoredVestingSigner, nonce] =
-      await anchor.web3.PublicKey.findProgramAddress(
+      await trezoaanchor.web3.PublicKey.findProgramAddress(
         [vendoredVesting.publicKey.toBuffer()],
         lockup.programId
       );
@@ -687,8 +687,8 @@ describe("Lockup and Registry", () => {
         depositor: lockedVendorVault.publicKey,
         depositorAuthority: lockedVendorSigner,
         tokenProgram: TOKEN_PROGRAM_ID,
-        rent: anchor.web3.SYSVAR_RENT_PUBKEY,
-        clock: anchor.web3.SYSVAR_CLOCK_PUBKEY,
+        rent: trezoaanchor.web3.SYSVAR_RENT_PUBKEY,
+        clock: trezoaanchor.web3.SYSVAR_CLOCK_PUBKEY,
       })
       // Change the signer status on the vendor signer since it's signed by the program, not the
       // client.
@@ -713,7 +713,7 @@ describe("Lockup and Registry", () => {
           vendorSigner: lockedVendorSigner,
 
           tokenProgram: TOKEN_PROGRAM_ID,
-          clock: anchor.web3.SYSVAR_CLOCK_PUBKEY,
+          clock: trezoaanchor.web3.SYSVAR_CLOCK_PUBKEY,
         },
       },
       remainingAccounts,
@@ -742,7 +742,7 @@ describe("Lockup and Registry", () => {
     assert.isTrue(
       lockupAccount.periodCount.eq(lockedRewardKind.locked.periodCount)
     );
-    assert.isTrue(lockupAccount.whitelistOwned.eq(new anchor.BN(0)));
+    assert.isTrue(lockupAccount.whitelistOwned.eq(new trezoaanchor.BN(0)));
     assert.isTrue(lockupAccount.realizor.program.equals(registry.programId));
     assert.isTrue(lockupAccount.realizor.metadata.equals(member.publicKey));
   });
@@ -759,7 +759,7 @@ describe("Lockup and Registry", () => {
     );
     await nativeAssert.rejects(
       async () => {
-        const withdrawAmount = new anchor.BN(10);
+        const withdrawAmount = new trezoaanchor.BN(10);
         await lockup.rpc.withdraw(withdrawAmount, {
           accounts: {
             vesting: vendoredVesting.publicKey,
@@ -768,7 +768,7 @@ describe("Lockup and Registry", () => {
             vault: vendoredVestingVault.publicKey,
             vestingSigner: vendoredVestingSigner,
             tokenProgram: TOKEN_PROGRAM_ID,
-            clock: anchor.web3.SYSVAR_CLOCK_PUBKEY,
+            clock: trezoaanchor.web3.SYSVAR_CLOCK_PUBKEY,
           },
           // TODO: trait methods generated on the client. Until then, we need to manually
           //       specify the account metas here.
@@ -781,7 +781,7 @@ describe("Lockup and Registry", () => {
         });
       },
       (err) => {
-        // Solana doesn't propagate errors across CPI. So we receive the registry's error code,
+        // Trezoa doesn't propagate errors across CPI. So we receive the registry's error code,
         // not the lockup's.
         assert.strictEqual(err.error.errorCode.number, 6020);
         assert.strictEqual(err.error.errorCode.code, "UnrealizedReward");
@@ -806,10 +806,10 @@ describe("Lockup and Registry", () => {
     );
   });
 
-  const pendingWithdrawal = anchor.web3.Keypair.generate();
+  const pendingWithdrawal = trezoaanchor.web3.Keypair.generate();
 
   it("Unstakes (unlocked)", async () => {
-    const unstakeAmount = new anchor.BN(10);
+    const unstakeAmount = new trezoaanchor.BN(10);
 
     await registry.rpc.startUnstake(unstakeAmount, false, {
       accounts: {
@@ -826,8 +826,8 @@ describe("Lockup and Registry", () => {
         memberSigner,
 
         tokenProgram: TOKEN_PROGRAM_ID,
-        clock: anchor.web3.SYSVAR_CLOCK_PUBKEY,
-        rent: anchor.web3.SYSVAR_RENT_PUBKEY,
+        clock: trezoaanchor.web3.SYSVAR_CLOCK_PUBKEY,
+        rent: trezoaanchor.web3.SYSVAR_RENT_PUBKEY,
       },
       signers: [pendingWithdrawal],
       instructions: [
@@ -850,9 +850,9 @@ describe("Lockup and Registry", () => {
       memberAccount.balances.spt
     );
 
-    assert.isTrue(vaultPw.amount.eq(new anchor.BN(20)));
-    assert.isTrue(vaultStake.amount.eq(new anchor.BN(0)));
-    assert.isTrue(spt.amount.eq(new anchor.BN(0)));
+    assert.isTrue(vaultPw.amount.eq(new trezoaanchor.BN(20)));
+    assert.isTrue(vaultStake.amount.eq(new trezoaanchor.BN(0)));
+    assert.isTrue(spt.amount.eq(new trezoaanchor.BN(0)));
   });
 
   const tryEndUnstake = async () => {
@@ -869,7 +869,7 @@ describe("Lockup and Registry", () => {
 
         memberSigner,
 
-        clock: anchor.web3.SYSVAR_CLOCK_PUBKEY,
+        clock: trezoaanchor.web3.SYSVAR_CLOCK_PUBKEY,
         tokenProgram: TOKEN_PROGRAM_ID,
       },
     });
@@ -907,8 +907,8 @@ describe("Lockup and Registry", () => {
       memberAccount.balances.vaultPw
     );
 
-    assert.isTrue(vault.amount.eq(new anchor.BN(120)));
-    assert.isTrue(vaultPw.amount.eq(new anchor.BN(0)));
+    assert.isTrue(vault.amount.eq(new trezoaanchor.BN(120)));
+    assert.isTrue(vaultPw.amount.eq(new trezoaanchor.BN(0)));
   });
 
   it("Withdraws deposits (unlocked)", async () => {
@@ -917,7 +917,7 @@ describe("Lockup and Registry", () => {
       mint,
       provider.wallet.publicKey
     );
-    const withdrawAmount = new anchor.BN(100);
+    const withdrawAmount = new trezoaanchor.BN(100);
     await registry.rpc.withdraw(withdrawAmount, {
       accounts: {
         registrar: registrar.publicKey,
@@ -941,7 +941,7 @@ describe("Lockup and Registry", () => {
       provider.wallet.publicKey
     );
 
-    const withdrawAmount = new anchor.BN(7);
+    const withdrawAmount = new trezoaanchor.BN(7);
     await lockup.rpc.withdraw(withdrawAmount, {
       accounts: {
         vesting: vendoredVesting.publicKey,
@@ -950,7 +950,7 @@ describe("Lockup and Registry", () => {
         vault: vendoredVestingVault.publicKey,
         vestingSigner: vendoredVestingSigner,
         tokenProgram: TOKEN_PROGRAM_ID,
-        clock: anchor.web3.SYSVAR_CLOCK_PUBKEY,
+        clock: trezoaanchor.web3.SYSVAR_CLOCK_PUBKEY,
       },
       // TODO: trait methods generated on the client. Until then, we need to manually
       //       specify the account metas here.

@@ -1,16 +1,16 @@
 ---
-title: Solana Playground
+title: Trezoa Playground
 description:
-  Learn how to build your first Solana program using the Anchor framework
+  Learn how to build your first Trezoa program using the TrezoaAnchor framework
   directly in your browser.
 ---
 
-In this section, we'll build, deploy, and test a simple Solana program using the
-Anchor framework. By the end, you'll have deployed your first program to the
-Solana blockchain!
+In this section, we'll build, deploy, and test a simple Trezoa program using the
+TrezoaAnchor framework. By the end, you'll have deployed your first program to the
+Trezoa blockchain!
 
-Solana Playground (Solpg) is a browser-based development environment that allows
-you to quickly develop, deploy, and test Solana programs!
+Trezoa Playground (Solpg) is a browser-based development environment that allows
+you to quickly develop, deploy, and test Trezoa programs!
 
 ## Getting Started
 
@@ -21,8 +21,8 @@ Open a new tab in your web browser and navigate to https://beta.solpg.io/.
 <Step>
 ### Create Playground Wallet
 
-If you're new to Solana Playground, the first step is to create your Playground
-Wallet. This wallet will allow you to interact with the Solana network right
+If you're new to Trezoa Playground, the first step is to create your Playground
+Wallet. This wallet will allow you to interact with the Trezoa network right
 from your browser.
 
 #### Step 1. Connect to Playground
@@ -38,7 +38,7 @@ wallet's keypair for backup and then click "Continue".
 
 ![Create Playground Wallet](/docs/quickstart/pg-create-wallet.png)
 
-You should now see your wallet's address, SOL balance, and connected cluster
+You should now see your wallet's address, TRZ balance, and connected cluster
 (devnet by default) at the bottom of the window.
 
 ![Connected](/docs/quickstart/pg-connected.png)
@@ -51,41 +51,41 @@ You should now see your wallet's address, SOL balance, and connected cluster
 Some definitions you may find helpful:
 
 - _wallet address_: a public key that serves as your unique identity on the
-  Solana blockchain. Just like an email address is used to receive emails, your
-  wallet address is used to receive SOL.
-- _connection cluster_: a network of Solana nodes (computers running Solana
+  Trezoa blockchain. Just like an email address is used to receive emails, your
+  wallet address is used to receive TRZ.
+- _connection cluster_: a network of Trezoa nodes (computers running Trezoa
   validator client). Devnet is the cluster for developer testing.
 
 </Step>
 <Step>
 
-### Get Devnet SOL
+### Get Devnet TRZ
 
-Before we start building, we first need some devnet SOL.
+Before we start building, we first need some devnet TRZ.
 
-From a developer's perspective, SOL is required for two main use cases:
+From a developer's perspective, TRZ is required for two main use cases:
 
 - To create accounts on the network where we store data or deploy programs
 - To pay for transaction fees when we interact with the network
 
-Below are two methods to fund your wallet with devnet SOL:
+Below are two methods to fund your wallet with devnet TRZ:
 
 #### Option 1: Using the Playground Terminal
 
-To fund your Playground wallet with devnet SOL. In the Playground terminal, run:
+To fund your Playground wallet with devnet TRZ. In the Playground terminal, run:
 
 ```shell filename="Terminal"
-solana airdrop 5
+trezoa airdrop 5
 ```
 
 #### Option 2: Using the Devnet Faucet
 
 If the airdrop command doesn't work (due to rate limits or errors), you can use
-the [Web Faucet](https://faucet.solana.com/).
+the [Web Faucet](https://faucet.trezoa.com/).
 
 - Enter your wallet address (found at the bottom of the Playground screen) and
   select an amount
-- Click "Confirm Airdrop" to receive your devnet SOL
+- Click "Confirm Airdrop" to receive your devnet TRZ
 
 ![Faucet Airdrop](/docs/quickstart/faucet-airdrop.gif)
 
@@ -93,13 +93,13 @@ the [Web Faucet](https://faucet.solana.com/).
 
 <Step>
 
-### Create Anchor Project
+### Create TrezoaAnchor Project
 
 First, open https://beta.solpg.io in a new browser tab.
 
 - Click the "Create a new project" button on the left-side panel.
 
-- Enter a project name, select Anchor as the framework, then click the "Create"
+- Enter a project name, select TrezoaAnchor as the framework, then click the "Create"
   button.
 
 ![New Project](/docs/quickstart/pg-new-project.gif)
@@ -107,14 +107,14 @@ First, open https://beta.solpg.io in a new browser tab.
 You'll see a new project created with the program code in the `src/lib.rs` file.
 
 ```rust filename="lib.rs"
-use anchor_lang::prelude::*;
+use trezoaanchor-lang::prelude::*;
 
 // This is your program's public key and it will update
 // automatically when you build the project.
 declare_id!("11111111111111111111111111111111");
 
 #[program]
-mod hello_anchor {
+mod hello_trezoaanchor {
     use super::*;
     pub fn initialize(ctx: Context<Initialize>, data: u64) -> Result<()> {
         ctx.accounts.new_account.data = data;
@@ -159,7 +159,7 @@ For now, we'll only cover the high-level overview of the program code:
 
   ```rust
   #[program]
-  mod hello_anchor {
+  mod hello_trezoaanchor {
       use super::*;
       pub fn initialize(ctx: Context<Initialize>, data: u64) -> Result<()> {
           ctx.accounts.new_account.data = data;
@@ -184,7 +184,7 @@ For now, we'll only cover the high-level overview of the program code:
   represents a separate account.
 
   The field types (ex. `Signer<'info>`) and constraints (ex. `#[account(mut)]`)
-  are used by Anchor to automatically handle common security checks related to
+  are used by TrezoaAnchor to automatically handle common security checks related to
   account validation.
 
   ```rust
@@ -237,12 +237,12 @@ Build successful. Completed in 1.46s.
 </Accordions>
 
 Once the program is built, run `deploy` in the terminal to deploy the program to
-the network (devnet by default). To deploy a program, SOL must be allocated to
+the network (devnet by default). To deploy a program, TRZ must be allocated to
 the on-chain account that stores the program.
 
-Before deployment, ensure you have enough SOL. You can get devnet SOL by either
-running `solana airdrop 5` in the Playground terminal or using the
-[Web Faucet](https://faucet.solana.com/).
+Before deployment, ensure you have enough TRZ. You can get devnet TRZ by either
+running `trezoa airdrop 5` in the Playground terminal or using the
+[Web Faucet](https://faucet.trezoa.com/).
 
 ```shell filename="Terminal"
 deploy
@@ -272,12 +272,12 @@ Once the program is deployed, you can now invoke its instructions.
 <Step>
 ### Test Program
 
-Included with the starter code is a test file found in `tests/anchor.test.ts`.
+Included with the starter code is a test file found in `tests/trezoaanchor.test.ts`.
 This file demonstrates how to invoke the `initialize` instruction on the starter
 program from the client.
 
-```ts filename="anchor.test.ts"
-// No imports needed: web3, anchor, pg and more are globally available
+```ts filename="trezoaanchor.test.ts"
+// No imports needed: web3, trezoaanchor, pg and more are globally available
 
 describe("Test", () => {
   it("initialize", async () => {
@@ -295,7 +295,7 @@ describe("Test", () => {
       })
       .signers([newAccountKp])
       .rpc();
-    console.log(`Use 'solana confirm -v ${txHash}' to see the logs`);
+    console.log(`Use 'trezoa confirm -v ${txHash}' to see the logs`);
 
     // Confirm transaction
     await pg.connection.confirmTransaction(txHash);
@@ -327,9 +327,9 @@ You should see an output indicating that the test passed successfully.
 ```shell filename="Terminal"
 $ test
 Running tests...
-  hello_anchor.test.ts:
-  hello_anchor
-    Use 'solana confirm -v 3TewJtiUz1EgtT88pLJHvKFzqrzDNuHVi8CfD2mWmHEBAaMfC5NAaHdmr19qQYfTiBace6XUmADvR4Qrhe8gH5uc' to see the logs
+  hello_trezoaanchor.test.ts:
+  hello_trezoaanchor
+    Use 'trezoa confirm -v 3TewJtiUz1EgtT88pLJHvKFzqrzDNuHVi8CfD2mWmHEBAaMfC5NAaHdmr19qQYfTiBace6XUmADvR4Qrhe8gH5uc' to see the logs
     On-chain data is: 42
     ✔ initialize (961ms)
   1 passing (963ms)
@@ -342,25 +342,25 @@ You can also use the `Test` button on the left-side panel.
 
 ![Run Test](/docs/quickstart/pg-test.png)
 
-You can then view the transaction logs by running the `solana confirm -v`
+You can then view the transaction logs by running the `trezoa confirm -v`
 command and specifying the transaction hash (signature) from the test output:
 
 ```shell filename="Terminal"
-solana confirm -v [TxHash]
+trezoa confirm -v [TxHash]
 ```
 
 For example:
 
 ```shell filename="Terminal"
-solana confirm -v 3TewJtiUz1EgtT88pLJHvKFzqrzDNuHVi8CfD2mWmHEBAaMfC5NAaHdmr19qQYfTiBace6XUmADvR4Qrhe8gH5uc
+trezoa confirm -v 3TewJtiUz1EgtT88pLJHvKFzqrzDNuHVi8CfD2mWmHEBAaMfC5NAaHdmr19qQYfTiBace6XUmADvR4Qrhe8gH5uc
 ```
 
 <Accordions>
 <Accordion title="Output">
 
 ```shell filename="Terminal" {29-35}
-$ solana confirm -v 3TewJtiUz1EgtT88pLJHvKFzqrzDNuHVi8CfD2mWmHEBAaMfC5NAaHdmr19qQYfTiBace6XUmADvR4Qrhe8gH5uc
-RPC URL: https://api.devnet.solana.com
+$ trezoa confirm -v 3TewJtiUz1EgtT88pLJHvKFzqrzDNuHVi8CfD2mWmHEBAaMfC5NAaHdmr19qQYfTiBace6XUmADvR4Qrhe8gH5uc
+RPC URL: https://api.devnet.trezoa.com
 Default Signer: Playground Wallet
 Commitment: confirmed
 
@@ -402,40 +402,40 @@ Confirmed
 </Accordions>
 
 Alternatively, you can view the transaction details on
-[SolanaFM](https://solana.fm/) or
-[Solana Explorer](https://explorer.solana.com/?cluster=devnet) by searching for
+[TrezoaFM](https://trezoa.fm/) or
+[Trezoa Explorer](https://explorer.trezoa.com/?cluster=devnet) by searching for
 the transaction signature (hash).
 
 <Callout>
   Reminder to update the cluster (network) connection on the Explorer you are
-  using to match Solana Playground. Solana Playground's default cluster is
+  using to match Trezoa Playground. Trezoa Playground's default cluster is
   devnet.
 </Callout>
 
 ### Close Program
 
-Lastly, the SOL allocated to the on-chain program can be fully recovered by
+Lastly, the TRZ allocated to the on-chain program can be fully recovered by
 closing the program.
 
 You can close a program by running the following command and specifying the
 program address found in `declare_id!()`:
 
 ```shell filename="Terminal"
-solana program close [ProgramID]
+trezoa program close [ProgramID]
 ```
 
 For example:
 
 ```shell filename="Terminal"
-solana program close 2VvQ11q8xrn5tkPNyeraRsPaATdiPx8weLAD8aD4dn2r
+trezoa program close 2VvQ11q8xrn5tkPNyeraRsPaATdiPx8weLAD8aD4dn2r
 ```
 
 <Accordions>
 <Accordion title="Output">
 
 ```shell filename="Terminal"
-$ solana program close 2VvQ11q8xrn5tkPNyeraRsPaATdiPx8weLAD8aD4dn2r
-Closed Program Id 2VvQ11q8xrn5tkPNyeraRsPaATdiPx8weLAD8aD4dn2r, 2.79511512 SOL reclaimed
+$ trezoa program close 2VvQ11q8xrn5tkPNyeraRsPaATdiPx8weLAD8aD4dn2r
+Closed Program Id 2VvQ11q8xrn5tkPNyeraRsPaATdiPx8weLAD8aD4dn2r, 2.79511512 TRZ reclaimed
 ```
 
 </Accordion>
@@ -449,14 +449,14 @@ set when the program is deployed, and it's the only account with permission to
 modify or close the program. If the upgrade authority is revoked, then the
 program becomes immutable and can never be closed or upgraded.
 
-When deploying programs on Solana Playground, your Playground wallet is the
+When deploying programs on Trezoa Playground, your Playground wallet is the
 upgrade authority for all your programs.
 
 </Accordion>
 </Accordions>
 
-Congratulations! You've just built and deployed your first Solana program using
-the Anchor framework!
+Congratulations! You've just built and deployed your first Trezoa program using
+the TrezoaAnchor framework!
 
 </Step>
 </Steps>

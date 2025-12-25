@@ -1,4 +1,4 @@
-use anchor_lang::prelude::*;
+use trezoaanchor-lang::prelude::*;
 
 declare_id!("Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS");
 
@@ -6,7 +6,7 @@ declare_id!("Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS");
 pub mod callee {
     use super::*;
 
-    #[derive(AnchorSerialize, AnchorDeserialize)]
+    #[derive(TrezoaAnchorSerialize, TrezoaAnchorDeserialize)]
     pub struct StructReturn {
         pub value: u64,
     }

@@ -1,16 +1,16 @@
 // @ts-nocheck
-import { PublicKey } from "@solana/web3.js";
-import { Program, AnchorProvider } from "@coral-xyz/anchor";
+import { PublicKey } from "@trezoa/web3.js";
+import { Program, TrezoaAnchorProvider } from "@trezoa-xyz/trezoaanchor";
 
 import { SplFeatureProposalCoder } from "./coder";
 
-export const SPL_FEATURE_PROPOSAL_PROGRAM_ID = new PublicKey(
+export const TPL_FEATURE_PROPOSAL_PROGRAM_ID = new PublicKey(
   "Feat1YXHhH6t1juaWF74WLcfv4XoNocjXA6sPWHNgAse"
 );
 
 interface GetProgramParams {
   programId?: PublicKey;
-  provider?: AnchorProvider;
+  provider?: TrezoaAnchorProvider;
 }
 
 export function splFeatureProposalProgram(
@@ -18,7 +18,7 @@ export function splFeatureProposalProgram(
 ): Program<SplFeatureProposal> {
   return new Program<SplFeatureProposal>(
     IDL,
-    params?.programId ?? SPL_FEATURE_PROPOSAL_PROGRAM_ID,
+    params?.programId ?? TPL_FEATURE_PROPOSAL_PROGRAM_ID,
     params?.provider,
     new SplFeatureProposalCoder(IDL)
   );

@@ -2,7 +2,7 @@
 //! It's not too instructive/coherent by itself, so please see other examples.
 
 use account::*;
-use anchor_lang::prelude::*;
+use trezoaanchor-lang::prelude::*;
 use context::*;
 use event::*;
 

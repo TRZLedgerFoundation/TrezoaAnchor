@@ -2,7 +2,7 @@ use crate::codegen::program::common::*;
 use crate::Program;
 use quote::{quote, ToTokens};
 
-// Generate non-inlined wrappers for each instruction handler, since Solana's
+// Generate non-inlined wrappers for each instruction handler, since Trezoa's
 // BPF max stack size can't handle reasonable sized dispatch trees without doing
 // so.
 pub fn generate(program: &Program) -> proc_macro2::TokenStream {
@@ -33,7 +33,7 @@ pub fn generate(program: &Program) -> proc_macro2::TokenStream {
             };
 
             let ix_name_log = format!("Instruction: {ix_name}");
-            let anchor = &ix.anchor_ident;
+            let trezoaanchor = &ix.trezoaanchor_ident;
             let ret_type = &ix.returns.ty.to_token_stream();
             let cfgs = &ix.cfgs;
             let maybe_set_return_data = match ret_type.to_string().as_str() {
@@ -41,13 +41,13 @@ pub fn generate(program: &Program) -> proc_macro2::TokenStream {
                 _ => quote! {
                     let mut return_data = Vec::with_capacity(256);
                     result.serialize(&mut return_data).unwrap();
-                    anchor_lang::solana_program::program::set_return_data(&return_data);
+                    trezoaanchor-lang::trezoa_program::program::set_return_data(&return_data);
                 },
             };
 
             let actual_param_count = ix.args.len();
             let ix_name_str = ix_method_name.to_string();
-            let accounts_type_str = anchor.to_string();
+            let accounts_type_str = trezoaanchor.to_string();
 
             // Build clear error messages
             let count_error_msg = format!(
@@ -64,17 +64,17 @@ pub fn generate(program: &Program) -> proc_macro2::TokenStream {
                 .map(|(idx, arg)| {
                     let arg_ty = &arg.raw_arg.ty;
                     let method_name = syn::Ident::new(
-                        &format!("__anchor_validate_ix_arg_type_{}", idx),
+                        &format!("__trezoaanchor_validate_ix_arg_type_{}", idx),
                         proc_macro2::Span::call_site(),
                     );
                     quote! {
                         // Type validation for argument #idx
-                        if #anchor::__ANCHOR_IX_PARAM_COUNT > #idx {
+                        if #trezoaanchor::__ANCHOR_IX_PARAM_COUNT > #idx {
                             #[allow(unreachable_code)]
                             if false {
                                 // This code is never executed but is type-checked at compile time
                                 let __type_check_arg: #arg_ty = panic!();
-                                #anchor::#method_name(&__type_check_arg);
+                                #trezoaanchor::#method_name(&__type_check_arg);
                             }
                         }
                     }
@@ -83,7 +83,7 @@ pub fn generate(program: &Program) -> proc_macro2::TokenStream {
 
             let param_validation = quote! {
                 const _: () = {
-                    const EXPECTED_COUNT: usize = #anchor::__ANCHOR_IX_PARAM_COUNT;
+                    const EXPECTED_COUNT: usize = #trezoaanchor::__ANCHOR_IX_PARAM_COUNT;
                     const HANDLER_PARAM_COUNT: usize = #actual_param_count;
 
                     // Count validation
@@ -103,24 +103,24 @@ pub fn generate(program: &Program) -> proc_macro2::TokenStream {
                     __program_id: &Pubkey,
                     __accounts: &'info[AccountInfo<'info>],
                     __ix_data: &[u8],
-                ) -> anchor_lang::Result<()> {
+                ) -> trezoaanchor-lang::Result<()> {
                     #[cfg(not(feature = "no-log-ix-name"))]
-                    anchor_lang::prelude::msg!(#ix_name_log);
+                    trezoaanchor-lang::prelude::msg!(#ix_name_log);
 
                     #param_validation
                     // Deserialize data.
                     let ix = instruction::#ix_name::deserialize(&mut &__ix_data[..])
-                        .map_err(|_| anchor_lang::error::ErrorCode::InstructionDidNotDeserialize)?;
+                        .map_err(|_| trezoaanchor-lang::error::ErrorCode::InstructionDidNotDeserialize)?;
                     let instruction::#variant_arm = ix;
 
                     // Bump collector.
-                    let mut __bumps = <#anchor as anchor_lang::Bumps>::Bumps::default();
+                    let mut __bumps = <#trezoaanchor as trezoaanchor-lang::Bumps>::Bumps::default();
 
                     let mut __reallocs = std::collections::BTreeSet::new();
 
                     // Deserialize accounts.
                     let mut __remaining_accounts: &[AccountInfo] = __accounts;
-                    let mut __accounts = #anchor::try_accounts(
+                    let mut __accounts = #trezoaanchor::try_accounts(
                         __program_id,
                         &mut __remaining_accounts,
                         __ix_data,
@@ -130,7 +130,7 @@ pub fn generate(program: &Program) -> proc_macro2::TokenStream {
 
                     // Invoke user defined handler.
                     let result = #program_name::#ix_method_name(
-                        anchor_lang::context::Context::new(
+                        trezoaanchor-lang::context::Context::new(
                             __program_id,
                             &mut __accounts,
                             __remaining_accounts,
@@ -139,7 +139,7 @@ pub fn generate(program: &Program) -> proc_macro2::TokenStream {
                         #(#ix_arg_names),*
                     )?;
 
-                    // Maybe set Solana return data.
+                    // Maybe set Trezoa return data.
                     #maybe_set_return_data
 
                     // Exit routine.
@@ -185,18 +185,18 @@ fn generate_event_cpi_mod() -> proc_macro2::TokenStream {
                     program_id: &Pubkey,
                     accounts: &[AccountInfo],
                     event_data: &[u8],
-                ) -> anchor_lang::Result<()> {
+                ) -> trezoaanchor-lang::Result<()> {
                     let given_event_authority = next_account_info(&mut accounts.iter())?;
                     if !given_event_authority.is_signer {
-                        return Err(anchor_lang::error::Error::from(
-                            anchor_lang::error::ErrorCode::ConstraintSigner,
+                        return Err(trezoaanchor-lang::error::Error::from(
+                            trezoaanchor-lang::error::ErrorCode::ConstraintSigner,
                         )
                         .with_account_name(#authority_name));
                     }
 
                     if given_event_authority.key() != crate::EVENT_AUTHORITY_AND_BUMP.0 {
-                        return Err(anchor_lang::error::Error::from(
-                            anchor_lang::error::ErrorCode::ConstraintSeeds,
+                        return Err(trezoaanchor-lang::error::Error::from(
+                            trezoaanchor-lang::error::ErrorCode::ConstraintSeeds,
                         )
                         .with_account_name(#authority_name)
                         .with_pubkeys((given_event_authority.key(), crate::EVENT_AUTHORITY_AND_BUMP.0)));

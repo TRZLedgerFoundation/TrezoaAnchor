@@ -52,7 +52,7 @@ jobs:
         run: sudo apt-get update && sudo apt-get install -y libudev-dev
 
       - name: Build release binary
-        run: cargo build --package anchor-cli --release --locked --target ${{ matrix.target }}
+        run: cargo build --package trezoaanchor-cli --release --locked --target ${{ matrix.target }}
 
       - name: Prepare
         if: startsWith(github.ref, 'refs/tags/')
@@ -64,14 +64,14 @@ jobs:
           [[ "${{ matrix.os }}" == windows-latest ]] && ext=".exe"
 
           mkdir $DIST
-          mv "target/${{ matrix.target }}/release/anchor$ext" $DIST/anchor-$version-${{ matrix.target }}$ext
+          mv "target/${{ matrix.target }}/release/trezoaanchor$ext" $DIST/trezoaanchor-$version-${{ matrix.target }}$ext
 
           echo "version=$version" >> $GITHUB_OUTPUT
 
       - uses: actions/upload-artifact@v4
         if: startsWith(github.ref, 'refs/tags/')
         with:
-          name: anchor-${{ steps.prepare.outputs.version }}-${{ matrix.target }}
+          name: trezoaanchor-${{ steps.prepare.outputs.version }}-${{ matrix.target }}
           path: ${{ env.DIST }}
           overwrite: true
           retention-days: 1

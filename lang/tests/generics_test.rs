@@ -1,10 +1,10 @@
-// Avoiding AccountInfo deprecated msg in anchor context
+// Avoiding AccountInfo deprecated msg in trezoaanchor context
 #![allow(dead_code, deprecated)]
 
-use anchor_lang::prelude::borsh::io::Write;
-use anchor_lang::prelude::*;
+use trezoaanchor-lang::prelude::borsh::io::Write;
+use trezoaanchor-lang::prelude::*;
 use borsh::{BorshDeserialize, BorshSerialize};
-use solana_pubkey::Pubkey;
+use trezoa_pubkey::Pubkey;
 
 // Needed to declare accounts.
 declare_id!("Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS");

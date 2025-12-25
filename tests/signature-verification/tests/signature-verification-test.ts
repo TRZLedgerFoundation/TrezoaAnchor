@@ -1,5 +1,5 @@
-import * as anchor from "@coral-xyz/anchor";
-import { Program } from "@coral-xyz/anchor";
+import * as trezoaanchor from "@trezoa-xyz/trezoaanchor";
+import { Program } from "@trezoa-xyz/trezoaanchor";
 import * as fs from "fs";
 const signatureVerificationTestIDL = JSON.parse(
   fs.readFileSync("./target/idl/signature_verification_test.json", "utf8")
@@ -13,27 +13,27 @@ import {
   SYSVAR_INSTRUCTIONS_PUBKEY,
   Ed25519Program,
   Secp256k1Program,
-} from "@solana/web3.js";
+} from "@trezoa/web3.js";
 import * as crypto from "crypto";
 import { ethers } from "ethers";
 import * as assert from "assert";
 import { sign } from "@noble/ed25519";
 
 describe("signature-verification-test", () => {
-  const provider = anchor.AnchorProvider.local(undefined, {
+  const provider = trezoaanchor.TrezoaAnchorProvider.local(undefined, {
     commitment: `confirmed`,
   });
 
-  anchor.setProvider(provider);
-  const program = new anchor.Program(
-    signatureVerificationTestIDL as anchor.Idl,
+  trezoaanchor.setProvider(provider);
+  const program = new trezoaanchor.Program(
+    signatureVerificationTestIDL as trezoaanchor.Idl,
     provider
   );
 
   it("Verify Ed25519 signature with valid signature", async () => {
     const signer = Keypair.generate();
     const message = Buffer.from(
-      "Hello, Anchor Signature Verification Test with valid signature!"
+      "Hello, TrezoaAnchor Signature Verification Test with valid signature!"
     );
     const signature = await sign(message, signer.secretKey.slice(0, 32));
 
@@ -57,7 +57,7 @@ describe("signature-verification-test", () => {
   it("Verify Ed25519 signature with invalid signature", async () => {
     const signer = Keypair.generate();
     const message = Buffer.from(
-      "Hello, Anchor Signature Verification Test with invalid signature!"
+      "Hello, TrezoaAnchor Signature Verification Test with invalid signature!"
     );
     // Create a fake signature (all zeros)
     const fakeSignature = new Uint8Array(64).fill(0);

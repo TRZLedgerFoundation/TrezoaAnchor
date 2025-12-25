@@ -1,9 +1,9 @@
 import assert from "assert";
-import { splRecordProgram } from "@coral-xyz/spl-record";
-import { Keypair, PublicKey } from "@solana/web3.js";
-import { BN } from "@coral-xyz/anchor";
+import { splRecordProgram } from "@trezoa-xyz/spl-record";
+import { Keypair, PublicKey } from "@trezoa/web3.js";
+import { BN } from "@trezoa-xyz/trezoaanchor";
 
-import { SPL_RECORD_PROGRAM_ID } from "../constants";
+import { TPL_RECORD_PROGRAM_ID } from "../constants";
 import {
   confirmTx,
   getProvider,
@@ -16,7 +16,7 @@ export async function recordTests() {
   const provider = await getProvider();
   const program = splRecordProgram({
     provider,
-    programId: SPL_RECORD_PROGRAM_ID,
+    programId: TPL_RECORD_PROGRAM_ID,
   });
   const kp = await loadKp();
 

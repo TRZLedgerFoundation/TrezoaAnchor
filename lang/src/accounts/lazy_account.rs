@@ -10,7 +10,7 @@ use crate::{
 
 /// Deserialize account data lazily (on-demand).
 ///
-/// Anchor uses [`borsh`] deserialization by default, which can be expensive for both memory and
+/// TrezoaAnchor uses [`borsh`] deserialization by default, which can be expensive for both memory and
 /// compute units usage.
 ///
 /// With the regular [`Account`] type, all account data gets deserialized, even the fields not used
@@ -57,7 +57,7 @@ use crate::{
 /// # Example
 ///
 /// ```
-/// use anchor_lang::prelude::*;
+/// use trezoaanchor-lang::prelude::*;
 ///
 /// declare_id!("LazyAccount11111111111111111111111111111111");
 ///
@@ -146,7 +146,7 @@ use crate::{
 /// pointer size) of stack memory in total.
 ///
 /// It's worth noting that where the account is being deserialized matters. For example, the main
-/// place where Anchor programs are likely to hit stack violation errors is a generated function
+/// place where TrezoaAnchor programs are likely to hit stack violation errors is a generated function
 /// called `try_accounts` (you might be familiar with it from the mangled build logs). This is
 /// where the instruction is deserialized and constraints are run. Although having everything at the
 /// same place is convenient for using constraints, this also makes it very easy to use the fixed
@@ -169,7 +169,7 @@ use crate::{
 ///
 /// [`borsh`]: crate::prelude::borsh
 /// [`Account`]: crate::prelude::Account
-/// [SIMD-0166]: https://github.com/solana-foundation/solana-improvement-documents/pull/166
+/// [SIMD-0166]: https://github.com/trz-ledger-foundation/trezoa-improvement-documents/pull/166
 pub struct LazyAccount<'info, T>
 where
     T: AccountSerialize + Discriminator + Owner + Clone,

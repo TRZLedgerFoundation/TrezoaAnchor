@@ -1,8 +1,8 @@
-import { splAssociatedTokenAccountProgram } from "@coral-xyz/spl-associated-token-account";
-import { splTokenProgram } from "@coral-xyz/spl-token";
-import { Keypair, PublicKey, SystemProgram } from "@solana/web3.js";
+import { tplAssociatedTokenAccountProgram } from "@trezoa-xyz/tpl-associated-token-account";
+import { tplTokenProgram } from "@trezoa-xyz/tpl-token";
+import { Keypair, PublicKey, SystemProgram } from "@trezoa/web3.js";
 
-import { SPL_ATA_PROGRAM_ID, SPL_TOKEN_PROGRAM_ID } from "../constants";
+import { TPL_ATA_PROGRAM_ID, TPL_TOKEN_PROGRAM_ID } from "../constants";
 import {
   createMint,
   getAta,
@@ -14,13 +14,13 @@ import {
 
 export async function associatedTokenAccountTests() {
   const provider = await getProvider();
-  const ataProgram = splAssociatedTokenAccountProgram({
+  const ataProgram = tplAssociatedTokenAccountProgram({
     provider,
-    programId: SPL_ATA_PROGRAM_ID,
+    programId: TPL_ATA_PROGRAM_ID,
   });
-  const tokenProgram = splTokenProgram({
+  const tokenProgram = tplTokenProgram({
     provider,
-    programId: SPL_TOKEN_PROGRAM_ID,
+    programId: TPL_TOKEN_PROGRAM_ID,
   });
   const kp = await loadKp();
 

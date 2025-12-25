@@ -1,9 +1,9 @@
 import assert from "assert";
-import { splTokenProgram } from "@coral-xyz/spl-token";
-import { Keypair, PublicKey, SYSVAR_RENT_PUBKEY } from "@solana/web3.js";
-import { BN } from "@coral-xyz/anchor";
+import { tplTokenProgram } from "@trezoa-xyz/tpl-token";
+import { Keypair, PublicKey, SYSVAR_RENT_PUBKEY } from "@trezoa/web3.js";
+import { BN } from "@trezoa-xyz/trezoaanchor";
 
-import { NATIVE_MINT_PK, SPL_TOKEN_PROGRAM_ID } from "../constants";
+import { NATIVE_MINT_PK, TPL_TOKEN_PROGRAM_ID } from "../constants";
 import {
   createTokenAccount,
   getProvider,
@@ -14,9 +14,9 @@ import {
 
 export async function splTokenTests() {
   const provider = await getProvider();
-  const program = splTokenProgram({
+  const program = tplTokenProgram({
     provider,
-    programId: SPL_TOKEN_PROGRAM_ID,
+    programId: TPL_TOKEN_PROGRAM_ID,
   });
   const kp = await loadKp();
   const delegateKp = new Keypair();

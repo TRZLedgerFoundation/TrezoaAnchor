@@ -4,15 +4,15 @@
 //
 // TODO: Modernize all these apis. This is all quite clunky.
 
-const Token = require("@solana/spl-token").Token;
-const TOKEN_PROGRAM_ID = require("@solana/spl-token").TOKEN_PROGRAM_ID;
-const TokenInstructions = require("@project-serum/serum").TokenInstructions;
-const Market = require("@project-serum/serum").Market;
-const DexInstructions = require("@project-serum/serum").DexInstructions;
-const web3 = require("@coral-xyz/anchor").web3;
+const Token = require("@trezoa/tpl-token").Token;
+const TOKEN_PROGRAM_ID = require("@trezoa/tpl-token").TOKEN_PROGRAM_ID;
+const TokenInstructions = require("@trezoa-serum/serum").TokenInstructions;
+const Market = require("@trezoa-serum/serum").Market;
+const DexInstructions = require("@trezoa-serum/serum").DexInstructions;
+const web3 = require("@trezoa-xyz/trezoaanchor").web3;
 const Connection = web3.Connection;
-const BN = require("@coral-xyz/anchor").BN;
-const serumCmn = require("@project-serum/common");
+const BN = require("@trezoa-xyz/trezoaanchor").BN;
+const serumCmn = require("@trezoa-serum/common");
 const Account = web3.Account;
 const Transaction = web3.Transaction;
 const PublicKey = web3.PublicKey;
@@ -210,7 +210,7 @@ async function fundAccount({ provider, mints }) {
     })()
   );
 
-  // Transfer SPL tokens to the market maker.
+  // Transfer TPL tokens to the market maker.
   for (let k = 0; k < mints.length; k += 1) {
     const { mint, god, amount, decimals } = mints[k];
     let MINT_A = mint;

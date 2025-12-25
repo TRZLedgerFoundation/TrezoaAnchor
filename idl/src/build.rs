@@ -13,8 +13,8 @@ use crate::types::{Idl, IdlEvent, IdlTypeDef};
 
 /// A trait that types must implement in order to include the type in the IDL definition.
 ///
-/// This trait is automatically implemented for Anchor all types that use the `AnchorSerialize`
-/// proc macro. Note that manually implementing the `AnchorSerialize` trait does **NOT** have the
+/// This trait is automatically implemented for TrezoaAnchor all types that use the `TrezoaAnchorSerialize`
+/// proc macro. Note that manually implementing the `TrezoaAnchorSerialize` trait does **NOT** have the
 /// same effect.
 ///
 /// Types that don't implement this trait will cause a compile error during the IDL generation.
@@ -147,7 +147,7 @@ fn build(
         .args([
             &toolchain,
             "test",
-            "__anchor_private_print_idl",
+            "__trezoaanchor_private_print_idl",
             "--features",
             "idl-build",
         ])
@@ -158,7 +158,7 @@ fn build(
             if no_docs { "TRUE" } else { "FALSE" },
         )
         .env(
-            "ANCHOR_IDL_BUILD_RESOLUTION",
+            "ANCHOR_IDL_BUILD_RETRZUTION",
             if resolution { "TRUE" } else { "FALSE" },
         )
         .env(
@@ -178,7 +178,7 @@ fn build(
 
     if !output.status.success() {
         return Err(anyhow!(
-            "Building IDL failed. Run `ANCHOR_LOG=true anchor idl build` to see the logs."
+            "Building IDL failed. Run `ANCHOR_LOG=true trezoaanchor idl build` to see the logs."
         ));
     }
 

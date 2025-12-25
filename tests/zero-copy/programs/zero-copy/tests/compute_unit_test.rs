@@ -1,19 +1,19 @@
 #![cfg(feature = "test-sbf")]
 
 use {
-    anchor_client::{
-        anchor_lang::Discriminator,
-        solana_account::Account,
-        solana_sdk::{
+    trezoaanchor_client::{
+        trezoaanchor-lang::Discriminator,
+        trezoa_account::Account,
+        trezoa_sdk::{
             commitment_config::CommitmentConfig,
             pubkey::Pubkey,
             signature::Keypair,
             transaction::Transaction,
         },
-        solana_signer::Signer,
+        trezoa_signer::Signer,
         Client, Cluster,
     },
-    solana_program_test::{tokio, ProgramTest},
+    trezoa_program_test::{tokio, ProgramTest},
     std::rc::Rc,
 };
 

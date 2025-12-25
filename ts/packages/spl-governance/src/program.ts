@@ -1,13 +1,13 @@
-import { PublicKey } from "@solana/web3.js";
-import { Program, AnchorProvider } from "@coral-xyz/anchor";
+import { PublicKey } from "@trezoa/web3.js";
+import { Program, TrezoaAnchorProvider } from "@trezoa-xyz/trezoaanchor";
 
 import { SplGovernanceCoder } from "./coder";
 
-const SPL_GOVERNANCE_PROGRAM_ID = PublicKey.default;
+const TPL_GOVERNANCE_PROGRAM_ID = PublicKey.default;
 
 interface GetProgramParams {
   programId?: PublicKey;
-  provider?: AnchorProvider;
+  provider?: TrezoaAnchorProvider;
 }
 
 export function splGovernanceProgram(
@@ -15,7 +15,7 @@ export function splGovernanceProgram(
 ): Program<SplGovernance> {
   return new Program<SplGovernance>(
     IDL,
-    params?.programId ?? SPL_GOVERNANCE_PROGRAM_ID,
+    params?.programId ?? TPL_GOVERNANCE_PROGRAM_ID,
     params?.provider,
     new SplGovernanceCoder(IDL)
   );

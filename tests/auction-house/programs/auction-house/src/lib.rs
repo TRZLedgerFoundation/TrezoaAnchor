@@ -2,14 +2,14 @@ pub mod utils;
 
 use {
     crate::utils::*,
-    anchor_lang::{
+    trezoaanchor-lang::{
         prelude::*,
-        solana_program::{
+        trezoa_program::{
             program::{invoke, invoke_signed},
             system_instruction,
         },
     },
-    anchor_spl::{
+    trezoaanchor_spl::{
         associated_token::{spl_associated_token_account, AssociatedToken},
         metadata::mpl_token_metadata,
         token::{
@@ -1712,9 +1712,9 @@ pub enum ErrorCode {
     #[msg("Expected a sol account but got an spl token account instead")]
     ExpectedSolAccount,
     #[msg("Cannot exchange sol for sol")]
-    CannotExchangeSOLForSol,
+    CannotExchangeTRZForSol,
     #[msg("If paying with sol, sol wallet must be signer")]
-    SOLWalletMustSign,
+    TRZWalletMustSign,
     #[msg("Cannot take this action without auction house signing too")]
     CannotTakeThisActionWithoutAuctionHouseSignOff,
     #[msg("No payer present on this txn")]

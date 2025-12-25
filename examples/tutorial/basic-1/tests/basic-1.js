@@ -1,26 +1,26 @@
 const assert = require("assert");
-const anchor = require("@coral-xyz/anchor");
-const { SystemProgram } = anchor.web3;
+const trezoaanchor = require("@trezoa-xyz/trezoaanchor");
+const { SystemProgram } = trezoaanchor.web3;
 
 describe("basic-1", () => {
   // Use a local provider.
-  const provider = anchor.AnchorProvider.local();
+  const provider = trezoaanchor.TrezoaAnchorProvider.local();
 
   // Configure the client to use the local cluster.
-  anchor.setProvider(provider);
+  trezoaanchor.setProvider(provider);
 
   it("Creates and initializes an account in a single atomic transaction (simplified)", async () => {
     // #region code-simplified
     // The program to execute.
-    const program = anchor.workspace.Basic1;
+    const program = trezoaanchor.workspace.Basic1;
 
     // The Account to create.
-    const myAccount = anchor.web3.Keypair.generate();
+    const myAccount = trezoaanchor.web3.Keypair.generate();
 
     // Create the new account and initialize it with the program.
     // #region code-simplified
     await program.methods
-      .initialize(new anchor.BN(1234))
+      .initialize(new trezoaanchor.BN(1234))
       .accounts({
         myAccount: myAccount.publicKey,
         user: provider.wallet.publicKey,
@@ -34,7 +34,7 @@ describe("basic-1", () => {
     const account = await program.account.myAccount.fetch(myAccount.publicKey);
 
     // Check it's state was initialized.
-    assert.ok(account.data.eq(new anchor.BN(1234)));
+    assert.ok(account.data.eq(new trezoaanchor.BN(1234)));
 
     // Store the account for the next test.
     _myAccount = myAccount;
@@ -46,11 +46,11 @@ describe("basic-1", () => {
     // #region update-test
 
     // The program to execute.
-    const program = anchor.workspace.Basic1;
+    const program = trezoaanchor.workspace.Basic1;
 
     // Invoke the update rpc.
     await program.methods
-      .update(new anchor.BN(4321))
+      .update(new trezoaanchor.BN(4321))
       .accounts({
         myAccount: myAccount.publicKey,
       })
@@ -60,7 +60,7 @@ describe("basic-1", () => {
     const account = await program.account.myAccount.fetch(myAccount.publicKey);
 
     // Check it's state was mutated.
-    assert.ok(account.data.eq(new anchor.BN(4321)));
+    assert.ok(account.data.eq(new trezoaanchor.BN(4321)));
 
     // #endregion update-test
   });

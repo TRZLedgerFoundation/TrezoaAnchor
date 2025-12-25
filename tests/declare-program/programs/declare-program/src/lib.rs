@@ -1,11 +1,11 @@
-use anchor_lang::prelude::*;
+use trezoaanchor-lang::prelude::*;
 
 declare_id!("Dec1areProgram11111111111111111111111111111");
 
 declare_program!(external);
 use external::program::External;
 
-// Compilation check for legacy IDL (pre Anchor `0.30`)
+// Compilation check for legacy IDL (pre TrezoaAnchor `0.30`)
 declare_program!(external_legacy);
 
 // Compilation check for the Raydium AMM v3 program

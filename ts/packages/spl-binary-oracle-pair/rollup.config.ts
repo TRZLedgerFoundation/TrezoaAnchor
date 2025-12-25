@@ -33,8 +33,8 @@ export default {
     terser(),
   ],
   external: [
-    "@coral-xyz/borsh",
-    "@solana/web3.js",
+    "@trezoa-xyz/borsh",
+    "@trezoa/web3.js",
     "bn.js",
     "bs58",
     "buffer",

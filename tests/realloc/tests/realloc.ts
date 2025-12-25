@@ -1,20 +1,20 @@
-import * as anchor from "@coral-xyz/anchor";
-import { AnchorError, Program } from "@coral-xyz/anchor";
+import * as trezoaanchor from "@trezoa-xyz/trezoaanchor";
+import { TrezoaAnchorError, Program } from "@trezoa-xyz/trezoaanchor";
 import { assert } from "chai";
 import { Realloc } from "../target/types/realloc";
 
 describe("realloc", () => {
   // Configure the client to use the local cluster.
-  anchor.setProvider(anchor.AnchorProvider.env());
+  trezoaanchor.setProvider(trezoaanchor.TrezoaAnchorProvider.env());
 
-  const program = anchor.workspace.Realloc as Program<Realloc>;
+  const program = trezoaanchor.workspace.Realloc as Program<Realloc>;
   const authority = (program.provider as any).wallet
-    .payer as anchor.web3.Keypair;
+    .payer as trezoaanchor.web3.Keypair;
 
-  let sample: anchor.web3.PublicKey;
+  let sample: trezoaanchor.web3.PublicKey;
 
   before(async () => {
-    [sample] = await anchor.web3.PublicKey.findProgramAddress(
+    [sample] = await trezoaanchor.web3.PublicKey.findProgramAddress(
       [Buffer.from("sample")],
       program.programId
     );
@@ -39,8 +39,8 @@ describe("realloc", () => {
         .rpc();
       assert.ok(false);
     } catch (e) {
-      assert.isTrue(e instanceof AnchorError);
-      const err: AnchorError = e;
+      assert.isTrue(e instanceof TrezoaAnchorError);
+      const err: TrezoaAnchorError = e;
       const errMsg =
         "The account reallocation exceeds the MAX_PERMITTED_DATA_INCREASE limit";
       assert.strictEqual(err.error.errorMessage, errMsg);
@@ -79,8 +79,8 @@ describe("realloc", () => {
         })
         .rpc();
     } catch (e) {
-      assert.isTrue(e instanceof AnchorError);
-      const err: AnchorError = e;
+      assert.isTrue(e instanceof TrezoaAnchorError);
+      const err: TrezoaAnchorError = e;
       const errMsg =
         "The account was duplicated for more than one reallocation";
       assert.strictEqual(err.error.errorMessage, errMsg);

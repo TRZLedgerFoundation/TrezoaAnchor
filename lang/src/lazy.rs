@@ -1,4 +1,4 @@
-use crate::{AnchorDeserialize, Pubkey};
+use crate::{TrezoaAnchorDeserialize, Pubkey};
 
 /// A helper trait to make lazy deserialization work.
 ///
@@ -10,15 +10,15 @@ use crate::{AnchorDeserialize, Pubkey};
 ///
 /// You should avoid implementing this trait manually.
 ///
-/// It's currently implemented automatically if you derive [`AnchorDeserialize`]:
+/// It's currently implemented automatically if you derive [`TrezoaAnchorDeserialize`]:
 ///
 /// ```ignore
-/// #[derive(AnchorDeserialize)]
+/// #[derive(TrezoaAnchorDeserialize)]
 /// pub struct MyStruct {
 ///     field: u8,
 /// }
 /// ```
-pub trait Lazy: AnchorDeserialize {
+pub trait Lazy: TrezoaAnchorDeserialize {
     /// Whether the type is a fixed-size type.
     const SIZED: bool = false;
 
@@ -116,7 +116,7 @@ fn get_len(buf: &[u8]) -> usize {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::AnchorSerialize;
+    use crate::TrezoaAnchorSerialize;
 
     macro_rules! len {
         ($val: expr) => {
@@ -164,7 +164,7 @@ mod tests {
     #[test]
     fn defined() {
         // Struct
-        #[derive(AnchorSerialize, AnchorDeserialize)]
+        #[derive(TrezoaAnchorSerialize, TrezoaAnchorDeserialize)]
         struct MyStruct {
             a: u8,
             b: Vec<u8>,
@@ -182,7 +182,7 @@ mod tests {
         assert!(!MyStruct::SIZED);
 
         // Enum
-        #[derive(AnchorSerialize, AnchorDeserialize)]
+        #[derive(TrezoaAnchorSerialize, TrezoaAnchorDeserialize)]
         enum MyEnum {
             Unit,
             Named { a: u8 },
@@ -200,7 +200,7 @@ mod tests {
 
     #[test]
     fn generic() {
-        #[derive(AnchorSerialize, AnchorDeserialize)]
+        #[derive(TrezoaAnchorSerialize, TrezoaAnchorDeserialize)]
         struct GenericStruct<T: Lazy + borsh::BorshSerialize> {
             t: T,
         }

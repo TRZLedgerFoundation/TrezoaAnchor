@@ -1,5 +1,5 @@
 import { Buffer } from "buffer";
-import { AnchorProvider, BN, Program, web3 } from "@coral-xyz/anchor";
+import { TrezoaAnchorProvider, BN, Program, web3 } from "@trezoa-xyz/trezoaanchor";
 
 export const Magic = 0xa1b2c3d4;
 export const Version1 = 1;
@@ -17,7 +17,7 @@ interface ICreatePriceFeed {
   initPrice: number;
   confidence?: BN;
   expo?: number;
-  provider: AnchorProvider;
+  provider: TrezoaAnchorProvider;
 }
 export const createPriceFeed = async ({
   oracleProgram,

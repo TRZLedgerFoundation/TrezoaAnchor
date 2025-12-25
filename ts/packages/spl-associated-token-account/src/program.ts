@@ -1,18 +1,18 @@
-import { PublicKey } from "@solana/web3.js";
-import { Program, AnchorProvider } from "@coral-xyz/anchor";
+import { PublicKey } from "@trezoa/web3.js";
+import { Program, TrezoaAnchorProvider } from "@trezoa-xyz/trezoaanchor";
 
 import { SplAssociatedTokenAccountCoder } from "./coder";
 
-export const SPL_ASSOCIATED_TOKEN_ACCOUNT_PROGRAM_ID = new PublicKey(
+export const TPL_ASSOCIATED_TOKEN_ACCOUNT_PROGRAM_ID = new PublicKey(
   "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL"
 );
 
 interface GetProgramParams {
   programId?: PublicKey;
-  provider?: AnchorProvider;
+  provider?: TrezoaAnchorProvider;
 }
 
-export function splAssociatedTokenAccountProgram(
+export function tplAssociatedTokenAccountProgram(
   params?: GetProgramParams
 ): Program<SplAssociatedTokenAccount> {
   return new Program<SplAssociatedTokenAccount>(

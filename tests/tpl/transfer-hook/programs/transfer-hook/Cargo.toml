@@ -1,0 +1,23 @@
+[package]
+name = "transfer-hook"
+version = "0.1.0"
+description = "Created with TrezoaAnchor"
+edition = "2021"
+
+[lib]
+crate-type = ["cdylib", "lib"]
+name = "transfer_hook"
+
+[features]
+no-entrypoint = []
+no-idl = []
+cpi = ["no-entrypoint"]
+default = []
+idl-build = ["trezoaanchor-lang/idl-build", "trezoaanchor-tpl/idl-build"]
+
+[dependencies]
+trezoaanchor-lang = { path = "../../../../../lang", features = ["interface-instructions"] }
+trezoaanchor-tpl = { path = "../../../../../spl" }
+spl-discriminator = "0.5"
+spl-tlv-account-resolution = "0.11"
+spl-transfer-hook-interface = "2"

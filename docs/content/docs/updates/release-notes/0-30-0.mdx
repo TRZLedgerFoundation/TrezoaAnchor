@@ -1,13 +1,13 @@
 ---
 title: 0.30.0
-description: Anchor - Release Notes 0.30.0
+description: TrezoaAnchor - Release Notes 0.30.0
 ---
 
 The long-awaited v0.30.0 release is finally here!
 
 We'll go over the main changes, but if you'd like to see all notable changes,
 check out the
-[CHANGELOG](https://github.com/coral-xyz/anchor/blob/v0.30.0/CHANGELOG.md#0300---2024-04-15).
+[CHANGELOG](https://github.com/trezoa-xyz/trezoaanchor/blob/v0.30.0/CHANGELOG.md#0300---2024-04-15).
 
 ---
 
@@ -16,34 +16,34 @@ check out the
 1. Update `avm`:
 
    ```sh
-   cargo install --git https://github.com/coral-xyz/anchor --tag v0.30.0 avm --locked
+   cargo install --git https://github.com/trezoa-xyz/trezoaanchor --tag v0.30.0 avm --locked
    ```
 
-2. Update `anchor-cli`:
+2. Update `trezoaanchor-cli`:
 
    ```sh
    avm install latest
    ```
 
-3. Update Anchor crate(s) to `0.30.0`. Optionally, run `cargo update` to update
+3. Update TrezoaAnchor crate(s) to `0.30.0`. Optionally, run `cargo update` to update
    other dependencies to the latest compatible versions.
 
 4. Update TS package(s) to `0.30.0`.
 
-## Recommended Solana Version
+## Recommended Trezoa Version
 
-While this release supports anything above `1.16`, the recommended Solana
-version is `1.18.8`. You can upgrade Solana tools by running:
+While this release supports anything above `1.16`, the recommended Trezoa
+version is `1.18.8`. You can upgrade Trezoa tools by running:
 
 ```
-solana-install init 1.18.8
+trezoaanchor-install init 1.18.8
 ```
 
 ## IDL
 
 The IDL type specification and generation has been rewritten. To keep the
 release notes short, we won't go over the changes here, but see
-[this](https://github.com/coral-xyz/anchor/pull/2824) if you'd like to learn
+[this](https://github.com/trezoa-xyz/trezoaanchor/pull/2824) if you'd like to learn
 more.
 
 ### `idl-build` feature
@@ -51,26 +51,26 @@ more.
 `idl-build` feature is now required in your program's `Cargo.toml` definition in
 order for the IDL generation to work.
 
-Without this feature, `anchor build` outputs:
+Without this feature, `trezoaanchor build` outputs:
 
 ```
 Error: `idl-build` feature is missing. To solve, add
 
 [features]
-idl-build = ["anchor-lang/idl-build"]
+idl-build = ["trezoaanchor-lang/idl-build"]
 
 in `<PATH_TO_CARGO_TOML>`.
 ```
 
 Note that all crates that you use to generate type definitions for the IDL need
-to be specified in the list of `idl-build`, e.g. `anchor-spl/idl-build`,
+to be specified in the list of `idl-build`, e.g. `trezoaanchor-tpl/idl-build`,
 `some-program/idl-build`...
 
 ## Lang
 
 ### Dependency free program declaration
 
-Depending on other crates who used different versions of Anchor is not the best
+Depending on other crates who used different versions of TrezoaAnchor is not the best
 experience, to say the least. To solve this problem, program clients can now be
 generated from their IDL using the new `declare_program!` macro:
 
@@ -85,18 +85,18 @@ work.
 This works for both on-chain (CPI) and off-chain (RPC) usage, allowing program
 interactions without creating a
 [dependency hell](https://en.wikipedia.org/wiki/Dependency_hell). Check out
-[this](https://github.com/coral-xyz/anchor/blob/v0.30.0/tests/declare-program/programs/declare-program/src/lib.rs)
+[this](https://github.com/trezoa-xyz/trezoaanchor/blob/v0.30.0/tests/declare-program/programs/declare-program/src/lib.rs)
 example for on-chain CPI usage.
 
 For more information, see the macro's
-[documentation](https://docs.rs/anchor-lang/0.30.0/anchor_lang/macro.declare_program.html).
+[documentation](https://docs.rs/trezoaanchortrezoaanchor-lang/0.30.0/trezoaanchor-lang/macro.declare_program.html).
 
 ### Token extensions
 
 #### Constraints
 
 There are new account constraints for
-[Token Extensions (Token 2022)](https://solana.com/solutions/token-extensions):
+[Token Extensions (Token 2022)](https://trezoa.com/solutions/token-extensions):
 
 - `group_pointer`:
   - `authority`
@@ -115,24 +115,24 @@ There are new account constraints for
   - `authority`
   - `program_id`
 
-**Note:** Above values are concatenated with `::` (similar to other Anchor
+**Note:** Above values are concatenated with `::` (similar to other TrezoaAnchor
 constraints) and have `extensions` prefix e.g.
 `extensions::group_pointer::authority = <EXPR>`.
 
 These constraints can be used both with or without the `init` constraint.
 
-[Here](https://github.com/coral-xyz/anchor/blob/v0.30.0/tests/spl/token-extensions/programs/token-extensions/src/instructions.rs)
+[Here](https://github.com/trezoa-xyz/trezoaanchor/blob/v0.30.0/tests/spl/token-extensions/programs/token-extensions/src/instructions.rs)
 is an example program that uses these constraints.
 
 #### CPI wrappers
 
-`anchor-spl` now includes CPI wrappers for Token Extensions which can be
-accessed from `anchor_spl::token_2022_extensions`.
+`trezoaanchor-tpl` now includes CPI wrappers for Token Extensions which can be
+accessed from `trezoaanchor_spl::token_2022_extensions`.
 
 ### `#[interface]` attribute
 
 Transfer hooks can now be used with the new `#[interface]` macro. This argument
-overrides the Anchor's default instruction discriminator to use the interface
+overrides the TrezoaAnchor's default instruction discriminator to use the interface
 instruction's discriminator.
 
 Current supported values are:
@@ -143,7 +143,7 @@ Current supported values are:
 ```rust
 mod my_hook_program {
     #[interface(spl_transfer_hook_interface::initialize_extra_account_meta_list)]
-    pub fn initialize(ctx: Context<Initialize>, metas: Vec<AnchorExtraAccountMeta>) -> Result<()> {
+    pub fn initialize(ctx: Context<Initialize>, metas: Vec<TrezoaAnchorExtraAccountMeta>) -> Result<()> {
         /* ... */
     }
 
@@ -180,7 +180,7 @@ to land transactions in mainnet-beta without using priority fees, this release
 supports setting `--priority-fee` argument for the IDL commands. For example:
 
 ```
-anchor idl erase-authority --program-id <PROGRAM_ID> --priority-fee 9000
+trezoaanchor idl erase-authority --program-id <PROGRAM_ID> --priority-fee 9000
 ```
 
 When the `--priority-fee` argument is not specified, the median fee of the last
@@ -193,7 +193,7 @@ program API doesn't change. In that case, you can use `--no-idl` flag to build
 your program but skip the IDL generation:
 
 ```
-anchor build --no-idl
+trezoaanchor build --no-idl
 ```
 
 ### IDL buffer is closed after `idl upgrade`
@@ -201,12 +201,12 @@ anchor build --no-idl
 After an IDL upgrade, the buffer account is now closed and the lamports are
 returned back to the IDL authority.
 
-### Pass deploy arguments to `solana-cli`
+### Pass deploy arguments to `trezoa-cli`
 
-You can now pass arguments to `solana program deploy` from `anchor deploy`:
+You can now pass arguments to `trezoa program deploy` from `trezoaanchor deploy`:
 
 ```
-anchor deploy -- --final
+trezoaanchor deploy -- --final
 ```
 
 ### Verifiable deployments
@@ -215,7 +215,7 @@ Similar to verifiable builds, you can now deploy the verified build instead of
 the default build:
 
 ```
-anchor deploy --verifiable
+trezoaanchor deploy --verifiable
 ```
 
 ### Accept package name as program name
@@ -224,12 +224,12 @@ anchor deploy --verifiable
 name of the program rather than lib name which is snake_case. For example:
 
 ```
-anchor build -p my-program
+trezoaanchor build -p my-program
 ```
 
 ### Deactivate test-validator features
 
-You can now deactivate test-validator features from `Anchor.toml`:
+You can now deactivate test-validator features from `TrezoaAnchor.toml`:
 
 ```toml
 [test.validator]
@@ -238,22 +238,22 @@ deactivate_feature = ["GDH5TVdbTPUpRnXaRyQqiKUa7uZAbZ28Q2N9bhbKoMLm", "zkiTNuzBK
 
 ### Crate and package compatibility
 
-Using non-matching versions of `anchor-cli`, `anchor-lang`, and
-`@coral-xyz/anchor` can result in unexpected behavior. In this release, you'll
+Using non-matching versions of `trezoaanchor-cli`, `trezoaanchor-lang`, and
+`@trezoa-xyz/trezoaanchor` can result in unexpected behavior. In this release, you'll
 get a warning if any of them don't match.
 
 ### Explicit `overflow-checks` flag
 
 [`overflow-checks`](https://doc.rust-lang.org/cargo/reference/profiles.html#overflow-checks)
-flag is implicitly disabled by default. Anchor workspaces that are created with
-`anchor init` have this flag enabled, however, Anchor doesn't do any checks for
+flag is implicitly disabled by default. TrezoaAnchor workspaces that are created with
+`trezoaanchor init` have this flag enabled, however, TrezoaAnchor doesn't do any checks for
 it after the initial workspace creation.
 
 With this release, `overflow-checks` in the workspace `Cargo.toml` need to be
 specified. Note that "specified" does not mean enabled, as you can also disable
 it, but you need to be explicit in doing so.
 
-### Wildcard pattern in `Anchor.toml`
+### Wildcard pattern in `TrezoaAnchor.toml`
 
 `workspace.members` and `workspace.exclude` now supports simple wildcard
 pattern:
@@ -268,19 +268,19 @@ complex globs are not currently supported.
 
 ### `cargo build-sbf` is now the default
 
-Before this release, `anchor build` used `cargo build-bpf` to build programs,
-however, because it is deprecated, `anchor build` now defaults to
+Before this release, `trezoaanchor build` used `cargo build-bpf` to build programs,
+however, because it is deprecated, `trezoaanchor build` now defaults to
 `cargo build-sbf`.
 
 To preserve the old behavior, you can use:
 
 ```
-anchor build --arch bpf
+trezoaanchor build --arch bpf
 ```
 
 ### Run multiple commands in scripts
 
-Scripts in `Anchor.toml` now supports running multiple commands:
+Scripts in `TrezoaAnchor.toml` now supports running multiple commands:
 
 ```toml
 [scripts]
@@ -290,7 +290,7 @@ test-all = "cargo test && yarn run ts-mocha tests/**/*.ts"
 This script would run both `cargo` and `yarn` commands:
 
 ```
-anchor run test-all
+trezoaanchor run test-all
 ```
 
 ### Test only a specified program
@@ -299,7 +299,7 @@ A single program can be tested in a multi program workspace with the
 `--program-name` (`-p`) argument:
 
 ```
-anchor test --program-name example
+trezoaanchor test --program-name example
 ```
 
 This builds and tests only the specified program.
@@ -310,7 +310,7 @@ A wild TypeScript test won't appear if you initialize your workspace with the
 new Rust test template:
 
 ```
-anchor init --test-template rust
+trezoaanchor init --test-template rust
 ```
 
 ## TypeScript
@@ -366,7 +366,7 @@ all program and sysvars by default.
 
 The internals of the TS library are filled with case conversion logic before
 making string comparison and this also forces other libraries who build on top
-of Anchor to do the same.
+of TrezoaAnchor to do the same.
 
 Along with making the IDL have consistent casing, TS library also has consistent
 casing (camelCase) in this release.
@@ -383,20 +383,20 @@ store the program id in its `address` field:
 
 ### Optional provider options
 
-`opts` parameter of `AnchorProvider` is now optional:
+`opts` parameter of `TrezoaAnchorProvider` is now optional:
 
 ```diff
-- new AnchorProvider(connection, wallet, {});
-+ new AnchorProvider(connection, wallet);
+- new TrezoaAnchorProvider(connection, wallet, {});
++ new TrezoaAnchorProvider(connection, wallet);
 ```
 
 ### Type changes
 
 There are too many type changes to list here, especially the types that are
 related to the IDL. The new IDL types can be found
-[here](https://github.com/coral-xyz/anchor/blob/v0.30.0/ts/packages/anchor/src/idl.ts).
+[here](https://github.com/trezoa-xyz/trezoaanchor/blob/v0.30.0/ts/packages/trezoaanchor/src/idl.ts).
 
 ---
 
 See the full list of notable changes in the
-[CHANGELOG](https://github.com/coral-xyz/anchor/blob/v0.30.0/CHANGELOG.md#0300---2024-04-15).
+[CHANGELOG](https://github.com/trezoa-xyz/trezoaanchor/blob/v0.30.0/CHANGELOG.md#0300---2024-04-15).

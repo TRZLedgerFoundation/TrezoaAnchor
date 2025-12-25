@@ -1,23 +1,23 @@
-import * as anchor from "@coral-xyz/anchor";
+import * as trezoaanchor from "@trezoa-xyz/trezoaanchor";
 import {
   Program,
   web3,
   BN,
-  AnchorError,
+  TrezoaAnchorError,
   LangErrorCode,
   LangErrorMessage,
   translateError,
   parseIdlErrors,
-} from "@coral-xyz/anchor";
+} from "@trezoa-xyz/trezoaanchor";
 import { Optional } from "../target/types/optional";
 import { AllowMissingOptionals } from "../target/types/allow_missing_optionals";
 import { assert, expect } from "chai";
 
 describe("Optional", () => {
   // configure the client to use the local cluster
-  anchor.setProvider(anchor.AnchorProvider.env());
-  const anchorProvider = anchor.AnchorProvider.env();
-  const program = anchor.workspace.Optional as Program<Optional>;
+  trezoaanchor.setProvider(trezoaanchor.TrezoaAnchorProvider.env());
+  const trezoaanchorProvider = trezoaanchor.TrezoaAnchorProvider.env();
+  const program = trezoaanchor.workspace.Optional as Program<Optional>;
 
   const DATA_PDA_PREFIX = "data_pda";
 
@@ -35,7 +35,7 @@ describe("Optional", () => {
   };
 
   // payer of the transactions
-  const payerWallet = (program.provider as anchor.AnchorProvider).wallet;
+  const payerWallet = (program.provider as trezoaanchor.TrezoaAnchorProvider).wallet;
   const payer = payerWallet.publicKey;
   const systemProgram = web3.SystemProgram.programId;
 
@@ -89,7 +89,7 @@ describe("Optional", () => {
         .add(createRequiredIx)
         .add(initializeIx);
       try {
-        await anchorProvider
+        await trezoaanchorProvider
           .sendAndConfirm(initializeTxn, [requiredKeypair])
           .catch((e) => {
             throw translateError(e, parseIdlErrors(program.idl));
@@ -99,8 +99,8 @@ describe("Optional", () => {
         );
       } catch (e) {
         // @ts-ignore
-        assert.isTrue(e instanceof AnchorError, e.toString());
-        const err: AnchorError = <AnchorError>e;
+        assert.isTrue(e instanceof TrezoaAnchorError, e.toString());
+        const err: TrezoaAnchorError = <TrezoaAnchorError>e;
         const errorCode = LangErrorCode.AccountNotEnoughKeys;
         assert.strictEqual(
           err.error.errorMessage,
@@ -111,7 +111,7 @@ describe("Optional", () => {
     });
 
     it("Succeeds with missing optional accounts at the end with the feature on", async () => {
-      const allowMissingOptionals = anchor.workspace
+      const allowMissingOptionals = trezoaanchor.workspace
         .AllowMissingOptionals as Program<AllowMissingOptionals>;
       const doStuffIx = await allowMissingOptionals.methods
         .doStuff()
@@ -124,12 +124,12 @@ describe("Optional", () => {
       doStuffIx.keys.pop();
       doStuffIx.keys.pop();
       const doStuffTxn = new web3.Transaction().add(doStuffIx);
-      await anchorProvider.sendAndConfirm(doStuffTxn);
+      await trezoaanchorProvider.sendAndConfirm(doStuffTxn);
     });
   });
 
   describe("Initialize tests", async () => {
-    it("Initialize with required null fails anchor-ts validation", async () => {
+    it("Initialize with required null fails trezoaanchor-ts validation", async () => {
       const [requiredKeypair, createRequiredIx] = await createRequired();
       try {
         await program.methods
@@ -219,8 +219,8 @@ describe("Optional", () => {
         );
       } catch (e) {
         // @ts-ignore
-        assert.isTrue(e instanceof AnchorError, e.toString());
-        const err: AnchorError = <AnchorError>e;
+        assert.isTrue(e instanceof TrezoaAnchorError, e.toString());
+        const err: TrezoaAnchorError = <TrezoaAnchorError>e;
         const errorCode = LangErrorCode.ConstraintAccountIsNone;
         assert.strictEqual(
           err.error.errorMessage,
@@ -304,8 +304,8 @@ describe("Optional", () => {
         );
       } catch (e) {
         // @ts-ignore
-        assert.isTrue(e instanceof AnchorError, e.toString());
-        const err: AnchorError = <AnchorError>e;
+        assert.isTrue(e instanceof TrezoaAnchorError, e.toString());
+        const err: TrezoaAnchorError = <TrezoaAnchorError>e;
         const errorCode = LangErrorCode.ConstraintSeeds;
         assert.strictEqual(
           err.error.errorMessage,
@@ -376,8 +376,8 @@ describe("Optional", () => {
         );
       } catch (e) {
         // @ts-ignore
-        assert.isTrue(e instanceof AnchorError, e.toString());
-        const err: AnchorError = <AnchorError>e;
+        assert.isTrue(e instanceof TrezoaAnchorError, e.toString());
+        const err: TrezoaAnchorError = <TrezoaAnchorError>e;
         const errorCode = LangErrorCode.ConstraintSeeds;
         assert.strictEqual(
           err.error.errorMessage,
@@ -402,7 +402,7 @@ describe("Optional", () => {
             meta.isSigner = false;
           }
         });
-        await anchorProvider.sendAndConfirm(txn);
+        await trezoaanchorProvider.sendAndConfirm(txn);
         assert.fail(
           "Unexpected success in creating a transaction that should have failed with `ConstraintSigner` error"
         );
@@ -410,13 +410,13 @@ describe("Optional", () => {
         // @ts-ignore
         assert.isTrue(e instanceof web3.SendTransactionError, e.toString());
         const err: web3.SendTransactionError = <web3.SendTransactionError>e;
-        const anchorError = AnchorError.parse(err.logs!)!;
+        const trezoaanchorError = TrezoaAnchorError.parse(err.logs!)!;
         const errorCode = LangErrorCode.ConstraintSigner;
         assert.strictEqual(
-          anchorError.error.errorMessage,
+          trezoaanchorError.error.errorMessage,
           LangErrorMessage.get(errorCode)
         );
-        assert.strictEqual(anchorError.error.errorCode.number, errorCode);
+        assert.strictEqual(trezoaanchorError.error.errorCode.number, errorCode);
       }
     });
 
@@ -436,8 +436,8 @@ describe("Optional", () => {
         );
       } catch (e) {
         // @ts-ignore
-        assert.isTrue(e instanceof AnchorError, e.toString());
-        const err: AnchorError = <AnchorError>e;
+        assert.isTrue(e instanceof TrezoaAnchorError, e.toString());
+        const err: TrezoaAnchorError = <TrezoaAnchorError>e;
         const errorCode = LangErrorCode.ConstraintRaw;
         assert.strictEqual(
           err.error.errorMessage,
@@ -507,8 +507,8 @@ describe("Optional", () => {
         );
       } catch (e) {
         // @ts-ignore
-        assert.isTrue(e instanceof AnchorError, e.toString());
-        const err: AnchorError = <AnchorError>e;
+        assert.isTrue(e instanceof TrezoaAnchorError, e.toString());
+        const err: TrezoaAnchorError = <TrezoaAnchorError>e;
         const errorCode = LangErrorCode.ConstraintAccountIsNone;
         assert.strictEqual(
           err.error.errorMessage,
@@ -536,8 +536,8 @@ describe("Optional", () => {
         );
       } catch (e) {
         // @ts-ignore
-        assert.isTrue(e instanceof AnchorError, e.toString());
-        const err: AnchorError = <AnchorError>e;
+        assert.isTrue(e instanceof TrezoaAnchorError, e.toString());
+        const err: TrezoaAnchorError = <TrezoaAnchorError>e;
         const errorCode = LangErrorCode.ConstraintAccountIsNone;
         assert.strictEqual(
           err.error.errorMessage,
@@ -564,8 +564,8 @@ describe("Optional", () => {
         );
       } catch (e) {
         // @ts-ignore
-        assert.isTrue(e instanceof AnchorError, e.toString());
-        const err: AnchorError = <AnchorError>e;
+        assert.isTrue(e instanceof TrezoaAnchorError, e.toString());
+        const err: TrezoaAnchorError = <TrezoaAnchorError>e;
         const errorCode = LangErrorCode.AccountDiscriminatorMismatch;
         assert.strictEqual(
           err.error.errorMessage,
@@ -769,8 +769,8 @@ describe("Optional", () => {
         );
       } catch (e) {
         // @ts-ignore
-        assert.isTrue(e instanceof AnchorError, e.toString());
-        const err: AnchorError = <AnchorError>e;
+        assert.isTrue(e instanceof TrezoaAnchorError, e.toString());
+        const err: TrezoaAnchorError = <TrezoaAnchorError>e;
         const errorCode = LangErrorCode.ConstraintAccountIsNone;
         assert.strictEqual(
           err.error.errorMessage,
@@ -797,8 +797,8 @@ describe("Optional", () => {
         );
       } catch (e) {
         // @ts-ignore
-        assert.isTrue(e instanceof AnchorError, e.toString());
-        const err: AnchorError = <AnchorError>e;
+        assert.isTrue(e instanceof TrezoaAnchorError, e.toString());
+        const err: TrezoaAnchorError = <TrezoaAnchorError>e;
         const errorCode = LangErrorCode.ConstraintHasOne;
         assert.strictEqual(
           err.error.errorMessage,

@@ -1,11 +1,11 @@
-const anchor = require("@coral-xyz/anchor");
-const serumCmn = require("@project-serum/common");
+const trezoaanchor = require("@trezoa-xyz/trezoaanchor");
+const serumCmn = require("@trezoa-serum/common");
 
 async function createBalanceSandbox(provider, r, registrySigner) {
-  const spt = anchor.web3.Keypair.generate();
-  const vault = anchor.web3.Keypair.generate();
-  const vaultStake = anchor.web3.Keypair.generate();
-  const vaultPw = anchor.web3.Keypair.generate();
+  const spt = trezoaanchor.web3.Keypair.generate();
+  const vault = trezoaanchor.web3.Keypair.generate();
+  const vaultStake = trezoaanchor.web3.Keypair.generate();
+  const vaultPw = trezoaanchor.web3.Keypair.generate();
 
   const lamports = await provider.connection.getMinimumBalanceForRentExemption(
     165
@@ -39,7 +39,7 @@ async function createBalanceSandbox(provider, r, registrySigner) {
     registrySigner,
     lamports
   );
-  let tx0 = new anchor.web3.Transaction();
+  let tx0 = new trezoaanchor.web3.Transaction();
   tx0.add(
     ...createSptIx,
     ...createVaultIx,

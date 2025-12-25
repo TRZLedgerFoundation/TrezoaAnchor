@@ -1,4 +1,4 @@
-//! An example of a multisig to execute arbitrary Solana transactions.
+//! An example of a multisig to execute arbitrary Trezoa transactions.
 //!
 //! This program can be used to allow a multisig to govern anything a regular
 //! Pubkey can govern. One can use the multisig as a BPF program upgrade
@@ -11,15 +11,15 @@
 //! 2. Threshold - the number of signers required to execute a transaction.
 //!
 //! Once the `Multisig` account is created, one can create a `Transaction`
-//! account, specifying the parameters for a normal solana transaction.
+//! account, specifying the parameters for a normal trezoa transaction.
 //!
 //! To sign, owners should invoke the `approve` instruction, and finally,
 //! the `execute_transaction`, once enough (i.e. `threshold`) of the owners have
 //! signed.
 
-use anchor_lang::prelude::*;
-use anchor_lang::solana_program;
-use anchor_lang::solana_program::instruction::Instruction;
+use trezoaanchor-lang::prelude::*;
+use trezoaanchor-lang::trezoa_program;
+use trezoaanchor-lang::trezoa_program::instruction::Instruction;
 use std::convert::Into;
 
 declare_id!("Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS");
@@ -155,7 +155,7 @@ pub mod multisig {
         ];
         let signer = &[&seeds[..]];
         let accounts = ctx.remaining_accounts;
-        solana_program::program::invoke_signed(&ix, &accounts, signer)?;
+        trezoa_program::program::invoke_signed(&ix, &accounts, signer)?;
 
         // Burn the transaction to ensure one time use.
         ctx.accounts.transaction.did_execute = true;
@@ -245,7 +245,7 @@ impl From<&Transaction> for Instruction {
     }
 }
 
-#[derive(AnchorSerialize, AnchorDeserialize, Clone)]
+#[derive(TrezoaAnchorSerialize, TrezoaAnchorDeserialize, Clone)]
 pub struct TransactionAccount {
     pubkey: Pubkey,
     is_signer: bool,

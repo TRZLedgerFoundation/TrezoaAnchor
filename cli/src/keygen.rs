@@ -8,11 +8,11 @@ use anyhow::{anyhow, bail, Result};
 use bip39::{Language, Mnemonic, MnemonicType, Seed};
 use console::{Key, Term};
 use dirs::home_dir;
-use solana_instruction::{AccountMeta, Instruction};
-use solana_keypair::Keypair;
-use solana_pubkey::Pubkey;
-use solana_signer::{EncodableKey, Signer};
-use solana_transaction::Message;
+use trezoa_instruction::{AccountMeta, Instruction};
+use trezoa_keypair::Keypair;
+use trezoa_pubkey::Pubkey;
+use trezoa_signer::{EncodableKey, Signer};
+use trezoa_transaction::Message;
 
 use crate::{config::ConfigOverride, get_keypair, KeygenCommand};
 
@@ -97,7 +97,7 @@ fn keygen_new(
     let outfile_path = outfile.unwrap_or_else(|| {
         let mut path = home_dir().expect("home directory");
         path.push(".config");
-        path.push("solana");
+        path.push("trezoa");
         path.push("id.json");
         path.to_str().unwrap().to_string()
     });
@@ -205,7 +205,7 @@ fn keygen_pubkey(keypair_path: Option<String>) -> Result<()> {
     let path = keypair_path.unwrap_or_else(|| {
         let mut p = home_dir().expect("home directory");
         p.push(".config");
-        p.push("solana");
+        p.push("trezoa");
         p.push("id.json");
         p.to_str().unwrap().to_string()
     });
@@ -228,7 +228,7 @@ fn keygen_recover(
     let outfile_path = outfile.unwrap_or_else(|| {
         let mut path = home_dir().expect("home directory");
         path.push(".config");
-        path.push("solana");
+        path.push("trezoa");
         path.push("id.json");
         path.to_str().unwrap().to_string()
     });
@@ -310,7 +310,7 @@ fn keygen_verify(pubkey: Pubkey, keypair_path: Option<String>) -> Result<()> {
     let path = keypair_path.unwrap_or_else(|| {
         let mut p = home_dir().expect("home directory");
         p.push(".config");
-        p.push("solana");
+        p.push("trezoa");
         p.push("id.json");
         p.to_str().unwrap().to_string()
     });

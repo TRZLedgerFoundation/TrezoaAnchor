@@ -1,8 +1,8 @@
 use anyhow::{anyhow, Result};
 use clap::Parser;
-use solana_commitment_config::CommitmentConfig;
-use solana_pubkey::Pubkey;
-use solana_rpc_client::rpc_client::RpcClient;
+use trezoa_commitment_config::CommitmentConfig;
+use trezoa_pubkey::Pubkey;
+use trezoa_rpc_client::rpc_client::RpcClient;
 use std::fs::File;
 use std::io::Write;
 use std::path::PathBuf;
@@ -13,7 +13,7 @@ use crate::config::{Config, ConfigOverride};
 pub struct ShowAccountCommand {
     /// Account address to show
     pub account_address: Pubkey,
-    /// Display balance in lamports instead of SOL
+    /// Display balance in lamports instead of TRZ
     #[clap(long)]
     pub lamports: bool,
     /// Write the account data to this file
@@ -33,7 +33,7 @@ pub fn show_account(cfg_override: &ConfigOverride, cmd: ShowAccountCommand) -> R
             if let Some(ref cluster) = cfg_override.cluster {
                 cluster.url().to_string()
             } else {
-                "https://api.mainnet-beta.solana.com".to_string()
+                "https://api.mainnet-beta.trezoa.com".to_string()
             }
         }
     };
@@ -83,7 +83,7 @@ pub fn show_account(cfg_override: &ConfigOverride, cmd: ShowAccountCommand) -> R
     if cmd.lamports {
         println!("Balance: {} lamports", account.lamports);
     } else {
-        println!("Balance: {} SOL", account.lamports as f64 / 1_000_000_000.0);
+        println!("Balance: {} TRZ", account.lamports as f64 / 1_000_000_000.0);
     }
 
     println!("Owner: {}", account.owner);

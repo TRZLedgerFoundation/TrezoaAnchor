@@ -1,9 +1,9 @@
 const { assert } = require("chai");
-const anchor = require("@coral-xyz/anchor");
-const BN = anchor.BN;
-const OpenOrders = require("@project-serum/serum").OpenOrders;
-const TOKEN_PROGRAM_ID = require("@solana/spl-token").TOKEN_PROGRAM_ID;
-const serumCmn = require("@project-serum/common");
+const trezoaanchor = require("@trezoa-xyz/trezoaanchor");
+const BN = trezoaanchor.BN;
+const OpenOrders = require("@trezoa-serum/serum").OpenOrders;
+const TOKEN_PROGRAM_ID = require("@trezoa/tpl-token").TOKEN_PROGRAM_ID;
+const serumCmn = require("@trezoa-serum/common");
 const utils = require("./utils");
 
 // Taker fee rate (bps).
@@ -11,14 +11,14 @@ const TAKER_FEE = 0.0022;
 
 describe("swap", () => {
   // Configure the client to use the local cluster.
-  const provider = anchor.AnchorProvider.env();
+  const provider = trezoaanchor.TrezoaAnchorProvider.env();
   // hack so we don't have to update serum-common library
-  // to the new AnchorProvider class and Provider interface
+  // to the new TrezoaAnchorProvider class and Provider interface
   provider.send = provider.sendAndConfirm;
-  anchor.setProvider(provider);
+  trezoaanchor.setProvider(provider);
 
   // Swap program client.
-  const program = anchor.workspace.Swap;
+  const program = trezoaanchor.workspace.Swap;
 
   // Accounts used to setup the orderbook.
   let ORDERBOOK_ENV,
@@ -32,8 +32,8 @@ describe("swap", () => {
     marketBVaultSigner;
 
   // Open orders accounts on the two markets for the provider.
-  const openOrdersA = anchor.web3.Keypair.generate();
-  const openOrdersB = anchor.web3.Keypair.generate();
+  const openOrdersA = trezoaanchor.web3.Keypair.generate();
+  const openOrdersB = trezoaanchor.web3.Keypair.generate();
 
   it("BOILERPLATE: Sets up two markets with resting orders", async () => {
     ORDERBOOK_ENV = await utils.setupTwoMarkets({
@@ -73,7 +73,7 @@ describe("swap", () => {
       authority: program.provider.wallet.publicKey,
       dexProgram: utils.DEX_PID,
       tokenProgram: TOKEN_PROGRAM_ID,
-      rent: anchor.web3.SYSVAR_RENT_PUBKEY,
+      rent: trezoaanchor.web3.SYSVAR_RENT_PUBKEY,
     };
     SWAP_A_USDC_ACCOUNTS = {
       ...SWAP_USDC_A_ACCOUNTS,
@@ -205,7 +205,7 @@ describe("swap", () => {
               authority: program.provider.wallet.publicKey,
               dexProgram: utils.DEX_PID,
               tokenProgram: TOKEN_PROGRAM_ID,
-              rent: anchor.web3.SYSVAR_RENT_PUBKEY,
+              rent: trezoaanchor.web3.SYSVAR_RENT_PUBKEY,
             },
           }
         );
@@ -266,7 +266,7 @@ describe("swap", () => {
               authority: program.provider.wallet.publicKey,
               dexProgram: utils.DEX_PID,
               tokenProgram: TOKEN_PROGRAM_ID,
-              rent: anchor.web3.SYSVAR_RENT_PUBKEY,
+              rent: trezoaanchor.web3.SYSVAR_RENT_PUBKEY,
             },
           }
         );

@@ -1,5 +1,5 @@
-use anchor_lang::prelude::*;
-use anchor_spl::{token, token_interface};
+use trezoaanchor-lang::prelude::*;
+use trezoaanchor_spl::{token, token_interface};
 
 declare_id!("id11111111111111111111111111111111111111111");
 
@@ -90,7 +90,7 @@ pub mod idl {
     }
 
     /// a separate instruction due to initialize_with_values having too many arguments
-    /// https://github.com/solana-labs/solana/issues/23978
+    /// https://github.com/trezoa-xyz/trezoa/issues/23978
     pub fn initialize_with_values2(
         ctx: Context<Initialize2>,
         vec_of_option: Vec<Option<u64>>,
@@ -109,7 +109,7 @@ pub mod idl {
 }
 
 /// Enum type
-#[derive(AnchorSerialize, AnchorDeserialize, Clone)]
+#[derive(TrezoaAnchorSerialize, TrezoaAnchorDeserialize, Clone)]
 pub enum FooEnum {
     /// Tuple kind
     Unnamed(bool, u8, BarStruct),
@@ -127,7 +127,7 @@ pub enum FooEnum {
 }
 
 /// Bar struct type
-#[derive(AnchorSerialize, AnchorDeserialize, Clone)]
+#[derive(TrezoaAnchorSerialize, TrezoaAnchorDeserialize, Clone)]
 pub struct BarStruct {
     /// Some field
     some_field: bool,
@@ -143,7 +143,7 @@ impl Default for BarStruct {
     }
 }
 
-#[derive(AnchorSerialize, AnchorDeserialize, Clone)]
+#[derive(TrezoaAnchorSerialize, TrezoaAnchorDeserialize, Clone)]
 pub struct FooStruct {
     field1: u8,
     field2: u16,
@@ -313,7 +313,7 @@ pub enum ErrorCode {
 mod some_other_module {
     use super::*;
 
-    #[derive(AnchorSerialize, AnchorDeserialize, Clone)]
+    #[derive(TrezoaAnchorSerialize, TrezoaAnchorDeserialize, Clone)]
     pub struct MyStruct {
         some_u8: u8,
     }
@@ -336,7 +336,7 @@ pub struct SomeZcAccount {
     field: ZcStruct,
 }
 
-#[derive(AnchorSerialize, AnchorDeserialize, Clone)]
+#[derive(TrezoaAnchorSerialize, TrezoaAnchorDeserialize, Clone)]
 pub struct SomeRetStruct {
     pub some_field: u8,
 }

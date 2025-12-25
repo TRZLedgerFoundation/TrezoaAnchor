@@ -1,20 +1,20 @@
-import * as anchor from "@coral-xyz/anchor";
-import { Program, AnchorError } from "@coral-xyz/anchor";
+import * as trezoaanchor from "@trezoa-xyz/trezoaanchor";
+import { Program, TrezoaAnchorError } from "@trezoa-xyz/trezoaanchor";
 import {
   PublicKey,
   Keypair,
   SystemProgram,
   SYSVAR_RENT_PUBKEY,
-} from "@solana/web3.js";
+} from "@trezoa/web3.js";
 // @ts-expect-error
 import { Misc } from "../../target/types/misc";
 const { assert } = require("chai");
 
 describe("miscNonRentExempt", () => {
   // Configure the client to use the local cluster.
-  const provider = anchor.AnchorProvider.env();
-  anchor.setProvider(provider);
-  const program = anchor.workspace.Misc as Program<Misc>;
+  const provider = trezoaanchor.TrezoaAnchorProvider.env();
+  trezoaanchor.setProvider(provider);
+  const program = trezoaanchor.workspace.Misc as Program<Misc>;
 
   it("init_if_needed checks rent_exemption if init is not needed", async () => {
     const data = Keypair.generate();
@@ -38,8 +38,8 @@ describe("miscNonRentExempt", () => {
       });
       assert.ok(false);
     } catch (_err) {
-      assert.isTrue(_err instanceof AnchorError);
-      const err: AnchorError = _err;
+      assert.isTrue(_err instanceof TrezoaAnchorError);
+      const err: TrezoaAnchorError = _err;
       assert.strictEqual(err.error.errorCode.number, 2005);
     }
   });
@@ -73,7 +73,7 @@ describe("miscNonRentExempt", () => {
   });
 
   it("allows rent exemption to be skipped", async () => {
-    const data = anchor.web3.Keypair.generate();
+    const data = trezoaanchor.web3.Keypair.generate();
     await program.rpc.initializeSkipRentExempt({
       accounts: {
         data: data.publicKey,
@@ -125,8 +125,8 @@ describe("miscNonRentExempt", () => {
       });
       assert.ok(false);
     } catch (_err) {
-      assert.isTrue(_err instanceof AnchorError);
-      const err: AnchorError = _err;
+      assert.isTrue(_err instanceof TrezoaAnchorError);
+      const err: TrezoaAnchorError = _err;
       assert.strictEqual(err.error.errorCode.number, 2005);
       assert.strictEqual(
         "A rent exemption constraint was violated",

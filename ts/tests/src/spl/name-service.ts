@@ -1,16 +1,16 @@
 import { createHash } from "crypto";
-import { splNameServiceProgram } from "@coral-xyz/spl-name-service";
-import { BN } from "@coral-xyz/anchor";
+import { splNameServiceProgram } from "@trezoa-xyz/spl-name-service";
+import { BN } from "@trezoa-xyz/trezoaanchor";
 
-import { SPL_NAME_SERVICE_PROGRAM_ID } from "../constants";
+import { TPL_NAME_SERVICE_PROGRAM_ID } from "../constants";
 import { confirmTx, getProvider, loadKp, test } from "../utils";
-import { Keypair, PublicKey, SystemProgram } from "@solana/web3.js";
+import { Keypair, PublicKey, SystemProgram } from "@trezoa/web3.js";
 
 export async function nameServiceTests() {
   const provider = await getProvider();
   const program = splNameServiceProgram({
     provider,
-    programId: SPL_NAME_SERVICE_PROGRAM_ID,
+    programId: TPL_NAME_SERVICE_PROGRAM_ID,
   });
   const kp = await loadKp();
 
@@ -20,8 +20,8 @@ export async function nameServiceTests() {
       .digest();
   };
 
-  const PREFIX = "SPL Name Service";
-  const NAME = "anchor" + Math.floor(Math.random() * 1000);
+  const PREFIX = "TPL Name Service";
+  const NAME = "trezoaanchor" + Math.floor(Math.random() * 1000);
   const UPDATE_NAME = "acheron";
 
   const newOwnerKp = new Keypair();

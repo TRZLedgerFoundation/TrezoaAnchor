@@ -1,12 +1,12 @@
-const anchor = require("@coral-xyz/anchor");
-const splToken = require("@solana/spl-token");
+const trezoaanchor = require("@trezoa-xyz/trezoaanchor");
+const splToken = require("@trezoa/tpl-token");
 const { assert } = require("chai");
 
 describe("system_accounts", () => {
-  anchor.setProvider(anchor.AnchorProvider.local());
-  const program = anchor.workspace.SystemAccounts;
+  trezoaanchor.setProvider(trezoaanchor.TrezoaAnchorProvider.local());
+  const program = trezoaanchor.workspace.SystemAccounts;
   const authority = program.provider.wallet.payer;
-  const wallet = anchor.web3.Keypair.generate();
+  const wallet = trezoaanchor.web3.Keypair.generate();
 
   it("Is initialized!", async () => {
     const tx = await program.rpc.initialize({
@@ -38,7 +38,7 @@ describe("system_accounts", () => {
       tokenAccount,
       authority.publicKey,
       [],
-      1 * anchor.web3.LAMPORTS_PER_SOL
+      1 * trezoaanchor.web3.LAMPORTS_PER_TRZ
     );
 
     try {

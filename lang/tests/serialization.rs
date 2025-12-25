@@ -1,9 +1,9 @@
-use anchor_lang::{AnchorDeserialize, AnchorSerialize, Discriminator, InstructionData};
+use trezoaanchor-lang::{TrezoaAnchorDeserialize, TrezoaAnchorSerialize, Discriminator, InstructionData};
 
 #[test]
 fn test_instruction_data() {
     // Define some test type and implement ser/de, discriminator, and ix data
-    #[derive(Default, AnchorSerialize, AnchorDeserialize, PartialEq, Eq)]
+    #[derive(Default, TrezoaAnchorSerialize, TrezoaAnchorDeserialize, PartialEq, Eq)]
     struct MyType {
         foo: [u8; 8],
         bar: String,

@@ -43,7 +43,7 @@ describe("Stack memory", () => {
     // Expected error:
     // Error: Function _ZN5bench9__private8__global13account_info117h88e5c10f03de9fddE
     // Stack offset of 4424 exceeded max offset of 4096 by 328 bytes
-    const buildResult = spawn("anchor", [
+    const buildResult = spawn("trezoaanchor", [
       "build",
       "--skip-lint",
       "--ignore-keys",

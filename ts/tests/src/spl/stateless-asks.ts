@@ -1,11 +1,11 @@
-import { splStatelessAsksProgram } from "@coral-xyz/spl-stateless-asks";
-import { splTokenProgram } from "@coral-xyz/spl-token";
-import { BN } from "@coral-xyz/anchor";
-import { Keypair, PublicKey } from "@solana/web3.js";
+import { splStatelessAsksProgram } from "@trezoa-xyz/spl-stateless-asks";
+import { tplTokenProgram } from "@trezoa-xyz/tpl-token";
+import { BN } from "@trezoa-xyz/trezoaanchor";
+import { Keypair, PublicKey } from "@trezoa/web3.js";
 
 import {
-  SPL_STATELESS_ASKS_PROGRAM_ID,
-  SPL_TOKEN_PROGRAM_ID,
+  TPL_STATELESS_ASKS_PROGRAM_ID,
+  TPL_TOKEN_PROGRAM_ID,
 } from "../constants";
 import {
   createAta,
@@ -20,11 +20,11 @@ export async function statelessAsksTests() {
   const provider = await getProvider();
   const program = splStatelessAsksProgram({
     provider,
-    programId: SPL_STATELESS_ASKS_PROGRAM_ID,
+    programId: TPL_STATELESS_ASKS_PROGRAM_ID,
   });
-  const tokenProgram = splTokenProgram({
+  const tokenProgram = tplTokenProgram({
     provider,
-    programId: SPL_TOKEN_PROGRAM_ID,
+    programId: TPL_TOKEN_PROGRAM_ID,
   });
   const kp = await loadKp();
 

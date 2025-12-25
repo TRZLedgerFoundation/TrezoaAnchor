@@ -11,9 +11,9 @@ The **Registry** program provides an on-chain mechanism for a group of stakers t
 * Stake and earn locked tokens
 
 The program makes little assumptions about the form of stake or rewards.
-In the same way you can make a new SPL token with its own mint, you can create a new stake
+In the same way you can make a new TPL token with its own mint, you can create a new stake
 pool. Although the token being staked  must be a predefined mint upon pool initialization,
-rewards on a particular pool can be arbitrary SPL tokens, or, in the case of locked rewards,
+rewards on a particular pool can be arbitrary TPL tokens, or, in the case of locked rewards,
 program controlled accounts.
 Rewards can come from an arbitrary
 wallet, e.g. automatically from a fee earning program,
@@ -28,11 +28,11 @@ to understand, contribute to, or modify the code.
 
 ## Accounts
 
-Accounts are the pieces of state owned by a Solana program. For reference while reading, here are all
+Accounts are the pieces of state owned by a Trezoa program. For reference while reading, here are all
 accounts used by the **Registry** program.
 
-* `Registrar` - Analogous to an SPL token `Mint`, the `Registrar` defines a staking instance. It has its own pool, and its own set of rewards distributed amongst its own set of stakers.
-* `Member` - Analogous to an SPL token `Account`, `Member` accounts represent a **beneficiary**'s (i.e. a wallet's) stake state. This account has several vaults, all of which represent the funds belonging to an individual user.
+* `Registrar` - Analogous to an TPL token `Mint`, the `Registrar` defines a staking instance. It has its own pool, and its own set of rewards distributed amongst its own set of stakers.
+* `Member` - Analogous to an TPL token `Account`, `Member` accounts represent a **beneficiary**'s (i.e. a wallet's) stake state. This account has several vaults, all of which represent the funds belonging to an individual user.
 * `PendingWithdrawal` - A transfer out of the staking pool (poorly named since it's not a withdrawal out of the program. But a withdrawal out of the staking pool and into a `Member`'s freely available balances).
 * `RewardVendor` - A reward that has been dropped onto stakers and is distributed pro rata to staked `Member` beneficiaries.
 * `RewardEventQueue` - A ring buffer of all rewards available to stakers. Each entry is the address of a `RewardVendor`.
@@ -51,7 +51,7 @@ four types of token vaults making up a set of balances owned by the program on b
 
 Each of these vaults provide a unit of balance isolation unique to a **Member**.
 That is, although the stake program appears to provide a pooling mechanism, funds between
-**Member** accounts are not commingled. They do not share SPL token accounts, and the only
+**Member** accounts are not commingled. They do not share TPL token accounts, and the only
 way for funds to move is for  a **Member**'s beneficiary to authorize instructions that either exit the
 system or move funds between a **Member**'s own vaults.
 
@@ -68,7 +68,7 @@ Once deposited, a **Member** beneficiary invokes the `Stake` instruction to tran
 their **available-balances-vault** to one's **stake-vault**, creating newly minted
 **stake-pool-tokens** as proof of the stake deposit. These new tokens represent
 one's proportional right to all rewards distributed to the staking pool and are offered
-by the **Registry** program at a fixed price, e.g., of 500 SPL tokens.
+by the **Registry** program at a fixed price, e.g., of 500 TPL tokens.
 
 ## Unstaking
 
@@ -101,9 +101,9 @@ for account in stake_pool:
 
 Surprisingly, such a mechanism is not immediately obvious.
 
-First, the above program is a non starter. Not only does the SPL token
+First, the above program is a non starter. Not only does the TPL token
 program not have the ability to iterate through all accounts for a given mint within a program,
-but, since Solana transactions require the specification of all accounts being accessed
+but, since Trezoa transactions require the specification of all accounts being accessed
 in a transaction (this is how it achieves parallelism), such a transaction's size would be
 well over the limit. So modifying global state atomically in a single transaction is out of the
 question.
@@ -132,12 +132,12 @@ every new token you drop onto the pool, but you also need to have stakers purcha
 the pool, effectively requiring one to stake other unintended tokens. An additional oddity is that
 as rewards are dropped onto the pool, the price to enter the pool monotonically increases. Remember, entering this
 type of pool requires "creating" pool tokens, i.e., depositing enough tokens so that you don't dilute
-any other member. So if a single pool token represents one SPL token. And if an additional SPL token is dropped onto every
-member of the pool, all the existing member's shares are now worth two SPL tokens. So to enter the pool without
-dilution, one would have to "create" at a price of 2 SPL tokens per share. This means that rewarding
+any other member. So if a single pool token represents one TPL token. And if an additional TPL token is dropped onto every
+member of the pool, all the existing member's shares are now worth two TPL tokens. So to enter the pool without
+dilution, one would have to "create" at a price of 2 TPL tokens per share. This means that rewarding
 stakers becomes more expensive over time. One could of course solve this problem by implementing
 arbitrary `n:m` pool token splits, which leads right back to the problem of mutating global account
-state for an SPL token.
+state for an TPL token.
 
 Furthermore, dropping arbitrary program accounts as rewards hasn't even been covered, for example,
 locked token rewards, which of course can't be dropped directly onto an AMM style pool, since they are not tokens.

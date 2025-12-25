@@ -1,14 +1,14 @@
 ---
 title: Create a Token Mint
 description:
-  Learn how to create and initialize token mint accounts in Solana programs
-  using Anchor. Covers creating mint accounts with generated keypairs or PDAs
+  Learn how to create and initialize token mint accounts in Trezoa programs
+  using TrezoaAnchor. Covers creating mint accounts with generated keypairs or PDAs
   with code examples.
 ---
 
 ## What is a Mint Account?
 
-A mint account is an account type in Solana's Token Programs that uniquely
+A mint account is an account type in Trezoa's Token Programs that uniquely
 represents a token on the network and stores global metadata about the token.
 
 ```rust
@@ -34,31 +34,31 @@ pub struct Mint {
 
 <Callout type="info">
   Note that both the [Token
-  Program](https://github.com/solana-program/token/blob/main/program/src/state.rs#L18-L32)
+  Program](https://github.com/trezoa-program/token/blob/main/program/src/state.rs#L18-L32)
   and [Token Extension
-  Program](https://github.com/solana-program/token-2022/blob/main/program/src/state.rs#L30-L43)
+  Program](https://github.com/trezoa-program/token-2022/blob/main/program/src/state.rs#L30-L43)
   have the same base implementation for the Mint account.
 </Callout>
 
-Every token on Solana is represented by a mint account where the address of the
+Every token on Trezoa is represented by a mint account where the address of the
 mint account acts as its unique identifier on the network.
 
-For example, the USDC stablecoin on Solana is identified by the mint address
+For example, the USDC stablecoin on Trezoa is identified by the mint address
 `EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v`. This mint address serves as
-USDC's unique identifier across the entire Solana ecosystem. You can view
+USDC's unique identifier across the entire Trezoa ecosystem. You can view
 details about this mint account on
-[Solana Explorer](https://explorer.solana.com/address/3emsAVdmGKERbHjmGfQ6oZ1e35dkf5iYcS6U4CPKFVaa).
+[Trezoa Explorer](https://explorer.trezoa.com/address/3emsAVdmGKERbHjmGfQ6oZ1e35dkf5iYcS6U4CPKFVaa).
 
 ## Usage
 
-Use the `token_interface` module from the `anchor-spl` crate to interact with
+Use the `token_interface` module from the `trezoaanchor-tpl` crate to interact with
 both the Token Program and Token Extension Program. This module provides types
 for working with both token programs, allowing you to write code that's
 compatible with either program.
 
 ```rust title="snippet"
 // [!code highlight]
-use anchor_spl::token_interface::{Mint, TokenInterface};
+use trezoaanchor_spl::token_interface::{Mint, TokenInterface};
 
 // --snip--
 
@@ -86,12 +86,12 @@ pub struct CreateMint<'info> {
 ### Account Types
 
 The
-[`InterfaceAccount`](https://github.com/coral-xyz/anchor/blob/0e5285aecdf410fa0779b7cd09a47f235882c156/lang/src/accounts/interface_account.rs#L161-L166)
+[`InterfaceAccount`](https://github.com/trezoa-xyz/trezoaanchor/blob/0e5285aecdf410fa0779b7cd09a47f235882c156/lang/src/accounts/interface_account.rs#L161-L166)
 type is a wrapper that accepts accounts from either the Token Program and Token
 Extension Program.
 
 The `Mint` type represents the base Mint data structure shared by both token
-programs. When an account of this type is passed in, Anchor will automatically
+programs. When an account of this type is passed in, TrezoaAnchor will automatically
 deserialize the account data into the mint struct, regardless of which token
 program created it.
 
@@ -107,7 +107,7 @@ initialize a new mint account:
 | Constraint               | Description                                                                                                                                                                                                                                        |
 | ------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `init`                   | Creates a new account by making a cross program invocation (CPI) to the System Program. This allocates the required space for the mint account and transfers ownership to the appropriate token program.                                           |
-| `payer`                  | Specifies which account will pay the rent (SOL deposit) required to create the new account.                                                                                                                                                        |
+| `payer`                  | Specifies which account will pay the rent (TRZ deposit) required to create the new account.                                                                                                                                                        |
 | `mint::decimals`         | Sets the number of decimal places for the token. For example, setting this to 6 means 1 token = 1,000,000 base units.                                                                                                                              |
 | `mint::authority`        | Sets the mint authority - the account that has permission to mint new tokens. (Required)                                                                                                                                                           |
 | `mint::freeze_authority` | Sets the freeze authority - the account that has permission to freeze token accounts. (Optional) Freezing a token account prevents the token program from processing instructions that include the frozen token account (ex. transfer, burn, etc.) |
@@ -150,7 +150,7 @@ pub mint: InterfaceAccount<'info, Mint>,
 
 ## Examples
 
-The following examples demonstrate how to create a mint account in an Anchor
+The following examples demonstrate how to create a mint account in an TrezoaAnchor
 program using two different approaches:
 
 1. Using a generated Keypair - This is an approach where you generate a new
@@ -172,8 +172,8 @@ Create a new mint account in using a generated Keypair.
 <Tab value="Program">
 
 ```rust title="lib.rs"
-use anchor_lang::prelude::*;
-use anchor_spl::token_interface::{Mint, TokenInterface};
+use trezoaanchor-lang::prelude::*;
+use trezoaanchor_spl::token_interface::{Mint, TokenInterface};
 
 declare_id!("3pX5NKLru1UBDVckynWQxsgnJeUN3N1viy36Gk9TSn8d");
 
@@ -210,16 +210,16 @@ pub struct CreateMint<'info> {
 <Tab value="Client">
 
 ```ts title="test.ts"
-import * as anchor from "@coral-xyz/anchor";
-import { Program } from "@coral-xyz/anchor";
+import * as trezoaanchor from "@trezoa-xyz/trezoaanchor";
+import { Program } from "@trezoa-xyz/trezoaanchor";
 import { TokenExample } from "../target/types/token_example";
-import { TOKEN_2022_PROGRAM_ID, getMint } from "@solana/spl-token";
+import { TOKEN_2022_PROGRAM_ID, getMint } from "@trezoa/tpl-token";
 
 describe("token-example", () => {
-  anchor.setProvider(anchor.AnchorProvider.env());
+  trezoaanchor.setProvider(trezoaanchor.TrezoaAnchorProvider.env());
 
-  const program = anchor.workspace.TokenExample as Program<TokenExample>;
-  const mint = anchor.web3.Keypair.generate();
+  const program = trezoaanchor.workspace.TokenExample as Program<TokenExample>;
+  const mint = trezoaanchor.web3.Keypair.generate();
 
   it("Is initialized!", async () => {
     const tx = await program.methods
@@ -256,8 +256,8 @@ of the mint account.
 <Tab value="Program">
 
 ```rust title="lib.rs"
-use anchor_lang::prelude::*;
-use anchor_spl::token_interface::{Mint, TokenInterface};
+use trezoaanchor-lang::prelude::*;
+use trezoaanchor_spl::token_interface::{Mint, TokenInterface};
 
 declare_id!("3pX5NKLru1UBDVckynWQxsgnJeUN3N1viy36Gk9TSn8d");
 
@@ -297,16 +297,16 @@ pub struct CreateMint<'info> {
 <Tab value="Client">
 
 ```ts title="test.ts"
-import * as anchor from "@coral-xyz/anchor";
-import { Program } from "@coral-xyz/anchor";
+import * as trezoaanchor from "@trezoa-xyz/trezoaanchor";
+import { Program } from "@trezoa-xyz/trezoaanchor";
 import { TokenExample } from "../target/types/token_example";
-import { TOKEN_2022_PROGRAM_ID, getMint } from "@solana/spl-token";
+import { TOKEN_2022_PROGRAM_ID, getMint } from "@trezoa/tpl-token";
 
 describe("token-example", () => {
-  anchor.setProvider(anchor.AnchorProvider.env());
+  trezoaanchor.setProvider(trezoaanchor.TrezoaAnchorProvider.env());
 
-  const program = anchor.workspace.TokenExample as Program<TokenExample>;
-  const [mint, bump] = anchor.web3.PublicKey.findProgramAddressSync(
+  const program = trezoaanchor.workspace.TokenExample as Program<TokenExample>;
+  const [mint, bump] = trezoaanchor.web3.PublicKey.findProgramAddressSync(
     [Buffer.from("mint")],
     program.programId,
   );

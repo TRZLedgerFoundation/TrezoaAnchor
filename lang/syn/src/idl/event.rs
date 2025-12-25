@@ -13,7 +13,7 @@ pub fn gen_idl_print_fn_event(event_struct: &syn::ItemStruct) -> TokenStream {
 
     let ident = &event_struct.ident;
     let fn_name = format_ident!(
-        "__anchor_private_print_idl_event_{}",
+        "__trezoaanchor_private_print_idl_event_{}",
         ident.to_string().to_snake_case()
     );
     let idl_build_impl = impl_idl_build_event(event_struct);
@@ -35,7 +35,7 @@ pub fn gen_idl_print_fn_event(event_struct: &syn::ItemStruct) -> TokenStream {
         pub fn #fn_name() {
             let mut types: std::collections::BTreeMap<String, #idl::IdlTypeDef> =
                 std::collections::BTreeMap::new();
-            if let Some(event) = #ident::__anchor_private_gen_idl_event(&mut types) {
+            if let Some(event) = #ident::__trezoaanchor_private_gen_idl_event(&mut types) {
                 #print_ts
             }
         }
@@ -71,7 +71,7 @@ fn impl_idl_build_event(event_struct: &syn::ItemStruct) -> TokenStream {
 
     quote! {
         impl #impl_generics #ident #ty_generics #where_clause {
-            pub fn __anchor_private_gen_idl_event(
+            pub fn __trezoaanchor_private_gen_idl_event(
                 types: &mut std::collections::BTreeMap<String, #idl::IdlTypeDef>,
             ) -> Option<#idl::IdlEvent> {
                 #fn_body

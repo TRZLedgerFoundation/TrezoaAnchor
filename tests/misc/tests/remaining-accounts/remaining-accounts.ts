@@ -1,20 +1,20 @@
-import * as anchor from "@coral-xyz/anchor";
-import NodeWallet from "@coral-xyz/anchor/dist/cjs/nodewallet";
+import * as trezoaanchor from "@trezoa-xyz/trezoaanchor";
+import NodeWallet from "@trezoa-xyz/trezoaanchor/dist/cjs/nodewallet";
 
-import { TOKEN_PROGRAM_ID, Token } from "@solana/spl-token";
+import { TOKEN_PROGRAM_ID, Token } from "@trezoa/tpl-token";
 import { assert } from "chai";
 import { RemainingAccounts } from "../../target/types/remaining_accounts";
 
 describe("remaining-accounts", () => {
   // Configure the client to use the local cluster
-  anchor.setProvider(anchor.AnchorProvider.env());
+  trezoaanchor.setProvider(trezoaanchor.TrezoaAnchorProvider.env());
   const payer = NodeWallet.local().payer;
 
-  const program = anchor.workspace
-    .RemainingAccounts as anchor.Program<RemainingAccounts>;
+  const program = trezoaanchor.workspace
+    .RemainingAccounts as trezoaanchor.Program<RemainingAccounts>;
 
   it("Account can be used with remaining accounts - read token account and write someone to Data", async () => {
-    const data = anchor.web3.Keypair.generate();
+    const data = trezoaanchor.web3.Keypair.generate();
     await program.methods
       .testInit()
       .accounts({ data: data.publicKey })
@@ -38,7 +38,7 @@ describe("remaining-accounts", () => {
         .remainingAccounts([
           { pubkey: ata, isSigner: false, isWritable: false },
           {
-            pubkey: anchor.web3.Keypair.generate().publicKey,
+            pubkey: trezoaanchor.web3.Keypair.generate().publicKey,
             isSigner: false,
             isWritable: true,
           },
@@ -46,8 +46,8 @@ describe("remaining-accounts", () => {
         .rpc();
       assert.isTrue(false);
     } catch (_err) {
-      assert.isTrue(_err instanceof anchor.AnchorError);
-      const err: anchor.AnchorError = _err;
+      assert.isTrue(_err instanceof trezoaanchor.TrezoaAnchorError);
+      const err: trezoaanchor.TrezoaAnchorError = _err;
       assert.strictEqual(err.error.errorCode.number, 3012);
       assert.strictEqual(err.error.errorCode.code, "AccountNotInitialized");
     }
@@ -75,7 +75,7 @@ describe("remaining-accounts", () => {
     );
 
     // Another account
-    const another = anchor.web3.Keypair.generate();
+    const another = trezoaanchor.web3.Keypair.generate();
     await program.methods
       .testInitAnother()
       .accounts({ another: another.publicKey })
@@ -99,8 +99,8 @@ describe("remaining-accounts", () => {
         .rpc();
       assert.isTrue(false);
     } catch (_err) {
-      assert.isTrue(_err instanceof anchor.AnchorError);
-      const err: anchor.AnchorError = _err;
+      assert.isTrue(_err instanceof trezoaanchor.TrezoaAnchorError);
+      const err: trezoaanchor.TrezoaAnchorError = _err;
       assert.strictEqual(err.error.errorCode.number, 3002);
       assert.strictEqual(
         err.error.errorCode.code,

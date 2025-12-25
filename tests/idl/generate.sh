@@ -8,10 +8,10 @@ else
 fi
 
 cd programs/idl
-anchor idl build -o $dir/new.json
+trezoaanchor idl build -o $dir/new.json
 
 cd ../generics
-anchor idl build -o $dir/generics.json
+trezoaanchor idl build -o $dir/generics.json
 
 cd ../relations-derivation
-anchor idl build -o $dir/relations.json
+trezoaanchor idl build -o $dir/relations.json

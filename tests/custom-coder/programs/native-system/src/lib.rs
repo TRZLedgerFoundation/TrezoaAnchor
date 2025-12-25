@@ -1,4 +1,4 @@
-use anchor_lang::prelude::*;
+use trezoaanchor-lang::prelude::*;
 
 declare_id!("9NxAd91hhJ3ZBTHytYP894y4ESRKG7n8VbLgdyYGJFLB");
 
@@ -199,7 +199,7 @@ pub struct TransferWithSeed<'info> {
     to: AccountInfo<'info>,
 }
 
-#[derive(AnchorSerialize, AnchorDeserialize, Clone)]
+#[derive(TrezoaAnchorSerialize, TrezoaAnchorDeserialize, Clone)]
 pub struct FeeCalculator {
     pub lamports_per_signature: u64,
 }

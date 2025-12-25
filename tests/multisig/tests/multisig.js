@@ -1,32 +1,32 @@
-const anchor = require("@coral-xyz/anchor");
+const trezoaanchor = require("@trezoa-xyz/trezoaanchor");
 const { assert } = require("chai");
 
 describe("multisig", () => {
   // Configure the client to use the local cluster.
-  anchor.setProvider(anchor.AnchorProvider.env());
+  trezoaanchor.setProvider(trezoaanchor.TrezoaAnchorProvider.env());
 
-  const program = anchor.workspace.Multisig;
+  const program = trezoaanchor.workspace.Multisig;
 
   it("Tests the multisig program", async () => {
-    const multisig = anchor.web3.Keypair.generate();
+    const multisig = trezoaanchor.web3.Keypair.generate();
     const [multisigSigner, nonce] =
-      await anchor.web3.PublicKey.findProgramAddress(
+      await trezoaanchor.web3.PublicKey.findProgramAddress(
         [multisig.publicKey.toBuffer()],
         program.programId
       );
     const multisigSize = 200; // Big enough.
 
-    const ownerA = anchor.web3.Keypair.generate();
-    const ownerB = anchor.web3.Keypair.generate();
-    const ownerC = anchor.web3.Keypair.generate();
-    const ownerD = anchor.web3.Keypair.generate();
+    const ownerA = trezoaanchor.web3.Keypair.generate();
+    const ownerB = trezoaanchor.web3.Keypair.generate();
+    const ownerC = trezoaanchor.web3.Keypair.generate();
+    const ownerD = trezoaanchor.web3.Keypair.generate();
     const owners = [ownerA.publicKey, ownerB.publicKey, ownerC.publicKey];
 
-    const threshold = new anchor.BN(2);
+    const threshold = new trezoaanchor.BN(2);
     await program.rpc.createMultisig(owners, threshold, nonce, {
       accounts: {
         multisig: multisig.publicKey,
-        rent: anchor.web3.SYSVAR_RENT_PUBKEY,
+        rent: trezoaanchor.web3.SYSVAR_RENT_PUBKEY,
       },
       instructions: [
         await program.account.multisig.createInstruction(
@@ -42,7 +42,7 @@ describe("multisig", () => {
     );
 
     assert.strictEqual(multisigAccount.nonce, nonce);
-    assert.isTrue(multisigAccount.threshold.eq(new anchor.BN(2)));
+    assert.isTrue(multisigAccount.threshold.eq(new trezoaanchor.BN(2)));
     assert.deepEqual(multisigAccount.owners, owners);
 
     const pid = program.programId;
@@ -63,14 +63,14 @@ describe("multisig", () => {
       owners: newOwners,
     });
 
-    const transaction = anchor.web3.Keypair.generate();
+    const transaction = trezoaanchor.web3.Keypair.generate();
     const txSize = 1000; // Big enough, cuz I'm lazy.
     await program.rpc.createTransaction(pid, accounts, data, {
       accounts: {
         multisig: multisig.publicKey,
         transaction: transaction.publicKey,
         proposer: ownerA.publicKey,
-        rent: anchor.web3.SYSVAR_RENT_PUBKEY,
+        rent: trezoaanchor.web3.SYSVAR_RENT_PUBKEY,
       },
       instructions: [
         await program.account.transaction.createInstruction(
@@ -129,7 +129,7 @@ describe("multisig", () => {
     multisigAccount = await program.account.multisig.fetch(multisig.publicKey);
 
     assert.strictEqual(multisigAccount.nonce, nonce);
-    assert.isTrue(multisigAccount.threshold.eq(new anchor.BN(2)));
+    assert.isTrue(multisigAccount.threshold.eq(new trezoaanchor.BN(2)));
     assert.deepEqual(multisigAccount.owners, newOwners);
   });
 });

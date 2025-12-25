@@ -1,13 +1,13 @@
 {
-  "name": "anchor-tests",
+  "name": "trezoaanchor-tests",
   "private": true,
   "scripts": {
     "lint:fix": "prettier */*.js \"*/**/*{.js,.ts}\" -w",
     "lint": "prettier */*.js \"*/**/*{.js,.ts}\" --check"
   },
   "workspaces": [
-    "anchor-cli-account",
-    "anchor-cli-idl",
+    "trezoaanchor-cli-account",
+    "trezoaanchor-cli-idl",
     "auction-house",
     "bench",
     "cashiers-check",
@@ -36,11 +36,11 @@
     "relations-derivation",
     "pyth",
     "realloc",
-    "spl/metadata",
-    "spl/token-extensions",
-    "spl/token-proxy",
-    "spl/token-wrapper",
-    "spl/transfer-hook",
+    "tpl/metadata",
+    "tpl/token-extensions",
+    "tpl/token-proxy",
+    "tpl/token-wrapper",
+    "tpl/transfer-hook",
     "swap",
     "system-accounts",
     "sysvars",
@@ -56,10 +56,10 @@
     "signature-verification"
   ],
   "dependencies": {
-    "@project-serum/common": "^0.0.1-beta.3",
-    "@project-serum/serum": "^0.13.60",
-    "@solana/spl-token": "^0.1.8",
-    "@solana/web3.js": "^1.68.0"
+    "@trezoa-serum/common": "^0.0.1-beta.3",
+    "@trezoa-serum/serum": "^0.13.60",
+    "@trezoa/tpl-token": "^0.1.8",
+    "@trezoa/web3.js": "^1.68.0"
   },
   "devDependencies": {
     "@types/bn.js": "^5.1.1",

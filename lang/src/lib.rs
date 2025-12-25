@@ -1,9 +1,9 @@
 #![cfg_attr(docsrs, feature(doc_cfg))]
 
-//! Anchor ⚓ is a framework for Solana's Sealevel runtime providing several
+//! TrezoaAnchor ⚓ is a framework for Trezoa's Sealevel runtime providing several
 //! convenient developer tools.
 //!
-//! - Rust eDSL for writing safe, secure, and high level Solana programs
+//! - Rust eDSL for writing safe, secure, and high level Trezoa programs
 //! - [IDL](https://en.wikipedia.org/wiki/Interface_description_language) specification
 //! - TypeScript package for generating clients from IDL
 //! - CLI and workspace management for developing complete applications
@@ -13,22 +13,22 @@
 //! [Truffle](https://www.trufflesuite.com/),
 //! [web3.js](https://github.com/ethereum/web3.js) or Parity's
 //! [Ink!](https://github.com/paritytech/ink), then the experience will be
-//! familiar. Although the syntax and semantics are targeted at Solana, the high
+//! familiar. Although the syntax and semantics are targeted at Trezoa, the high
 //! level workflow of writing RPC request handlers, emitting an IDL, and
 //! generating clients from IDL is the same.
 //!
-//! For detailed tutorials and examples on how to use Anchor, see the guided
-//! [tutorials](https://anchor-lang.com) or examples in the GitHub
-//! [repository](https://github.com/coral-xyz/anchor).
+//! For detailed tutorials and examples on how to use TrezoaAnchor, see the guided
+//! [tutorials](https://trezoaanchor-lang.com) or examples in the GitHub
+//! [repository](https://github.com/trezoa-xyz/trezoaanchor).
 //!
-//! Presented here are the Rust primitives for building on Solana.
+//! Presented here are the Rust primitives for building on Trezoa.
 
-extern crate self as anchor_lang;
+extern crate self as trezoaanchor-lang;
 
-use crate::solana_program::account_info::AccountInfo;
-use crate::solana_program::instruction::AccountMeta;
-use crate::solana_program::program_error::ProgramError;
-use crate::solana_program::pubkey::Pubkey;
+use crate::trezoa_program::account_info::AccountInfo;
+use crate::trezoa_program::instruction::AccountMeta;
+use crate::trezoa_program::program_error::ProgramError;
+use crate::trezoa_program::pubkey::Pubkey;
 use bytemuck::{Pod, Zeroable};
 use std::{collections::BTreeSet, fmt::Debug, io::Write};
 
@@ -51,59 +51,59 @@ mod vec;
 mod lazy;
 
 pub use crate::bpf_upgradeable_state::*;
-pub use anchor_attribute_access_control::access_control;
-pub use anchor_attribute_account::{account, declare_id, pubkey, zero_copy};
-pub use anchor_attribute_constant::constant;
-pub use anchor_attribute_error::*;
-pub use anchor_attribute_event::{emit, event};
-pub use anchor_attribute_program::{declare_program, instruction, program};
-pub use anchor_derive_accounts::Accounts;
-pub use anchor_derive_serde::{AnchorDeserialize, AnchorSerialize};
-pub use anchor_derive_space::InitSpace;
+pub use trezoaanchor_attribute_access_control::access_control;
+pub use trezoaanchor_attribute_account::{account, declare_id, pubkey, zero_copy};
+pub use trezoaanchor_attribute_constant::constant;
+pub use trezoaanchor_attribute_error::*;
+pub use trezoaanchor_attribute_event::{emit, event};
+pub use trezoaanchor_attribute_program::{declare_program, instruction, program};
+pub use trezoaanchor_derive_accounts::Accounts;
+pub use trezoaanchor_derive_serde::{TrezoaAnchorDeserialize, TrezoaAnchorSerialize};
+pub use trezoaanchor_derive_space::InitSpace;
 pub use const_crypto::ed25519::derive_program_address;
 
 /// Borsh is the default serialization format for instructions and accounts.
-pub use borsh::de::BorshDeserialize as AnchorDeserialize;
-pub use borsh::ser::BorshSerialize as AnchorSerialize;
-pub mod solana_program {
-    pub use solana_feature_gate_interface as feature;
+pub use borsh::de::BorshDeserialize as TrezoaAnchorDeserialize;
+pub use borsh::ser::BorshSerialize as TrezoaAnchorSerialize;
+pub mod trezoa_program {
+    pub use trezoa_feature_gate_interface as feature;
 
     pub use {
-        solana_account_info as account_info, solana_clock as clock, solana_msg::msg,
-        solana_program_entrypoint as entrypoint, solana_program_entrypoint::entrypoint,
-        solana_program_error as program_error, solana_program_memory as program_memory,
-        solana_program_option as program_option, solana_program_pack as program_pack,
-        solana_pubkey as pubkey, solana_sdk_ids::system_program,
-        solana_system_interface::instruction as system_instruction,
+        trezoa_account_info as account_info, trezoa_clock as clock, trezoa_msg::msg,
+        trezoa_program_entrypoint as entrypoint, trezoa_program_entrypoint::entrypoint,
+        trezoa_program_error as program_error, trezoa_program_memory as program_memory,
+        trezoa_program_option as program_option, trezoa_program_pack as program_pack,
+        trezoa_pubkey as pubkey, trezoa_sdk_ids::system_program,
+        trezoa_system_interface::instruction as system_instruction,
     };
     pub mod instruction {
-        pub use solana_instruction::*;
+        pub use trezoa_instruction::*;
         /// Get the current stack height, transaction-level instructions are height
         /// TRANSACTION_LEVEL_STACK_HEIGHT, fist invoked inner instruction is height
         /// TRANSACTION_LEVEL_STACK_HEIGHT + 1, etc...
         pub fn get_stack_height() -> usize {
-            #[cfg(target_os = "solana")]
+            #[cfg(target_os = "trezoa")]
             unsafe {
-                solana_instruction::syscalls::sol_get_stack_height() as usize
+                trezoa_instruction::syscalls::sol_get_stack_height() as usize
             }
 
-            #[cfg(not(target_os = "solana"))]
+            #[cfg(not(target_os = "trezoa"))]
             {
-                solana_sysvar::program_stubs::sol_get_stack_height() as usize
+                trezoa_sysvar::program_stubs::sol_get_stack_height() as usize
             }
         }
     }
     pub mod rent {
-        pub use solana_sysvar::rent::*;
+        pub use trezoa_sysvar::rent::*;
     }
     pub mod program {
-        pub use solana_cpi::*;
-        pub use solana_invoke::{invoke, invoke_signed, invoke_signed_unchecked, invoke_unchecked};
+        pub use trezoa_cpi::*;
+        pub use trezoa_invoke::{invoke, invoke_signed, invoke_signed_unchecked, invoke_unchecked};
     }
 
     pub mod bpf_loader_upgradeable {
         #[allow(deprecated)]
-        pub use solana_loader_v3_interface::{
+        pub use trezoa_loader_v3_interface::{
             get_program_data_address,
             instruction::{
                 close, close_any, create_buffer, deploy_with_max_program_len, extend_program,
@@ -114,43 +114,43 @@ pub mod solana_program {
             },
             state::UpgradeableLoaderState,
         };
-        pub use solana_sdk_ids::bpf_loader_upgradeable::{check_id, id, ID};
+        pub use trezoa_sdk_ids::bpf_loader_upgradeable::{check_id, id, ID};
     }
 
     pub mod log {
-        pub use solana_msg::{msg, sol_log};
+        pub use trezoa_msg::{msg, sol_log};
         /// Print some slices as base64.
         pub fn sol_log_data(data: &[&[u8]]) {
-            #[cfg(target_os = "solana")]
+            #[cfg(target_os = "trezoa")]
             unsafe {
-                solana_define_syscall::definitions::sol_log_data(
+                trezoa_define_syscall::definitions::sol_log_data(
                     data as *const _ as *const u8,
                     data.len() as u64,
                 )
             };
 
-            #[cfg(not(target_os = "solana"))]
+            #[cfg(not(target_os = "trezoa"))]
             core::hint::black_box(data);
         }
     }
     pub mod sysvar {
-        pub use solana_sysvar_id::{declare_deprecated_sysvar_id, declare_sysvar_id, SysvarId};
+        pub use trezoa_sysvar_id::{declare_deprecated_sysvar_id, declare_sysvar_id, SysvarId};
         pub mod instructions {
-            pub use solana_instruction::{BorrowedAccountMeta, BorrowedInstruction};
-            #[cfg(not(target_os = "solana"))]
-            pub use solana_instructions_sysvar::construct_instructions_data;
+            pub use trezoa_instruction::{BorrowedAccountMeta, BorrowedInstruction};
+            #[cfg(not(target_os = "trezoa"))]
+            pub use trezoa_instructions_sysvar::construct_instructions_data;
         }
     }
 }
 
 #[cfg(feature = "event-cpi")]
-pub use anchor_attribute_event::{emit_cpi, event_cpi};
+pub use trezoaanchor_attribute_event::{emit_cpi, event_cpi};
 
 #[cfg(feature = "idl-build")]
 pub use idl::IdlBuild;
 
 #[cfg(feature = "interface-instructions")]
-pub use anchor_attribute_program::interface;
+pub use trezoaanchor_attribute_program::interface;
 
 pub type Result<T> = std::result::Result<T, error::Error>;
 
@@ -161,7 +161,7 @@ pub type Result<T> = std::result::Result<T, error::Error>;
 pub fn deprecated_account_info_usage() {}
 
 /// A data structure of validated accounts that can be deserialized from the
-/// input to a Solana program. Implementations of this trait should perform any
+/// input to a Trezoa program. Implementations of this trait should perform any
 /// and all requisite constraint checks on accounts to ensure the accounts
 /// maintain any invariants required for the program to run securely. In most
 /// cases, it's recommended to use the [`Accounts`](./derive.Accounts.html)
@@ -193,9 +193,9 @@ pub trait Accounts<'info, B>: ToAccountMetas + ToAccountInfos<'info> + Sized {
     /// Returns the validated accounts struct. What constitutes "valid" is
     /// program dependent. However, users of these types should never have to
     /// worry about account substitution attacks. For example, if a program
-    /// expects a `Mint` account from the SPL token program  in a particular
+    /// expects a `Mint` account from the TPL token program  in a particular
     /// field, then it should be impossible for this method to return `Ok` if
-    /// any other account type is given--from the SPL token program or elsewhere.
+    /// any other account type is given--from the TPL token program or elsewhere.
     ///
     /// `program_id` is the currently executing program. `accounts` is the
     /// set of accounts to construct the type from. For every account used,
@@ -233,7 +233,7 @@ pub trait AccountsClose<'info>: ToAccountInfos<'info> {
 }
 
 /// Transformation to
-/// [`AccountMeta`](../solana_program/instruction/struct.AccountMeta.html)
+/// [`AccountMeta`](../trezoa_program/instruction/struct.AccountMeta.html)
 /// structs.
 pub trait ToAccountMetas {
     /// `is_signer` is given as an optional override for the signer meta field.
@@ -245,7 +245,7 @@ pub trait ToAccountMetas {
 }
 
 /// Transformation to
-/// [`AccountInfo`](../solana_program/account_info/struct.AccountInfo.html)
+/// [`AccountInfo`](../trezoa_program/account_info/struct.AccountInfo.html)
 /// structs.
 pub trait ToAccountInfos<'info> {
     fn to_account_infos(&self) -> Vec<AccountInfo<'info>>;
@@ -318,7 +318,7 @@ impl<'info, T: AsRef<AccountInfo<'info>>> Lamports<'info> for T {}
 
 /// A data structure that can be serialized and stored into account storage,
 /// i.e. an
-/// [`AccountInfo`](../solana_program/account_info/struct.AccountInfo.html#structfield.data)'s
+/// [`AccountInfo`](../trezoa_program/account_info/struct.AccountInfo.html#structfield.data)'s
 /// mutable data slice.
 ///
 /// Implementors of this trait should ensure that any subsequent usage of the
@@ -336,14 +336,14 @@ pub trait AccountSerialize {
 
 /// A data structure that can be deserialized and stored into account storage,
 /// i.e. an
-/// [`AccountInfo`](../solana_program/account_info/struct.AccountInfo.html#structfield.data)'s
+/// [`AccountInfo`](../trezoa_program/account_info/struct.AccountInfo.html#structfield.data)'s
 /// mutable data slice.
 pub trait AccountDeserialize: Sized {
     /// Deserializes previously initialized account data. Should fail for all
     /// uninitialized accounts, where the bytes are zeroed. Implementations
     /// should be unique to a particular account type so that one can never
     /// successfully deserialize the data of one account type into another.
-    /// For example, if the SPL token program were to implement this trait,
+    /// For example, if the TPL token program were to implement this trait,
     /// it should be impossible to deserialize a `Mint` account into a token
     /// `Account`.
     fn try_deserialize(buf: &mut &[u8]) -> Result<Self> {
@@ -362,7 +362,7 @@ pub trait ZeroCopy: Discriminator + Copy + Clone + Zeroable + Pod {}
 /// Calculates the data for an instruction invocation, where the data is
 /// `Discriminator + BorshSerialize(args)`. `args` is a borsh serialized
 /// struct of named fields for each argument given to an instruction.
-pub trait InstructionData: Discriminator + AnchorSerialize {
+pub trait InstructionData: Discriminator + TrezoaAnchorSerialize {
     fn data(&self) -> Vec<u8> {
         let mut data = Vec::with_capacity(256);
         data.extend_from_slice(Self::DISCRIMINATOR);
@@ -381,24 +381,24 @@ pub trait InstructionData: Discriminator + AnchorSerialize {
     }
 }
 
-/// An event that can be emitted via a Solana log. See [`emit!`](crate::prelude::emit) for an example.
-pub trait Event: AnchorSerialize + AnchorDeserialize + Discriminator {
+/// An event that can be emitted via a Trezoa log. See [`emit!`](crate::prelude::emit) for an example.
+pub trait Event: TrezoaAnchorSerialize + TrezoaAnchorDeserialize + Discriminator {
     fn data(&self) -> Vec<u8>;
 }
 
 /// Unique identifier for a type.
 ///
-/// This is not a trait you should derive manually, as various Anchor macros already derive it
+/// This is not a trait you should derive manually, as various TrezoaAnchor macros already derive it
 /// internally.
 ///
-/// Prior to Anchor v0.31, discriminators were always 8 bytes in size. However, starting with Anchor
+/// Prior to TrezoaAnchor v0.31, discriminators were always 8 bytes in size. However, starting with TrezoaAnchor
 /// v0.31, it is possible to override the default discriminators, and discriminator length is no
-/// longer fixed, which means this trait can also be implemented for non-Anchor programs.
+/// longer fixed, which means this trait can also be implemented for non-TrezoaAnchor programs.
 ///
 /// It's important that the discriminator is always unique for the type you're implementing it
 /// for. While the discriminator can be at any length (including zero), the IDL generation does not
 /// currently allow empty discriminators for safety and convenience reasons. However, the trait
-/// definition still allows empty discriminators because some non-Anchor programs, e.g. the SPL
+/// definition still allows empty discriminators because some non-TrezoaAnchor programs, e.g. the TPL
 /// Token program, don't have account discriminators. In that case, safety checks should never
 /// depend on the discriminator.
 pub trait Discriminator {
@@ -483,7 +483,7 @@ impl Key for Pubkey {
 }
 
 /// The prelude contains all commonly used components of the crate.
-/// All programs should include it via `anchor_lang::prelude::*;`.
+/// All programs should include it via `trezoaanchor-lang::prelude::*;`.
 pub mod prelude {
     pub use super::{
         access_control, account, accounts::account::Account,
@@ -494,29 +494,29 @@ pub mod prelude {
         context::Context, context::CpiContext, declare_id, declare_program, emit, err, error,
         event, instruction, program, pubkey, require, require_eq, require_gt, require_gte,
         require_keys_eq, require_keys_neq, require_neq,
-        solana_program::bpf_loader_upgradeable::UpgradeableLoaderState, source,
+        trezoa_program::bpf_loader_upgradeable::UpgradeableLoaderState, source,
         system_program::System, zero_copy, AccountDeserialize, AccountSerialize, Accounts,
-        AccountsClose, AccountsExit, AnchorDeserialize, AnchorSerialize, Discriminator, Id,
+        AccountsClose, AccountsExit, TrezoaAnchorDeserialize, TrezoaAnchorSerialize, Discriminator, Id,
         InitSpace, Key, Lamports, Owner, ProgramData, Result, Space, ToAccountInfo, ToAccountInfos,
         ToAccountMetas,
     };
-    pub use crate::solana_program::account_info::{next_account_info, AccountInfo};
-    pub use crate::solana_program::instruction::AccountMeta;
-    pub use crate::solana_program::program_error::ProgramError;
-    pub use crate::solana_program::pubkey::Pubkey;
-    pub use crate::solana_program::*;
-    pub use anchor_attribute_error::*;
+    pub use crate::trezoa_program::account_info::{next_account_info, AccountInfo};
+    pub use crate::trezoa_program::instruction::AccountMeta;
+    pub use crate::trezoa_program::program_error::ProgramError;
+    pub use crate::trezoa_program::pubkey::Pubkey;
+    pub use crate::trezoa_program::*;
+    pub use trezoaanchor_attribute_error::*;
     pub use borsh;
     pub use error::*;
-    pub use solana_clock::Clock;
-    pub use solana_instructions_sysvar::Instructions;
-    pub use solana_stake_interface::stake_history::StakeHistory;
-    pub use solana_sysvar::epoch_schedule::EpochSchedule;
-    pub use solana_sysvar::rent::Rent;
-    pub use solana_sysvar::rewards::Rewards;
-    pub use solana_sysvar::slot_hashes::SlotHashes;
-    pub use solana_sysvar::slot_history::SlotHistory;
-    pub use solana_sysvar::Sysvar as SolanaSysvar;
+    pub use trezoa_clock::Clock;
+    pub use trezoa_instructions_sysvar::Instructions;
+    pub use trezoa_stake_interface::stake_history::StakeHistory;
+    pub use trezoa_sysvar::epoch_schedule::EpochSchedule;
+    pub use trezoa_sysvar::rent::Rent;
+    pub use trezoa_sysvar::rewards::Rewards;
+    pub use trezoa_sysvar::slot_hashes::SlotHashes;
+    pub use trezoa_sysvar::slot_history::SlotHistory;
+    pub use trezoa_sysvar::Sysvar as TrezoaSysvar;
     pub use thiserror;
 
     #[cfg(feature = "event-cpi")]
@@ -535,13 +535,13 @@ pub mod prelude {
 /// Internal module used by macros and unstable apis.
 #[doc(hidden)]
 pub mod __private {
-    pub use anchor_attribute_account::ZeroCopyAccessor;
+    pub use trezoaanchor_attribute_account::ZeroCopyAccessor;
     pub use base64;
     pub use bytemuck;
 
     pub use crate::{bpf_writer::BpfWriter, common::is_closed};
 
-    use crate::solana_program::pubkey::Pubkey;
+    use crate::trezoa_program::pubkey::Pubkey;
 
     // Used to calculate the maximum between two expressions.
     // It is necessary for the calculation of the enum space.
@@ -570,7 +570,7 @@ pub mod __private {
     #[cfg(feature = "lazy-account")]
     pub use crate::lazy::Lazy;
     #[cfg(feature = "lazy-account")]
-    pub use anchor_derive_serde::Lazy;
+    pub use trezoaanchor_derive_serde::Lazy;
 
     /// Trait for compile-time type equality checking.
     /// Used to enforce that instruction argument types match the `#[instruction(...)]` attribute types.
@@ -622,12 +622,12 @@ pub mod __private {
 macro_rules! require {
     ($invariant:expr, $error:tt $(,)?) => {
         if !($invariant) {
-            return Err(anchor_lang::error!($crate::ErrorCode::$error));
+            return Err(trezoaanchor-lang::error!($crate::ErrorCode::$error));
         }
     };
     ($invariant:expr, $error:expr $(,)?) => {
         if !($invariant) {
-            return Err(anchor_lang::error!($error));
+            return Err(trezoaanchor-lang::error!($error));
         }
     };
 }
@@ -656,7 +656,7 @@ macro_rules! require_eq {
     };
     ($value1: expr, $value2: expr $(,)?) => {
         if $value1 != $value2 {
-            return Err(error!(anchor_lang::error::ErrorCode::RequireEqViolated)
+            return Err(error!(trezoaanchor-lang::error::ErrorCode::RequireEqViolated)
                 .with_values(($value1, $value2)));
         }
     };
@@ -686,7 +686,7 @@ macro_rules! require_neq {
     };
     ($value1: expr, $value2: expr $(,)?) => {
         if $value1 == $value2 {
-            return Err(error!(anchor_lang::error::ErrorCode::RequireNeqViolated)
+            return Err(error!(trezoaanchor-lang::error::ErrorCode::RequireNeqViolated)
                 .with_values(($value1, $value2)));
         }
     };
@@ -716,7 +716,7 @@ macro_rules! require_keys_eq {
     };
     ($value1: expr, $value2: expr $(,)?) => {
         if $value1 != $value2 {
-            return Err(error!(anchor_lang::error::ErrorCode::RequireKeysEqViolated)
+            return Err(error!(trezoaanchor-lang::error::ErrorCode::RequireKeysEqViolated)
                 .with_pubkeys(($value1, $value2)));
         }
     };
@@ -747,7 +747,7 @@ macro_rules! require_keys_neq {
     ($value1: expr, $value2: expr $(,)?) => {
         if $value1 == $value2 {
             return Err(
-                error!(anchor_lang::error::ErrorCode::RequireKeysNeqViolated)
+                error!(trezoaanchor-lang::error::ErrorCode::RequireKeysNeqViolated)
                     .with_pubkeys(($value1, $value2)),
             );
         }
@@ -778,7 +778,7 @@ macro_rules! require_gt {
     };
     ($value1: expr, $value2: expr $(,)?) => {
         if $value1 <= $value2 {
-            return Err(error!(anchor_lang::error::ErrorCode::RequireGtViolated)
+            return Err(error!(trezoaanchor-lang::error::ErrorCode::RequireGtViolated)
                 .with_values(($value1, $value2)));
         }
     };
@@ -806,7 +806,7 @@ macro_rules! require_gte {
     };
     ($value1: expr, $value2: expr $(,)?) => {
         if $value1 < $value2 {
-            return Err(error!(anchor_lang::error::ErrorCode::RequireGteViolated)
+            return Err(error!(trezoaanchor-lang::error::ErrorCode::RequireGteViolated)
                 .with_values(($value1, $value2)));
         }
     };
@@ -831,10 +831,10 @@ macro_rules! require_gte {
 #[macro_export]
 macro_rules! err {
     ($error:tt $(,)?) => {
-        Err(anchor_lang::error!($crate::ErrorCode::$error))
+        Err(trezoaanchor-lang::error!($crate::ErrorCode::$error))
     };
     ($error:expr $(,)?) => {
-        Err(anchor_lang::error!($error))
+        Err(trezoaanchor-lang::error!($error))
     };
 }
 
@@ -842,7 +842,7 @@ macro_rules! err {
 #[macro_export]
 macro_rules! source {
     () => {
-        anchor_lang::error::Source {
+        trezoaanchor-lang::error::Source {
             filename: file!(),
             line: line!(),
         }

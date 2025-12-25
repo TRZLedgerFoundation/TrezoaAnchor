@@ -1,20 +1,20 @@
 [package]
-name = "anchor-attribute-error"
+name = "trezoaanchor-attribute-error"
 version = "0.32.1"
-authors = ["Anchor Maintainers <accounts@200ms.io>"]
-repository = "https://github.com/coral-xyz/anchor"
+authors = ["TrezoaAnchor Maintainers <accounts@200ms.io>"]
+repository = "https://github.com/trezoa-xyz/trezoaanchor"
 license = "Apache-2.0"
-description = "Anchor attribute macro for creating error types"
+description = "TrezoaAnchor attribute macro for creating error types"
 edition = "2021"
 
 [lib]
 proc-macro = true
 
 [features]
-anchor-debug = ["anchor-syn/anchor-debug"]
-idl-build = ["anchor-syn/idl-build"]
+trezoaanchor-debug = ["trezoaanchor-syn/trezoaanchor-debug"]
+idl-build = ["trezoaanchor-syn/idl-build"]
 
 [dependencies]
-anchor-syn = { path = "../../syn", version = "0.32.1" }
+trezoaanchor-syn = { path = "../../syn", version = "0.32.1" }
 quote = "1"
 syn = { version = "1", features = ["full"] }

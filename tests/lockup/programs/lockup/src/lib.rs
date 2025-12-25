@@ -1,11 +1,11 @@
-//! A relatively advanced example of a lockup program. If you're new to Anchor,
+//! A relatively advanced example of a lockup program. If you're new to TrezoaAnchor,
 //! it's suggested to start with the other examples.
 
-use anchor_lang::accounts::state::ProgramState;
-use anchor_lang::prelude::*;
-use anchor_lang::solana_program;
-use anchor_lang::solana_program::instruction::Instruction;
-use anchor_spl::token::{self, TokenAccount, Transfer};
+use trezoaanchor-lang::accounts::state::ProgramState;
+use trezoaanchor-lang::prelude::*;
+use trezoaanchor-lang::trezoa_program;
+use trezoaanchor-lang::trezoa_program::instruction::Instruction;
+use trezoaanchor_spl::token::{self, TokenAccount, Transfer};
 
 mod calculator;
 
@@ -310,7 +310,7 @@ pub struct AvailableForWithdrawal<'info> {
 pub struct Vesting {
     /// The owner of this Vesting account.
     pub beneficiary: Pubkey,
-    /// The mint of the SPL token locked up.
+    /// The mint of the TPL token locked up.
     pub mint: Pubkey,
     /// Address of the account's token vault.
     pub vault: Pubkey,
@@ -344,7 +344,7 @@ pub struct Vesting {
     pub realizor: Option<Realizor>,
 }
 
-#[derive(AnchorSerialize, AnchorDeserialize, Clone, Debug)]
+#[derive(TrezoaAnchorSerialize, TrezoaAnchorDeserialize, Clone, Debug)]
 pub struct Realizor {
     /// Program to invoke to check a realization condition. This program must
     /// implement the `RealizeLock` trait.
@@ -360,7 +360,7 @@ pub struct Realizor {
     pub metadata: Pubkey,
 }
 
-#[derive(AnchorSerialize, AnchorDeserialize, PartialEq, Default, Copy, Clone)]
+#[derive(TrezoaAnchorSerialize, TrezoaAnchorDeserialize, PartialEq, Default, Copy, Clone)]
 pub struct WhitelistEntry {
     pub program_id: Pubkey,
 }
@@ -476,7 +476,7 @@ pub fn whitelist_relay_cpi<'info>(
     let signer = &[&seeds[..]];
     let mut accounts = transfer.to_account_infos();
     accounts.extend_from_slice(&remaining_accounts);
-    solana_program::program::invoke_signed(&relay_instruction, &accounts, signer)
+    trezoa_program::program::invoke_signed(&relay_instruction, &accounts, signer)
         .map_err(Into::into)
 }
 

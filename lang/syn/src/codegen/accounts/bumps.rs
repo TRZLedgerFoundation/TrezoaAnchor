@@ -6,8 +6,8 @@ use std::fmt::Display;
 
 use super::constraints;
 
-pub fn generate_bumps_name<T: Display>(anchor_ident: &T) -> Ident {
-    Ident::new(&format!("{anchor_ident}Bumps"), Span::call_site())
+pub fn generate_bumps_name<T: Display>(trezoaanchor_ident: &T) -> Ident {
+    Ident::new(&format!("{trezoaanchor_ident}Bumps"), Span::call_site())
 }
 
 pub fn generate(accs: &AccountsStruct) -> proc_macro2::TokenStream {
@@ -85,7 +85,7 @@ pub fn generate(accs: &AccountsStruct) -> proc_macro2::TokenStream {
             }
         }
 
-        impl<#combined_generics> anchor_lang::Bumps for #name<#struct_generics> #where_clause {
+        impl<#combined_generics> trezoaanchor-lang::Bumps for #name<#struct_generics> #where_clause {
             type Bumps = #bumps_name;
         }
     }

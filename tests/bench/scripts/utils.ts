@@ -9,11 +9,11 @@ export type Version = "unreleased" | (`${number}.${number}.${number}` & {});
 type Bench = {
   [key: string]: {
     /**
-     * Storing Solana version used in the release to:
+     * Storing Trezoa version used in the release to:
      * - Be able to build older versions
      * - Adjust for the changes in platform-tools
      */
-    solanaVersion: Version;
+    trezoaVersion: Version;
     /** Benchmark results for a version */
     result: BenchResult;
   };
@@ -48,8 +48,8 @@ export const THRESHOLD_PERCENTAGE = 1;
 /** Path to the benchmark Markdown files */
 export const BENCH_DIR_PATH = path.join("..", "..", "bench");
 
-/** Command line argument for Anchor version */
-export const ANCHOR_VERSION_ARG = "--anchor-version";
+/** Command line argument for TrezoaAnchor version */
+export const ANCHOR_VERSION_ARG = "--trezoaanchor-version";
 
 /** Utility class to handle benchmark data related operations */
 export class BenchData {
@@ -175,7 +175,7 @@ export class BenchData {
           throw new Error(
             [
               `Key '${name}' has changed more than ${treshold}% but is not saved.`,
-              "Run `anchor test --skip-lint` in tests/bench and commit the changes.",
+              "Run `trezoaanchor test --skip-lint` in tests/bench and commit the changes.",
             ].join(" ")
           );
         }
@@ -222,7 +222,7 @@ export class BenchData {
 
       // Only update markdown files on `unreleased` version
       if (version === "unreleased") {
-        spawn("anchor", ["run", "sync-markdown"]);
+        spawn("trezoaanchor", ["run", "sync-markdown"]);
       }
     }
   }
@@ -304,10 +304,10 @@ export class Markdown {
     await fs.writeFile(this.#path, this.#text);
   }
 
-  /** Change the version's content with the given `solanaVersion` and `table`. */
+  /** Change the version's content with the given `trezoaVersion` and `table`. */
   updateVersion(params: {
     version: Version;
-    solanaVersion: string;
+    trezoaVersion: string;
     table: MarkdownTable;
   }) {
     const md = this.#text;
@@ -329,7 +329,7 @@ export class Markdown {
 
     this.#text =
       md.slice(0, titleContentStartIndex) +
-      `Solana version: ${params.solanaVersion}\n\n` +
+      `Trezoa version: ${params.trezoaVersion}\n\n` +
       md.slice(tableStartIndex, tableRowStartIndex - 1) +
       params.table.toString() +
       md.slice(tableEndIndex + 1);
@@ -474,7 +474,7 @@ export class LockFile {
     } catch {
       // Lock file doesn't exist
       // Run the tests to create the lock file
-      const result = runAnchorTest();
+      const result = runTrezoaAnchorTest();
 
       // Check failure
       if (result.status !== 0) {
@@ -493,43 +493,43 @@ export class LockFile {
 
 /** Utility class to manage versions */
 export class VersionManager {
-  /** Set the active Solana version with `solana-install init` command. */
-  static setSolanaVersion(version: Version) {
-    const activeVersion = this.#getSolanaVersion();
+  /** Set the active Trezoa version with `trezoaanchor-install init` command. */
+  static setTrezoaVersion(version: Version) {
+    const activeVersion = this.#getTrezoaVersion();
     if (activeVersion === version) return;
 
-    // `solana-install` is renamed to `agave-install` in Solana v2
-    // https://github.com/anza-xyz/agave/wiki/Agave-Transition
+    // `trezoaanchor-install` is renamed to `agave-install` in Trezoa v2
+    // https://github.com/trezoa-xyz/agave/wiki/Trezoa-team-Transition
     const cmdName = activeVersion.startsWith("2")
       ? "agave-install"
-      : "solana-install";
+      : "trezoaanchor-install";
     spawn(cmdName, ["init", version], {
       logOutput: true,
-      throwOnError: { msg: `Failed to set Solana version to ${version}` },
+      throwOnError: { msg: `Failed to set Trezoa version to ${version}` },
     });
   }
 
-  /** Get the active Solana version. */
-  static #getSolanaVersion() {
-    // `solana-cli 1.14.16 (src:0fb2ffda; feat:3488713414)\n`
-    const result = execSync("solana --version");
+  /** Get the active Trezoa version. */
+  static #getTrezoaVersion() {
+    // `trezoa-cli 1.14.16 (src:0fb2ffda; feat:3488713414)\n`
+    const result = execSync("trezoa --version");
     const output = Buffer.from(result.buffer).toString();
-    const solanaVersion = /(\d\.\d{1,3}\.\d{1,3})/.exec(output)![1].trim();
-    return solanaVersion as Version;
+    const trezoaVersion = /(\d\.\d{1,3}\.\d{1,3})/.exec(output)![1].trim();
+    return trezoaVersion as Version;
   }
 }
 
 /**
- * Get Anchor version from the passed arguments.
+ * Get TrezoaAnchor version from the passed arguments.
  *
  * Defaults to `unreleased`.
  */
 export const getVersionFromArgs = () => {
   const args = process.argv;
-  const anchorVersionArgIndex = args.indexOf(ANCHOR_VERSION_ARG);
-  return anchorVersionArgIndex === -1
+  const trezoaanchorVersionArgIndex = args.indexOf(ANCHOR_VERSION_ARG);
+  return trezoaanchorVersionArgIndex === -1
     ? "unreleased"
-    : (args[anchorVersionArgIndex + 1] as Version);
+    : (args[trezoaanchorVersionArgIndex + 1] as Version);
 };
 
 /** Spawn a blocking process. */
@@ -550,8 +550,8 @@ export const spawn = (
   return result;
 };
 
-/** Run `anchor test` command. */
-export const runAnchorTest = () => spawn("anchor", ["test", "--skip-lint"]);
+/** Run `trezoaanchor test` command. */
+export const runTrezoaAnchorTest = () => spawn("trezoaanchor", ["test", "--skip-lint"]);
 
 /** Format number with `en-US` locale. */
 export const formatNumber = (number: number) => number.toLocaleString("en-US");

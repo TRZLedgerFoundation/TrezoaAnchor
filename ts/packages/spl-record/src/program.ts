@@ -1,15 +1,15 @@
-import { PublicKey } from "@solana/web3.js";
-import { Program, AnchorProvider } from "@coral-xyz/anchor";
+import { PublicKey } from "@trezoa/web3.js";
+import { Program, TrezoaAnchorProvider } from "@trezoa-xyz/trezoaanchor";
 
 import { SplRecordCoder } from "./coder";
 
-export const SPL_RECORD_PROGRAM_ID = new PublicKey(
+export const TPL_RECORD_PROGRAM_ID = new PublicKey(
   "ReciQBw6sQKH9TVVJQDnbnJ5W7FP539tPHjZhRF4E9r"
 );
 
 interface GetProgramParams {
   programId?: PublicKey;
-  provider?: AnchorProvider;
+  provider?: TrezoaAnchorProvider;
 }
 
 export function splRecordProgram(
@@ -17,7 +17,7 @@ export function splRecordProgram(
 ): Program<SplRecord> {
   return new Program<SplRecord>(
     IDL,
-    params?.programId ?? SPL_RECORD_PROGRAM_ID,
+    params?.programId ?? TPL_RECORD_PROGRAM_ID,
     params?.provider,
     new SplRecordCoder(IDL)
   );

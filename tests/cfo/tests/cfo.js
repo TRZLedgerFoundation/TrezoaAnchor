@@ -1,10 +1,10 @@
 const { assert } = require("chai");
-const { Token } = require("@solana/spl-token");
-const anchor = require("@coral-xyz/anchor");
-const serumCmn = require("@project-serum/common");
-const { Market } = require("@project-serum/serum");
-const utf8 = anchor.utils.bytes.utf8;
-const { PublicKey, SystemProgram, Keypair, SYSVAR_RENT_PUBKEY } = anchor.web3;
+const { Token } = require("@trezoa/tpl-token");
+const trezoaanchor = require("@trezoa-xyz/trezoaanchor");
+const serumCmn = require("@trezoa-serum/common");
+const { Market } = require("@trezoa-serum/serum");
+const utf8 = trezoaanchor.utils.bytes.utf8;
+const { PublicKey, SystemProgram, Keypair, SYSVAR_RENT_PUBKEY } = trezoaanchor.web3;
 const utils = require("./utils");
 const { setupStakePool } = require("./utils/stake");
 
@@ -23,12 +23,12 @@ const SYSVAR_INSTRUCTIONS_PUBKEY = new PublicKey(
 const FEES = "6160355581";
 
 describe("cfo", () => {
-  const provider = anchor.AnchorProvider.env();
-  anchor.setProvider(provider);
+  const provider = trezoaanchor.TrezoaAnchorProvider.env();
+  trezoaanchor.setProvider(provider);
 
-  const program = anchor.workspace.Cfo;
+  const program = trezoaanchor.workspace.Cfo;
   // hack so we don't have to update serum-common library
-  // to the new AnchorProvider class and Provider interface
+  // to the new TrezoaAnchorProvider class and Provider interface
   program.provider.send = provider.sendAndConfirm;
   const sweepAuthority = program.provider.wallet.publicKey;
   let officer, srmVault, usdcVault, bVault, stake, treasury;
@@ -380,7 +380,7 @@ describe("cfo", () => {
     const usdcVaultBefore = await USDC_TOKEN_CLIENT.getAccountInfo(usdcVault);
 
     const minExchangeRate = {
-      rate: new anchor.BN(0),
+      rate: new trezoaanchor.BN(0),
       fromDecimals: 6,
       quoteDecimals: 6,
       strict: false,
@@ -427,7 +427,7 @@ describe("cfo", () => {
     const usdcVaultBefore = await USDC_TOKEN_CLIENT.getAccountInfo(usdcVault);
 
     const minExchangeRate = {
-      rate: new anchor.BN(0),
+      rate: new trezoaanchor.BN(0),
       fromDecimals: 6,
       quoteDecimals: 6,
       strict: false,

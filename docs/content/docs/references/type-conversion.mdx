@@ -1,6 +1,6 @@
 ---
 title: Rust to JS Type Conversion
-description: Reference for how Anchor converts between Rust and TypeScript types
+description: Reference for how TrezoaAnchor converts between Rust and TypeScript types
 ---
 
 This reference shows to converts between Rust and TypeScript types.
@@ -18,7 +18,7 @@ This reference shows to converts between Rust and TypeScript types.
 | Rust                    | TypeScript  | Example             |
 | ----------------------- | ----------- | ------------------- |
 | `u8/u16/u32/i8/i16/i32` | `number`    | `99`                |
-| `u64/u128/i64/i128`     | `anchor.BN` | `new anchor.BN(99)` |
+| `u64/u128/i64/i128`     | `trezoaanchor.BN` | `new trezoaanchor.BN(99)` |
 | `f32/f64`               | `number`    | `1.0`               |
 
 ### Strings
@@ -93,6 +93,6 @@ const three = {
 ## Notes
 
 - Rust integers (`u8` through `i32`) map to JavaScript `number`
-- Larger integers (`u64` and above) use Anchor's `BN` type for precision
+- Larger integers (`u64` and above) use TrezoaAnchor's `BN` type for precision
 - Rust's `Option<T>` maps to TypeScript's union type with `null`/`undefined`
 - Structs and enums become JavaScript objects

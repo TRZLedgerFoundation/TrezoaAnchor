@@ -5,7 +5,7 @@ use semver::Version;
 use std::ffi::OsStr;
 
 #[derive(Parser)]
-#[clap(name = "avm", about = "Anchor version manager", version)]
+#[clap(name = "avm", about = "TrezoaAnchor version manager", version)]
 pub struct Cli {
     #[clap(subcommand)]
     command: Commands,
@@ -13,17 +13,17 @@ pub struct Cli {
 
 #[derive(Subcommand)]
 pub enum Commands {
-    #[clap(about = "Use a specific version of Anchor")]
+    #[clap(about = "Use a specific version of TrezoaAnchor")]
     Use {
         #[clap(value_parser = parse_version, required = false)]
         version: Option<Version>,
     },
-    #[clap(about = "Install a version of Anchor", alias = "i")]
+    #[clap(about = "Install a version of TrezoaAnchor", alias = "i")]
     Install {
-        /// Anchor version or commit, conflicts with `--path`
+        /// TrezoaAnchor version or commit, conflicts with `--path`
         #[clap(required_unless_present = "path")]
         version_or_commit: Option<String>,
-        /// Path to local anchor repo, conflicts with `version_or_commit`
+        /// Path to local trezoaanchor repo, conflicts with `version_or_commit`
         #[clap(long, conflicts_with = "version_or_commit")]
         path: Option<String>,
         #[clap(long)]
@@ -34,17 +34,17 @@ pub enum Commands {
         /// Build from source code rather than downloading prebuilt binaries
         from_source: bool,
         #[clap(long)]
-        /// Install `solana-verify` as well
+        /// Install `trezoaanchor-verify` as well
         verify: bool,
     },
-    #[clap(about = "Uninstall a version of Anchor")]
+    #[clap(about = "Uninstall a version of TrezoaAnchor")]
     Uninstall {
         #[clap(value_parser = parse_version)]
         version: Version,
     },
-    #[clap(about = "List available versions of Anchor", alias = "ls")]
+    #[clap(about = "List available versions of TrezoaAnchor", alias = "ls")]
     List {},
-    #[clap(about = "Update to the latest Anchor version")]
+    #[clap(about = "Update to the latest TrezoaAnchor version")]
     Update {},
     #[clap(about = "Generate shell completions for AVM")]
     Completions {
@@ -102,16 +102,16 @@ pub fn entry(opts: Cli) -> Result<()> {
     }
 }
 
-fn anchor_proxy() -> Result<()> {
+fn trezoaanchor_proxy() -> Result<()> {
     let args = std::env::args().skip(1).collect::<Vec<String>>();
 
     let version = avm::current_version()
-        .map_err(|_e| anyhow::anyhow!("Anchor version not set. Please run `avm use latest`."))?;
+        .map_err(|_e| anyhow::anyhow!("TrezoaAnchor version not set. Please run `avm use latest`."))?;
 
     let binary_path = avm::version_binary_path(&version);
     if !binary_path.exists() {
         anyhow::bail!(
-            "anchor-cli {} not installed. Please run `avm use {}`.",
+            "trezoaanchor-cli {} not installed. Please run `avm use {}`.",
             version,
             version
         );
@@ -129,7 +129,7 @@ fn anchor_proxy() -> Result<()> {
         )
         .spawn()?
         .wait_with_output()
-        .expect("Failed to run anchor-cli");
+        .expect("Failed to run trezoaanchor-cli");
 
     if !exit.status.success() {
         std::process::exit(exit.status.code().unwrap_or(1));
@@ -139,14 +139,14 @@ fn anchor_proxy() -> Result<()> {
 }
 
 fn main() -> Result<()> {
-    // If the binary is named `anchor` then run the proxy.
+    // If the binary is named `trezoaanchor` then run the proxy.
     if let Some(stem) = std::env::args()
         .next()
         .as_ref()
         .and_then(|s| std::path::Path::new(s).file_stem().and_then(OsStr::to_str))
     {
-        if stem == "anchor" {
-            return anchor_proxy();
+        if stem == "trezoaanchor" {
+            return trezoaanchor_proxy();
         }
     }
 

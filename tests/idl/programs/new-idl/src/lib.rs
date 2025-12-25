@@ -1,4 +1,4 @@
-use anchor_lang::prelude::*;
+use trezoaanchor-lang::prelude::*;
 
 declare_id!("Newid11111111111111111111111111111111111111");
 
@@ -135,8 +135,8 @@ pub mod new_idl {
         Ok(())
     }
 
-    pub fn external_non_anchor(
-        ctx: Context<ExternalNonAnchor>,
+    pub fn external_non_trezoaanchor(
+        ctx: Context<ExternalNonTrezoaAnchor>,
         feature: wrapped::Feature,
     ) -> Result<()> {
         ctx.accounts.account.feature = feature;
@@ -144,7 +144,7 @@ pub mod new_idl {
     }
 }
 
-/// IDL test for the issue explained in https://github.com/coral-xyz/anchor/issues/3358
+/// IDL test for the issue explained in https://github.com/trezoa-xyz/trezoaanchor/issues/3358
 ///
 /// For example, using [`SimpleAccount`] and adding the full path at the end of a doc comment
 /// used to result in a false-positive when detecting conflicts.
@@ -225,10 +225,10 @@ pub struct StructAccount {
     pub tuple: TupleStruct,
 }
 
-#[derive(AnchorDeserialize, AnchorSerialize, Clone)]
+#[derive(TrezoaAnchorDeserialize, TrezoaAnchorSerialize, Clone)]
 pub struct UnitStruct;
 
-#[derive(AnchorSerialize, AnchorDeserialize, Clone, Copy, Debug, Eq, PartialEq)]
+#[derive(TrezoaAnchorSerialize, TrezoaAnchorDeserialize, Clone, Copy, Debug, Eq, PartialEq)]
 pub struct NamedStruct {
     pub u8: u8,
     pub u16: u16,
@@ -236,7 +236,7 @@ pub struct NamedStruct {
     pub u64: u64,
 }
 
-#[derive(AnchorDeserialize, AnchorSerialize, Clone)]
+#[derive(TrezoaAnchorDeserialize, TrezoaAnchorSerialize, Clone)]
 pub struct TupleStruct(u64, String);
 
 #[derive(Accounts)]
@@ -250,7 +250,7 @@ pub struct EnumAccount {
     pub full_enum: FullEnum,
 }
 
-#[derive(AnchorSerialize, AnchorDeserialize, Clone, Copy, Debug, Eq, PartialEq)]
+#[derive(TrezoaAnchorSerialize, TrezoaAnchorDeserialize, Clone, Copy, Debug, Eq, PartialEq)]
 pub enum FullEnum {
     Unit,
     Named { point_x: u64, point_y: u64 },
@@ -284,8 +284,8 @@ pub type AliasOptionVec<T> = Vec<Option<T>>;
 pub type AliasGenericConst<const N: usize> = [u32; N];
 pub type AliasMultipleGenericMixed<T, const N: usize> = Vec<[T; N]>;
 
-// TODO: Remove this declaration and automatically resolve it from `solana-program`.
-// Splitting `solana-program` into multiple parts in Solana v2.1 broke resolution of type
+// TODO: Remove this declaration and automatically resolve it from `trezoa-program`.
+// Splitting `trezoa-program` into multiple parts in Trezoa v2.1 broke resolution of type
 // aliases such as `UnixTimestamp` due to the resolution logic not being smart enough to figure
 // out where the declaration of the type comes from.
 pub type UnixTimestamp = i64;
@@ -318,7 +318,7 @@ pub struct FullPathAccount {
 mod some_module {
     use super::*;
 
-    #[derive(AnchorSerialize, AnchorDeserialize, Clone)]
+    #[derive(TrezoaAnchorSerialize, TrezoaAnchorDeserialize, Clone)]
     pub struct NamedStruct {
         pub data: u8,
     }
@@ -364,29 +364,29 @@ pub struct GenericAccountCustomStruct {
     pub field: GenericStruct<SomeStruct, 4>,
 }
 
-#[derive(AnchorSerialize, AnchorDeserialize, Clone)]
+#[derive(TrezoaAnchorSerialize, TrezoaAnchorDeserialize, Clone)]
 pub struct SomeStruct {
     pub field: u16,
 }
 
-/// Compilation check for the issue described in https://github.com/coral-xyz/anchor/issues/3520
+/// Compilation check for the issue described in https://github.com/trezoa-xyz/trezoaanchor/issues/3520
 // TODO: Use this from client-side (instead of hardcoding) once `program.constants` is supported
 const GENERIC_CONST: usize = 8;
 
-#[derive(AnchorSerialize, AnchorDeserialize, Clone, Debug)]
-pub struct GenericStruct<T: AnchorSerialize + AnchorDeserialize + Clone, const N: usize> {
+#[derive(TrezoaAnchorSerialize, TrezoaAnchorDeserialize, Clone, Debug)]
+pub struct GenericStruct<T: TrezoaAnchorSerialize + TrezoaAnchorDeserialize + Clone, const N: usize> {
     arr: [T; N],
     sub_field: SubGenericStruct<GENERIC_CONST, T, Vec<Option<T>>>,
 }
 
-#[derive(AnchorSerialize, AnchorDeserialize, Clone, Debug)]
-pub struct SubGenericStruct<const N: usize, T: AnchorSerialize + AnchorDeserialize + Clone, U: AnchorSerialize + AnchorDeserialize + Clone> {
+#[derive(TrezoaAnchorSerialize, TrezoaAnchorDeserialize, Clone, Debug)]
+pub struct SubGenericStruct<const N: usize, T: TrezoaAnchorSerialize + TrezoaAnchorDeserialize + Clone, U: TrezoaAnchorSerialize + TrezoaAnchorDeserialize + Clone> {
     sub_arr: [T; N],
     another: U,
 }
 
-#[derive(AnchorSerialize, AnchorDeserialize, Clone, Debug)]
-pub enum GenericEnum<T: AnchorSerialize + AnchorDeserialize + Clone> {
+#[derive(TrezoaAnchorSerialize, TrezoaAnchorDeserialize, Clone, Debug)]
+pub enum GenericEnum<T: TrezoaAnchorSerialize + TrezoaAnchorDeserialize + Clone> {
     Unit,
     Named { x: T },
     Tuple(Vec<T>),
@@ -404,43 +404,43 @@ pub struct AccountWithExternalField {
 }
 
 #[derive(Accounts)]
-pub struct ExternalNonAnchor<'info> {
+pub struct ExternalNonTrezoaAnchor<'info> {
     #[account(zero)]
-    pub account: Account<'info, AccountWithNonAnchorExternalField>,
+    pub account: Account<'info, AccountWithNonTrezoaAnchorExternalField>,
 }
 
 #[account]
-pub struct AccountWithNonAnchorExternalField {
+pub struct AccountWithNonTrezoaAnchorExternalField {
     pub feature: wrapped::Feature,
 }
 
-/// An example of wrapping a non-Anchor external type in order to include it in the IDL
+/// An example of wrapping a non-TrezoaAnchor external type in order to include it in the IDL
 mod wrapped {
     use super::*;
 
     #[cfg(feature = "idl-build")]
-    use anchor_lang::idl::types::*;
+    use trezoaanchor-lang::idl::types::*;
 
-    pub struct Feature(anchor_lang::solana_program::feature::Feature);
+    pub struct Feature(trezoaanchor-lang::trezoa_program::feature::Feature);
 
-    impl AnchorSerialize for Feature {
+    impl TrezoaAnchorSerialize for Feature {
         fn serialize<W: std::io::prelude::Write>(&self, writer: &mut W) -> std::io::Result<()> {
             self.0.activated_at.serialize(writer)?;
             Ok(())
         }
     }
 
-    impl AnchorDeserialize for Feature {
+    impl TrezoaAnchorDeserialize for Feature {
         fn deserialize_reader<R: std::io::prelude::Read>(reader: &mut R) -> std::io::Result<Self> {
-            Ok(Self(anchor_lang::solana_program::feature::Feature {
-                activated_at: AnchorDeserialize::deserialize_reader(reader)?,
+            Ok(Self(trezoaanchor-lang::trezoa_program::feature::Feature {
+                activated_at: TrezoaAnchorDeserialize::deserialize_reader(reader)?,
             }))
         }
     }
 
     impl Clone for Feature {
         fn clone(&self) -> Self {
-            Self(anchor_lang::solana_program::feature::Feature {
+            Self(trezoaanchor-lang::trezoa_program::feature::Feature {
                 activated_at: self.0.activated_at.clone(),
             })
         }

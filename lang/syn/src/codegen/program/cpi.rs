@@ -9,7 +9,7 @@ pub fn generate(program: &Program) -> proc_macro2::TokenStream {
         .ixs
         .iter()
         .map(|ix| {
-            let accounts_ident: proc_macro2::TokenStream = format!("crate::cpi::accounts::{}", &ix.anchor_ident.to_string()).parse().unwrap();
+            let accounts_ident: proc_macro2::TokenStream = format!("crate::cpi::accounts::{}", &ix.trezoaanchor_ident.to_string()).parse().unwrap();
             let cpi_method = {
                 let name = &ix.raw_method.sig.ident;
                 let name_str = name.to_string();
@@ -23,7 +23,7 @@ pub fn generate(program: &Program) -> proc_macro2::TokenStream {
                 let method_name = &ix.ident;
                 let args: Vec<&syn::PatType> = ix.args.iter().map(|arg| &arg.raw_arg).collect();
                 let discriminator = match generate_ix_variant_name(&name_str) {
-                    Ok(name) => quote! { <instruction::#name as anchor_lang::Discriminator>::DISCRIMINATOR },
+                    Ok(name) => quote! { <instruction::#name as trezoaanchor-lang::Discriminator>::DISCRIMINATOR },
                     Err(e) => {
                         let err = e.to_string();
                         return quote! { compile_error!(concat!("error generating ix variant name: `", #err, "`")) };
@@ -32,9 +32,9 @@ pub fn generate(program: &Program) -> proc_macro2::TokenStream {
                 let ret_type = &ix.returns.ty.to_token_stream();
                 let ix_cfgs = &ix.cfgs;
                 let (method_ret, maybe_return) = match ret_type.to_string().as_str() {
-                    "()" => (quote! {anchor_lang::Result<()> }, quote! { Ok(()) }),
+                    "()" => (quote! {trezoaanchor-lang::Result<()> }, quote! { Ok(()) }),
                     _ => (
-                        quote! { anchor_lang::Result<crate::cpi::Return::<#ret_type>> },
+                        quote! { trezoaanchor-lang::Result<crate::cpi::Return::<#ret_type>> },
                         quote! { Ok(crate::cpi::Return::<#ret_type> { phantom: crate::cpi::PhantomData }) }
                     )
                 };
@@ -42,30 +42,30 @@ pub fn generate(program: &Program) -> proc_macro2::TokenStream {
                 quote! {
                     #(#ix_cfgs)*
                     pub fn #method_name<'a, 'b, 'c, 'info>(
-                        ctx: anchor_lang::context::CpiContext<'a, 'b, 'c, 'info, #accounts_ident<'info>>,
+                        ctx: trezoaanchor-lang::context::CpiContext<'a, 'b, 'c, 'info, #accounts_ident<'info>>,
                         #(#args),*
                     ) -> #method_ret {
                         let ix = {
                             let ix = instruction::#ix_variant;
                             let mut data = Vec::with_capacity(256);
                             data.extend_from_slice(#discriminator);
-                            AnchorSerialize::serialize(&ix, &mut data)
-                                .map_err(|_| anchor_lang::error::ErrorCode::InstructionDidNotSerialize)?;
+                            TrezoaAnchorSerialize::serialize(&ix, &mut data)
+                                .map_err(|_| trezoaanchor-lang::error::ErrorCode::InstructionDidNotSerialize)?;
                             let accounts = ctx.to_account_metas(None);
-                            anchor_lang::solana_program::instruction::Instruction {
+                            trezoaanchor-lang::trezoa_program::instruction::Instruction {
                                 program_id: ctx.program_id,
                                 accounts,
                                 data,
                             }
                         };
                         let mut acc_infos = ctx.to_account_infos();
-                        anchor_lang::solana_program::program::invoke_signed(
+                        trezoaanchor-lang::trezoa_program::program::invoke_signed(
                             &ix,
                             &acc_infos,
                             ctx.signer_seeds,
                         ).map_or_else(
                             |e| Err(Into::into(e)),
-                            // Maybe handle Solana return data.
+                            // Maybe handle Trezoa return data.
                             |_| { #maybe_return }
                         )
                     }
@@ -89,9 +89,9 @@ pub fn generate(program: &Program) -> proc_macro2::TokenStream {
                 phantom: std::marker::PhantomData<T>
             }
 
-            impl<T: AnchorDeserialize> Return<T> {
+            impl<T: TrezoaAnchorDeserialize> Return<T> {
                 pub fn get(&self) -> T {
-                    let (_key, data) = anchor_lang::solana_program::program::get_return_data().unwrap();
+                    let (_key, data) = trezoaanchor-lang::trezoa_program::program::get_return_data().unwrap();
                     T::try_from_slice(&data).unwrap()
                 }
             }
@@ -108,11 +108,11 @@ pub fn generate_accounts(program: &Program) -> proc_macro2::TokenStream {
 
     // Go through instruction accounts.
     for ix in &program.ixs {
-        let anchor_ident = &ix.anchor_ident;
+        let trezoaanchor_ident = &ix.trezoaanchor_ident;
         // TODO: move to fn and share with accounts.rs.
         let macro_name = format!(
             "__cpi_client_accounts_{}",
-            anchor_ident.to_string().to_snake_case()
+            trezoaanchor_ident.to_string().to_snake_case()
         );
         let cfgs = &ix.cfgs;
         accounts.insert(macro_name, cfgs.as_slice());
@@ -131,7 +131,7 @@ pub fn generate_accounts(program: &Program) -> proc_macro2::TokenStream {
         .collect();
 
     quote! {
-        /// An Anchor generated module, providing a set of structs
+        /// An TrezoaAnchor generated module, providing a set of structs
         /// mirroring the structs deriving `Accounts`, where each field is
         /// an `AccountInfo`. This is useful for CPI.
         pub mod accounts {

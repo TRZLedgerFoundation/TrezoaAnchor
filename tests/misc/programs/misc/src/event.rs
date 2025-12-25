@@ -1,4 +1,4 @@
-use anchor_lang::prelude::*;
+use trezoaanchor-lang::prelude::*;
 
 pub const MAX_EVENT_SIZE: usize = 10;
 pub const MAX_EVENT_SIZE_U8: u8 = 11;

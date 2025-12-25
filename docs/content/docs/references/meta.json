@@ -3,7 +3,7 @@
   "pages": [
     "account-types",
     "account-constraints",
-    "anchor-toml",
+    "trezoaanchor-toml",
     "cli",
     "avm",
     "space",

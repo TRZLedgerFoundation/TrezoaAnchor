@@ -1,12 +1,12 @@
-import * as anchor from "@coral-xyz/anchor";
-import { Program } from "@coral-xyz/anchor";
+import * as trezoaanchor from "@trezoa-xyz/trezoaanchor";
+import { Program } from "@trezoa-xyz/trezoaanchor";
 import { assert } from "chai";
 
 import { Docs } from "../target/types/docs";
 
 describe("Docs", () => {
-  anchor.setProvider(anchor.AnchorProvider.env());
-  const program = anchor.workspace.docs as Program<Docs>;
+  trezoaanchor.setProvider(trezoaanchor.TrezoaAnchorProvider.env());
+  const program = trezoaanchor.workspace.docs as Program<Docs>;
 
   const instruction = program.idl.instructions.find(
     (i) => i.name === "testIdlDocParse"

@@ -2,13 +2,13 @@ use crate::{
     AsSigner, ClientError, Config, EventContext, EventUnsubscriber, Program,
     ProgramAccountsIterator, RequestBuilder,
 };
-use anchor_lang::{prelude::Pubkey, AccountDeserialize, Discriminator};
-use solana_commitment_config::CommitmentConfig;
-use solana_rpc_client::nonblocking::rpc_client::RpcClient as AsyncRpcClient;
-use solana_rpc_client_api::{config::RpcSendTransactionConfig, filter::RpcFilterType};
-use solana_signature::Signature;
-use solana_signer::Signer;
-use solana_transaction::Transaction;
+use trezoaanchor-lang::{prelude::Pubkey, AccountDeserialize, Discriminator};
+use trezoa_commitment_config::CommitmentConfig;
+use trezoa_rpc_client::nonblocking::rpc_client::RpcClient as AsyncRpcClient;
+use trezoa_rpc_client_api::{config::RpcSendTransactionConfig, filter::RpcFilterType};
+use trezoa_signature::Signature;
+use trezoa_signer::Signer;
+use trezoa_transaction::Transaction;
 use std::{marker::PhantomData, ops::Deref, sync::Arc};
 use tokio::sync::RwLock;
 
@@ -105,7 +105,7 @@ impl<C: Deref<Target = impl Signer> + Clone> Program<C> {
     /// Subscribe to program logs.
     ///
     /// Returns an [`EventUnsubscriber`] to unsubscribe and close connection gracefully.
-    pub async fn on<T: anchor_lang::Event + anchor_lang::AnchorDeserialize>(
+    pub async fn on<T: trezoaanchor-lang::Event + trezoaanchor-lang::TrezoaAnchorDeserialize>(
         &self,
         f: impl Fn(&EventContext, T) + Send + 'static,
     ) -> Result<EventUnsubscriber<'_>, ClientError> {

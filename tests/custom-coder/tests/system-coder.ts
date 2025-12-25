@@ -1,21 +1,21 @@
-import * as anchor from "@coral-xyz/anchor";
-import { Native } from "@coral-xyz/anchor";
-import { TOKEN_PROGRAM_ID } from "@solana/spl-token";
+import * as trezoaanchor from "@trezoa-xyz/trezoaanchor";
+import { Native } from "@trezoa-xyz/trezoaanchor";
+import { TOKEN_PROGRAM_ID } from "@trezoa/tpl-token";
 import {
   Keypair,
-  LAMPORTS_PER_SOL,
+  LAMPORTS_PER_TRZ,
   NONCE_ACCOUNT_LENGTH,
   PublicKey,
   SystemProgram,
   SYSVAR_RECENT_BLOCKHASHES_PUBKEY,
-} from "@solana/web3.js";
+} from "@trezoa/web3.js";
 import * as assert from "assert";
 import BN from "bn.js";
 
 describe("system-coder", () => {
   // Configure the client to use the local cluster.
-  const provider = anchor.AnchorProvider.env();
-  anchor.setProvider(provider);
+  const provider = trezoaanchor.TrezoaAnchorProvider.env();
+  trezoaanchor.setProvider(provider);
 
   // Client.
   const program = Native.system();
@@ -183,7 +183,7 @@ describe("system-coder", () => {
   });
 
   it("Transfers from account with seed", async () => {
-    const lamports = 1 * LAMPORTS_PER_SOL;
+    const lamports = 1 * LAMPORTS_PER_TRZ;
     const owner = SystemProgram.programId;
     const seed = "seeds3";
     const bobPublicKey = await PublicKey.createWithSeed(
@@ -224,7 +224,7 @@ describe("system-coder", () => {
   it("Transfers lamports", async () => {
     // arrange
     const receiverKeypair = Keypair.generate();
-    const lamports = 0.1 * LAMPORTS_PER_SOL;
+    const lamports = 0.1 * LAMPORTS_PER_TRZ;
     // act
     await program.methods
       .transfer(new BN(lamports))
@@ -361,7 +361,7 @@ describe("system-coder", () => {
     const space = NONCE_ACCOUNT_LENGTH;
     const lamports =
       await provider.connection.getMinimumBalanceForRentExemption(space);
-    const amount = 0.1 * LAMPORTS_PER_SOL;
+    const amount = 0.1 * LAMPORTS_PER_TRZ;
     const aliceBalanceBefore = (
       await program.provider.connection.getAccountInfo(aliceKeypair.publicKey)
     ).lamports;

@@ -9,7 +9,7 @@ pub fn gen_idl_print_fn_error(error: &Error) -> TokenStream {
     let idl = get_idl_module_path();
 
     let fn_name = format_ident!(
-        "__anchor_private_print_idl_error_{}",
+        "__trezoaanchor_private_print_idl_error_{}",
         error.ident.to_string().to_snake_case()
     );
     let offset = match &error.args {
@@ -17,7 +17,7 @@ pub fn gen_idl_print_fn_error(error: &Error) -> TokenStream {
             let offset = &args.offset;
             quote! { #offset }
         }
-        None => quote! { ::anchor_lang::error::ERROR_CODE_OFFSET },
+        None => quote! { ::trezoaanchor-lang::error::ERROR_CODE_OFFSET },
     };
 
     let error_codes = error

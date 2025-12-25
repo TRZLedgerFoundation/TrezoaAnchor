@@ -1,10 +1,10 @@
 [package]
-name = "anchor-client"
+name = "trezoaanchor-client"
 version = "0.32.1"
-authors = ["Anchor Maintainers <accounts@200ms.io>"]
+authors = ["TrezoaAnchor Maintainers <accounts@200ms.io>"]
 edition = "2021"
 license = "Apache-2.0"
-description = "An RPC client to interact with Anchor programs"
+description = "An RPC client to interact with TrezoaAnchor programs"
 
 [package.metadata.docs.rs]
 all-features = true
@@ -16,22 +16,22 @@ debug = []
 mock = []
 
 [dependencies]
-anchor-lang = { path = "../lang", version = "0.32.1" }
+trezoaanchor-lang = { path = "../lang", version = "0.32.1" }
 anyhow = "1"
 futures = "0.3"
 regex = "1"
 serde = { version = "1", features = ["derive"] }
-solana-account.workspace = true
-solana-account-decoder.workspace = true
-solana-commitment-config.workspace = true
-solana-instruction.workspace = true
-solana-program.workspace = true
-solana-pubsub-client.workspace = true
-solana-rpc-client.workspace = true
-solana-rpc-client-api.workspace = true
-solana-signature.workspace = true
-solana-signer.workspace = true
-solana-transaction.workspace = true
+trezoa-account.workspace = true
+trezoa-account-decoder.workspace = true
+trezoa-commitment-config.workspace = true
+trezoa-instruction.workspace = true
+trezoa-program.workspace = true
+trezoa-pubsub-client.workspace = true
+trezoa-rpc-client.workspace = true
+trezoa-rpc-client-api.workspace = true
+trezoa-signature.workspace = true
+trezoa-signer.workspace = true
+trezoa-transaction.workspace = true
 thiserror = "1"
 tokio = { version = "1", features = ["rt", "sync"] }
 url = "2"

@@ -2,9 +2,9 @@
 //! that no checks are performed
 
 use crate::error::ErrorCode;
-use crate::solana_program::account_info::AccountInfo;
-use crate::solana_program::instruction::AccountMeta;
-use crate::solana_program::pubkey::Pubkey;
+use crate::trezoa_program::account_info::AccountInfo;
+use crate::trezoa_program::instruction::AccountMeta;
+use crate::trezoa_program::pubkey::Pubkey;
 use crate::{Accounts, AccountsExit, Key, Result, ToAccountInfos, ToAccountMetas};
 use std::collections::BTreeSet;
 use std::ops::Deref;

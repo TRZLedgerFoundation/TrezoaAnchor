@@ -4,10 +4,10 @@
 
 const utils = require("../tests/utils");
 const fs = require("fs");
-const anchor = require("@coral-xyz/anchor");
-const provider = anchor.AnchorProvider.local();
+const trezoaanchor = require("@trezoa-xyz/trezoaanchor");
+const provider = trezoaanchor.TrezoaAnchorProvider.local();
 // hack so we don't have to update serum-common library
-// to the new AnchorProvider class and Provider interface
+// to the new TrezoaAnchorProvider class and Provider interface
 provider.send = provider.sendAndConfirm;
 
 async function main() {

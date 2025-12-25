@@ -1,4 +1,4 @@
-use anchor_lang_idl::types::Idl;
+use trezoaanchor-lang_idl::types::Idl;
 use quote::{format_ident, quote};
 
 pub fn gen_errors_mod(idl: &Idl) -> proc_macro2::TokenStream {
@@ -24,7 +24,7 @@ pub fn gen_errors_mod(idl: &Idl) -> proc_macro2::TokenStream {
         #[cfg(not(feature = "idl-build"))]
         pub mod errors {
 
-            #[anchor_lang::error_code(offset = 0)]
+            #[trezoaanchor-lang::error_code(offset = 0)]
             pub enum ProgramError {
                 #(#errors)*
             }

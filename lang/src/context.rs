@@ -1,8 +1,8 @@
 //! Data structures that are used to provide non-argument inputs to program endpoints
 
-use crate::solana_program::account_info::AccountInfo;
-use crate::solana_program::instruction::AccountMeta;
-use crate::solana_program::pubkey::Pubkey;
+use crate::trezoa_program::account_info::AccountInfo;
+use crate::trezoa_program::instruction::AccountMeta;
+use crate::trezoa_program::pubkey::Pubkey;
 use crate::{Accounts, Bumps, ToAccountInfos, ToAccountMetas};
 use std::fmt;
 
@@ -75,7 +75,7 @@ where
 /// ```ignore
 /// // Callee Program
 ///
-/// use anchor_lang::prelude::*;
+/// use trezoaanchor-lang::prelude::*;
 ///
 /// declare_id!("Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS");
 ///
@@ -118,7 +118,7 @@ where
 ///
 /// // Caller Program
 ///
-/// use anchor_lang::prelude::*;
+/// use trezoaanchor-lang::prelude::*;
 /// use callee::{self, program::Callee};
 ///
 /// declare_id!("Sxg7dBh5VLT8S1o6BqncZCPq9nhHHukjfVd6ohQJeAk");

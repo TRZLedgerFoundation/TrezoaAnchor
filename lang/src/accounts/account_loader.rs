@@ -2,9 +2,9 @@
 
 use crate::bpf_writer::BpfWriter;
 use crate::error::{Error, ErrorCode};
-use crate::solana_program::account_info::AccountInfo;
-use crate::solana_program::instruction::AccountMeta;
-use crate::solana_program::pubkey::Pubkey;
+use crate::trezoa_program::account_info::AccountInfo;
+use crate::trezoa_program::instruction::AccountMeta;
+use crate::trezoa_program::pubkey::Pubkey;
 use crate::{
     Accounts, AccountsClose, AccountsExit, Key, Owner, Result, ToAccountInfo, ToAccountInfos,
     ToAccountMetas, ZeroCopy,
@@ -42,7 +42,7 @@ use std::ops::DerefMut;
 ///
 /// # Example
 /// ```ignore
-/// use anchor_lang::prelude::*;
+/// use trezoaanchor-lang::prelude::*;
 ///
 /// declare_id!("Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS");
 ///

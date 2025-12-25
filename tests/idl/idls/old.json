@@ -300,7 +300,7 @@
       "name": "initializeWithValues2",
       "docs": [
         "a separate instruction due to initialize_with_values having too many arguments",
-        "https://github.com/solana-labs/solana/issues/23978"
+        "https://github.com/trezoa-xyz/trezoa/issues/23978"
       ],
       "accounts": [
         {

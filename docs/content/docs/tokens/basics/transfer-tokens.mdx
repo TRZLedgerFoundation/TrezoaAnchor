@@ -2,28 +2,28 @@
 title: Transfer Tokens
 description:
   Learn how to transfer tokens between token accounts through cross program
-  invocations (CPIs) in Anchor.
+  invocations (CPIs) in TrezoaAnchor.
 ---
 
 ## How to Transfer Tokens
 
 Transferring tokens involves moving tokens from one token account to another
 token account that share the same mint. This is done by invoking the
-[`transfer_checked`](https://github.com/solana-program/token/blob/main/program/src/instruction.rs#L1235-L1265)
+[`transfer_checked`](https://github.com/trezoa-program/token/blob/main/program/src/instruction.rs#L1235-L1265)
 instruction on a token program. Only the address specified as the owner
 (authority) of the source token account can transfer tokens out of the account.
 
 <Callout type="info">
   The [Token
-  Program](https://github.com/solana-program/token/blob/main/program/src/processor.rs#L229-L343)
+  Program](https://github.com/trezoa-program/token/blob/main/program/src/processor.rs#L229-L343)
   and [Token Extension
-  Program](https://github.com/solana-program/token-2022/blob/main/program/src/processor.rs#L290-L561)
+  Program](https://github.com/trezoa-program/token-2022/blob/main/program/src/processor.rs#L290-L561)
   share similar implementations to achieve the same functionality.
 </Callout>
 
 ## Examples
 
-To transfer tokens through an Anchor program, you need to make a cross program
+To transfer tokens through an TrezoaAnchor program, you need to make a cross program
 invocation (CPI) to the `transfer_checked` instruction on either the Token
 Program or Token Extension Program.
 
@@ -48,8 +48,8 @@ Token Program or Token Extension Program. This function requires:
    decimals. (e.g. if the mint has 2 decimals, amount of 100 = 1 token)
 
 ```rust title="lib.rs"
-use anchor_lang::prelude::*;
-use anchor_spl::token_interface::{self, TokenAccount, TokenInterface, TransferChecked};
+use trezoaanchor-lang::prelude::*;
+use trezoaanchor_spl::token_interface::{self, TokenAccount, TokenInterface, TransferChecked};
 
 declare_id!("3pX5NKLru1UBDVckynWQxsgnJeUN3N1viy36Gk9TSn8d");
 
@@ -152,8 +152,8 @@ defined within the program.
 <Tab value="Program">
 
 ```rust title="lib.rs"
-use anchor_lang::prelude::*;
-use anchor_spl::{
+use trezoaanchor-lang::prelude::*;
+use trezoaanchor_spl::{
     associated_token::AssociatedToken,
     token_interface::{self, Mint, MintTo, TokenAccount, TokenInterface, TransferChecked},
 };
@@ -260,33 +260,33 @@ pub struct TransferTokens<'info> {
 <Tab value="Client">
 
 ```ts title="test.ts"
-import * as anchor from "@coral-xyz/anchor";
-import { Program } from "@coral-xyz/anchor";
+import * as trezoaanchor from "@trezoa-xyz/trezoaanchor";
+import { Program } from "@trezoa-xyz/trezoaanchor";
 import { TokenExample } from "../target/types/token_example";
 import {
   TOKEN_2022_PROGRAM_ID,
   getAssociatedTokenAddress,
   getMint,
   getAccount,
-} from "@solana/spl-token";
+} from "@trezoa/tpl-token";
 
 describe("token-example", () => {
-  anchor.setProvider(anchor.AnchorProvider.env());
+  trezoaanchor.setProvider(trezoaanchor.TrezoaAnchorProvider.env());
 
-  const program = anchor.workspace.TokenExample as Program<TokenExample>;
-  const [mint, mintBump] = anchor.web3.PublicKey.findProgramAddressSync(
+  const program = trezoaanchor.workspace.TokenExample as Program<TokenExample>;
+  const [mint, mintBump] = trezoaanchor.web3.PublicKey.findProgramAddressSync(
     [Buffer.from("mint")],
     program.programId,
   );
 
-  const [token, tokenBump] = anchor.web3.PublicKey.findProgramAddressSync(
+  const [token, tokenBump] = trezoaanchor.web3.PublicKey.findProgramAddressSync(
     [Buffer.from("token")],
     program.programId,
   );
 
   it("Is initialized!", async () => {
     const tx = await program.methods
-      .createAndMintTokens(new anchor.BN(100))
+      .createAndMintTokens(new trezoaanchor.BN(100))
       .accounts({
         tokenProgram: TOKEN_2022_PROGRAM_ID,
       })

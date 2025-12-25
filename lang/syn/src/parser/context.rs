@@ -48,7 +48,7 @@ impl CrateContext {
         }
     }
 
-    // Perform Anchor safety checks on the parsed create
+    // Perform TrezoaAnchor safety checks on the parsed create
     pub fn safety_checks(&self) -> Result<()> {
         // Check all structs for unsafe field types, i.e. AccountInfo and UncheckedAccount.
         for ctx in self.modules.values() {
@@ -72,7 +72,7 @@ impl CrateContext {
         Please add a `/// CHECK:` doc comment explaining why no checks through types are necessary.
         Alternatively, for reasons like quick prototyping, you may disable the safety checks
         by using the `skip-lint` option.
-        See https://www.anchor-lang.com/docs/basics/program-structure#account-validation for more information.
+        See https://www.trezoaanchor-lang.com/docs/basics/program-structure#account-validation for more information.
                     "#,
                         ctx.file.canonicalize().unwrap().display(),
                         span.start().line,

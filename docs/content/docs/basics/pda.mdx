@@ -1,19 +1,19 @@
 ---
 title: Program Derived Address
 description:
-  Learn how to use Program Derived Addresses (PDAs) in Anchor programs to create
+  Learn how to use Program Derived Addresses (PDAs) in TrezoaAnchor programs to create
   deterministic account addresses.
 ---
 
-Program Derived Addresses (PDA) refer to a feature of Solana development that
+Program Derived Addresses (PDA) refer to a feature of Trezoa development that
 allows you to create a unique address derived deterministically from pre-defined
 inputs (seeds) and a program ID.
 
-This section will cover basic examples of how to use PDAs in an Anchor program.
+This section will cover basic examples of how to use PDAs in an TrezoaAnchor program.
 
-## Anchor PDA Constraints
+## TrezoaAnchor PDA Constraints
 
-When using PDAs in an Anchor program, you generally use Anchor's account
+When using PDAs in an TrezoaAnchor program, you generally use TrezoaAnchor's account
 constraints to define the seeds to derive the PDA. These constraints serve as
 security checks to ensure that the correct address is derived.
 
@@ -33,7 +33,7 @@ The constraints used to define the PDA seeds include:
 
 ### Usage Examples
 
-Below are examples demonstrating how to use PDA constraints in an Anchor
+Below are examples demonstrating how to use PDA constraints in an TrezoaAnchor
 program.
 
 <Tabs items={['seeds', 'bump', 'seeds::program', 'init']}>
@@ -212,7 +212,7 @@ pub struct CustomAccount {
 ## PDA seeds in the IDL
 
 Program Derived Address (PDA) seeds defined in the `seeds` constraint are
-included in the program's IDL file. This allows the Anchor client to
+included in the program's IDL file. This allows the TrezoaAnchor client to
 automatically resolve account addresses using these seeds when constructing
 instructions.
 
@@ -225,12 +225,12 @@ The program below defines a `pda_account` using a static seed (`b"hello_world"`)
 and the signer's public key as a dynamic seed.
 
 ```rust
-use anchor_lang::prelude::*;
+use trezoaanchor-lang::prelude::*;
 
 declare_id!("BZLiJ62bzRryYp9mRobz47uA66WDgtfTXhhgM25tJyx5");
 
 #[program]
-mod hello_anchor {
+mod hello_trezoaanchor {
     use super::*;
     pub fn test_instruction(ctx: Context<InstructionAccounts>) -> Result<()> {
         msg!("PDA: {}", ctx.accounts.pda_account.key());
@@ -263,10 +263,10 @@ The program's IDL file includes the PDA seeds defined in the `seeds` constraint.
 {
   "address": "BZLiJ62bzRryYp9mRobz47uA66WDgtfTXhhgM25tJyx5",
   "metadata": {
-    "name": "hello_anchor",
+    "name": "hello_trezoaanchor",
     "version": "0.1.0",
     "spec": "0.1.0",
-    "description": "Created with Anchor"
+    "description": "Created with TrezoaAnchor"
   },
   "instructions": [
     {
@@ -305,23 +305,23 @@ The program's IDL file includes the PDA seeds defined in the `seeds` constraint.
 </Tab>
 <Tab value="Client">
 
-The Anchor client can automatically resolve the PDA address using the IDL file.
+The TrezoaAnchor client can automatically resolve the PDA address using the IDL file.
 
-In the example below, Anchor automatically resolves the PDA address using the
+In the example below, TrezoaAnchor automatically resolves the PDA address using the
 provider wallet as the signer, and its public key as the dynamic seed for PDA
 derivation. This removes the need to explicitly derive the PDA when building the
 instruction.
 
 ```ts {13}
-import * as anchor from "@coral-xyz/anchor";
-import { Program } from "@coral-xyz/anchor";
-import { HelloAnchor } from "../target/types/hello_anchor";
+import * as trezoaanchor from "@trezoa-xyz/trezoaanchor";
+import { Program } from "@trezoa-xyz/trezoaanchor";
+import { HelloTrezoaAnchor } from "../target/types/hello_trezoaanchor";
 
-describe("hello_anchor", () => {
+describe("hello_trezoaanchor", () => {
   // Configure the client to use the local cluster.
-  anchor.setProvider(anchor.AnchorProvider.env());
+  trezoaanchor.setProvider(trezoaanchor.TrezoaAnchorProvider.env());
 
-  const program = anchor.workspace.HelloAnchor as Program<HelloAnchor>;
+  const program = trezoaanchor.workspace.HelloTrezoaAnchor as Program<HelloTrezoaAnchor>;
 
   it("Is initialized!", async () => {
     // Account address is automatically resolved using the IDL

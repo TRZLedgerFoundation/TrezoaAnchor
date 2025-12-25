@@ -52,28 +52,28 @@ const baseSettings: InkeepBaseSettings = {
   },
   transformSource: source => {
     const urlPatterns = {
-      anchorDocs: "https://www.anchor-lang.com/docs",
-      solanaDocs: "solana.com",
-      stackExchange: "https://solana.stackexchange.com/",
-      anzaDocs: "https://docs.anza.xyz/",
+      trezoaanchorDocs: "https://www.trezoaanchor-lang.com/docs",
+      trezoaDocs: "trezoa.com",
+      stackExchange: "https://trezoa.stackexchange.com/",
+      anzaDocs: "https://docs.trezoa.xyz/",
       github: "github.com",
     } as const;
 
     const tabConfig = {
-      [urlPatterns.anchorDocs]: {
-        tab: "Anchor Docs",
+      [urlPatterns.trezoaanchorDocs]: {
+        tab: "TrezoaAnchor Docs",
         icon: undefined,
         shouldOpenInNewTab: false,
         getBreadcrumbs: (crumbs: string[]) => crumbs,
       },
-      [urlPatterns.solanaDocs]: {
-        tab: "Solana Docs",
+      [urlPatterns.trezoaDocs]: {
+        tab: "Trezoa Docs",
         icon: undefined,
         shouldOpenInNewTab: true,
         getBreadcrumbs: (crumbs: string[]) => ["Docs", ...crumbs.slice(1)],
       },
       [urlPatterns.anzaDocs]: {
-        tab: "Anza Docs",
+        tab: "Trezoa-team Docs",
         icon: undefined,
         shouldOpenInNewTab: true,
         getBreadcrumbs: (crumbs: string[]) => crumbs,
@@ -143,19 +143,19 @@ const searchSettings: InkeepSearchSettings = {
   placeholder: "Search",
   tabs: [
     "All",
-    "Anchor Docs",
-    "Solana Docs",
-    "Anza Docs",
+    "TrezoaAnchor Docs",
+    "Trezoa Docs",
+    "Trezoa-team Docs",
     "Stack Exchange",
     "GitHub",
   ],
 };
 
 const aiChatSettings: InkeepAIChatSettings = {
-  chatSubjectName: "Anchor",
+  chatSubjectName: "TrezoaAnchor",
   introMessage:
-    "I'm an AI assistant trained on documentation, github repos, and other content. Ask me anything about `Solana`.",
-  aiAssistantAvatar: "https://solana.com/favicon.png",
+    "I'm an AI assistant trained on documentation, github repos, and other content. Ask me anything about `Trezoa`.",
+  aiAssistantAvatar: "https://trezoa.com/favicon.png",
   disclaimerSettings: {
     isEnabled: true,
     label: "",
@@ -178,7 +178,7 @@ const aiChatSettings: InkeepAIChatSettings = {
       name: "Stack Exchange",
       action: {
         type: "open_link",
-        url: "https://solana.stackexchange.com/",
+        url: "https://trezoa.stackexchange.com/",
       },
       icon: {
         builtIn: "FaStackOverflow",
@@ -186,9 +186,9 @@ const aiChatSettings: InkeepAIChatSettings = {
     },
   ],
   exampleQuestions: [
-    "How to quickly install Solana dependencies for local development?",
-    "What is the Anchor Framework?",
-    "How to build an Anchor Program?",
+    "How to quickly install Trezoa dependencies for local development?",
+    "What is the TrezoaAnchor Framework?",
+    "How to build an TrezoaAnchor Program?",
   ],
 };
 

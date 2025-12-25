@@ -1,6 +1,6 @@
-use anchor_lang::prelude::*;
+use trezoaanchor-lang::prelude::*;
 
-// Intentionally different program id than the one defined in Anchor.toml.
+// Intentionally different program id than the one defined in TrezoaAnchor.toml.
 declare_id!("4D6rvpR7TSPwmFottLGa5gpzMcJ76kN8bimQHV9rogjH");
 
 #[program]
@@ -13,7 +13,7 @@ pub mod duplicate_mutable_accounts {
     }
 
     // This one should FAIL if the same mutable account is passed twice
-    // (Anchor disallows duplicate mutable accounts here).
+    // (TrezoaAnchor disallows duplicate mutable accounts here).
     pub fn fails_duplicate_mutable(ctx: Context<FailsDuplicateMutable>) -> Result<()> {
         ctx.accounts.account1.count += 1;
         ctx.accounts.account2.count += 1;

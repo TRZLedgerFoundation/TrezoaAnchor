@@ -1,11 +1,11 @@
 ---
 title: Program IDL File
 description:
-  Learn about the Interface Description Language (IDL) file in Anchor, its
+  Learn about the Interface Description Language (IDL) file in TrezoaAnchor, its
   purpose, benefits, and how it simplifies program-client interactions
 ---
 
-An Interface Description Language (IDL) file for an Anchor program provides a
+An Interface Description Language (IDL) file for an TrezoaAnchor program provides a
 standardized JSON file describing the program's instructions and accounts. This
 file simplifies the process of integrating your on-chain program with client
 applications.
@@ -17,7 +17,7 @@ Key Benefits of the IDL:
 - Client Generation: Used to generate client code to interact with the program
 
 <Callout type="info">
-The `anchor build` command generates an IDL file located at
+The `trezoaanchor build` command generates an IDL file located at
 `/target/idl/<program-name>.json`.
 </Callout>
 
@@ -37,12 +37,12 @@ The program below includes an `initialize` instruction, specifying the accounts
 and parameters it requires.
 
 ```rust title="lib.rs"
-use anchor_lang::prelude::*;
+use trezoaanchor-lang::prelude::*;
 
 declare_id!("BYFW1vhC1ohxwRbYoLbAWs86STa25i9sD5uEusVjTYNd");
 
 #[program]
-mod hello_anchor {
+mod hello_trezoaanchor {
     use super::*;
     // [!code word:initialize]
     // [!code word:Initialize]
@@ -80,10 +80,10 @@ including its name, discriminator, accounts, and arguments.
 {
   "address": "BYFW1vhC1ohxwRbYoLbAWs86STa25i9sD5uEusVjTYNd",
   "metadata": {
-    "name": "hello_anchor",
+    "name": "hello_trezoaanchor",
     "version": "0.1.0",
     "spec": "0.1.0",
-    "description": "Created with Anchor"
+    "description": "Created with TrezoaAnchor"
   },
   "instructions": [
     {
@@ -151,17 +151,17 @@ The IDL file is then used to generate a client for interacting with the program,
 simplifying the process of invoking the program instruction.
 
 ```ts title="test.ts"
-import * as anchor from "@coral-xyz/anchor";
-import { Program, BN } from "@coral-xyz/anchor";
-import { HelloAnchor } from "../target/types/hello_anchor";
-import { Keypair } from "@solana/web3.js";
+import * as trezoaanchor from "@trezoa-xyz/trezoaanchor";
+import { Program, BN } from "@trezoa-xyz/trezoaanchor";
+import { HelloTrezoaAnchor } from "../target/types/hello_trezoaanchor";
+import { Keypair } from "@trezoa/web3.js";
 import assert from "assert";
 
-describe("hello_anchor", () => {
-  const provider = anchor.AnchorProvider.env();
-  anchor.setProvider(provider);
-  const wallet = provider.wallet as anchor.Wallet;
-  const program = anchor.workspace.HelloAnchor as Program<HelloAnchor>;
+describe("hello_trezoaanchor", () => {
+  const provider = trezoaanchor.TrezoaAnchorProvider.env();
+  trezoaanchor.setProvider(provider);
+  const wallet = provider.wallet as trezoaanchor.Wallet;
+  const program = trezoaanchor.workspace.HelloTrezoaAnchor as Program<HelloTrezoaAnchor>;
 
   it("initialize", async () => {
     // Generate keypair for the new account
@@ -208,12 +208,12 @@ The program below defines a `NewAccount` struct with a single `data` field of
 type `u64`.
 
 ```rust title="lib.rs"
-use anchor_lang::prelude::*;
+use trezoaanchor-lang::prelude::*;
 
 declare_id!("BYFW1vhC1ohxwRbYoLbAWs86STa25i9sD5uEusVjTYNd");
 
 #[program]
-mod hello_anchor {
+mod hello_trezoaanchor {
     use super::*;
     pub fn initialize(ctx: Context<Initialize>, data: u64) -> Result<()> {
         ctx.accounts.new_account.data = data;
@@ -249,10 +249,10 @@ including its name, discriminator, and fields.
 {
   "address": "BYFW1vhC1ohxwRbYoLbAWs86STa25i9sD5uEusVjTYNd",
   "metadata": {
-    "name": "hello_anchor",
+    "name": "hello_trezoaanchor",
     "version": "0.1.0",
     "spec": "0.1.0",
-    "description": "Created with Anchor"
+    "description": "Created with TrezoaAnchor"
   },
   "instructions": [
     {
@@ -316,17 +316,17 @@ The IDL file is then used to generate a client for interacting with the program,
 simplifying the process of fetching and deserializing account data.
 
 ```ts title="test.ts"
-import * as anchor from "@coral-xyz/anchor";
-import { Program, BN } from "@coral-xyz/anchor";
-import { HelloAnchor } from "../target/types/hello_anchor";
-import { Keypair } from "@solana/web3.js";
+import * as trezoaanchor from "@trezoa-xyz/trezoaanchor";
+import { Program, BN } from "@trezoa-xyz/trezoaanchor";
+import { HelloTrezoaAnchor } from "../target/types/hello_trezoaanchor";
+import { Keypair } from "@trezoa/web3.js";
 import assert from "assert";
 
-describe("hello_anchor", () => {
-  const provider = anchor.AnchorProvider.env();
-  anchor.setProvider(provider);
-  const wallet = provider.wallet as anchor.Wallet;
-  const program = anchor.workspace.HelloAnchor as Program<HelloAnchor>;
+describe("hello_trezoaanchor", () => {
+  const provider = trezoaanchor.TrezoaAnchorProvider.env();
+  trezoaanchor.setProvider(provider);
+  const wallet = provider.wallet as trezoaanchor.Wallet;
+  const program = trezoaanchor.workspace.HelloTrezoaAnchor as Program<HelloTrezoaAnchor>;
 
   it("initialize", async () => {
     // Generate keypair for the new account
@@ -362,16 +362,16 @@ describe("hello_anchor", () => {
 
 ## Discriminators
 
-Anchor assigns a unique 8 byte discriminator to each instruction and account
+TrezoaAnchor assigns a unique 8 byte discriminator to each instruction and account
 type in a program. These discriminators serve as identifiers to distinguish
 between different instructions or account types.
 
 The discriminator is generated using the first 8 bytes of the Sha256 hash of a
-prefix combined with the instruction or account name. As of Anchor v0.30, these
+prefix combined with the instruction or account name. As of TrezoaAnchor v0.30, these
 discriminators are included in the IDL file.
 
 <Callout type="info">
-  Note that when working with Anchor, you typically won't need to interact
+  Note that when working with TrezoaAnchor, you typically won't need to interact
   directly with these discriminators. This section is primarily to provide
   context on how the discriminator is generated and used.
 </Callout>
@@ -382,9 +382,9 @@ discriminators are included in the IDL file.
 The instruction discriminator is used by the program to determine which specific
 instruction to execute when called.
 
-When an Anchor program instruction is invoked, the discriminator is included as
+When an TrezoaAnchor program instruction is invoked, the discriminator is included as
 the first 8 bytes of the instruction data. This is done automatically by the
-Anchor client.
+TrezoaAnchor client.
 
 ```json title="IDL"
   "instructions": [
@@ -426,12 +426,12 @@ af = 175
 ed = 237
 ```
 
-You can find the implementation of the discriminator generation in the Anchor
+You can find the implementation of the discriminator generation in the TrezoaAnchor
 codebase
-[here](https://github.com/coral-xyz/anchor/blob/0e5285aecdf410fa0779b7cd09a47f235882c156/lang/syn/src/codegen/program/common.rs#L5-L19), 
-for the [`gen_discriminator` method here](https://github.com/coral-xyz/anchor/blob/0e5285aecdf410fa0779b7cd09a47f235882c156/lang/syn/src/codegen/program/common.rs#L21-L24),
+[here](https://github.com/trezoa-xyz/trezoaanchor/blob/0e5285aecdf410fa0779b7cd09a47f235882c156/lang/syn/src/codegen/program/common.rs#L5-L19), 
+for the [`gen_discriminator` method here](https://github.com/trezoa-xyz/trezoaanchor/blob/0e5285aecdf410fa0779b7cd09a47f235882c156/lang/syn/src/codegen/program/common.rs#L21-L24),
 which is used
-[here](https://github.com/coral-xyz/anchor/blob/0e5285aecdf410fa0779b7cd09a47f235882c156/lang/syn/src/codegen/program/instruction.rs#L33).
+[here](https://github.com/trezoa-xyz/trezoaanchor/blob/0e5285aecdf410fa0779b7cd09a47f235882c156/lang/syn/src/codegen/program/instruction.rs#L33).
 
 </Tab>
 <Tab value="Accounts">
@@ -478,13 +478,13 @@ b1 = 177
 e8 = 232
 ```
 
-You can find the implementation of the discriminator generation in the Anchor
+You can find the implementation of the discriminator generation in the TrezoaAnchor
 codebase
-[here](https://github.com/coral-xyz/anchor/blob/0e5285aecdf410fa0779b7cd09a47f235882c156/lang/attribute/account/src/lib.rs#L101-L117).
+[here](https://github.com/trezoa-xyz/trezoaanchor/blob/0e5285aecdf410fa0779b7cd09a47f235882c156/lang/attribute/account/src/lib.rs#L101-L117).
 
 <Callout type="info">
   Note that different programs using identical account names will generate the
-  same discriminator. When deserializing account data, Anchor programs will also
+  same discriminator. When deserializing account data, TrezoaAnchor programs will also
   check an account is owned by the expected program for a specified account
   type.
 </Callout>

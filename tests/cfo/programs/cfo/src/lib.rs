@@ -1,9 +1,9 @@
 // WIP. This program has been checkpointed and is not production ready.
 
-use anchor_lang::prelude::*;
-use anchor_lang::solana_program::sysvar::instructions as tx_instructions;
-use anchor_spl::dex::{self, Dex};
-use anchor_spl::token::{self, Mint, Token, TokenAccount};
+use trezoaanchor-lang::prelude::*;
+use trezoaanchor-lang::trezoa_program::sysvar::instructions as tx_instructions;
+use trezoaanchor_spl::dex::{self, Dex};
+use trezoaanchor_spl::token::{self, Mint, Token, TokenAccount};
 use lockup::program::Lockup;
 use registry::program::Registry;
 use registry::{Registrar, RewardVendorKind};
@@ -716,7 +716,7 @@ impl MarketAuth {
     pub const LEN: usize = 1;
 }
 
-#[derive(AnchorSerialize, AnchorDeserialize, Clone, Default)]
+#[derive(TrezoaAnchorSerialize, TrezoaAnchorDeserialize, Clone, Default)]
 pub struct OfficerBumps {
     pub bump: u8,     // 1
     pub srm: u8,      // 1
@@ -729,7 +729,7 @@ impl OfficerBumps {
     pub const LEN: usize = 5;
 }
 
-#[derive(AnchorSerialize, AnchorDeserialize, Default, Clone)]
+#[derive(TrezoaAnchorSerialize, TrezoaAnchorDeserialize, Default, Clone)]
 pub struct Distribution {
     burn: u8,     // 1
     stake: u8,    // 1
@@ -967,9 +967,9 @@ fn is_stake_reward_ready(accounts: &DropStakeReward) -> Result<()> {
 // Redefinitions.
 //
 // The following types are redefined so that they can be parsed into the IDL,
-// since Anchor doesn't yet support idl parsing across multiple crates.
+// since TrezoaAnchor doesn't yet support idl parsing across multiple crates.
 
-#[derive(AnchorSerialize, AnchorDeserialize)]
+#[derive(TrezoaAnchorSerialize, TrezoaAnchorDeserialize)]
 pub struct ExchangeRate {
     rate: u64,
     from_decimals: u8,

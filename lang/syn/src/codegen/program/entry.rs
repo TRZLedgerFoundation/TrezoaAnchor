@@ -6,19 +6,19 @@ pub fn generate(program: &Program) -> proc_macro2::TokenStream {
     let name: proc_macro2::TokenStream = program.name.to_string().to_camel_case().parse().unwrap();
     quote! {
         #[cfg(not(feature = "no-entrypoint"))]
-        anchor_lang::solana_program::entrypoint!(entry);
-        /// The Anchor codegen exposes a programming model where a user defines
+        trezoaanchor-lang::trezoa_program::entrypoint!(entry);
+        /// The TrezoaAnchor codegen exposes a programming model where a user defines
         /// a set of methods inside of a `#[program]` module in a way similar
         /// to writing RPC request handlers. The macro then generates a bunch of
         /// code wrapping these user defined methods into something that can be
-        /// executed on Solana.
+        /// executed on Trezoa.
         ///
         /// These methods fall into one category for now.
         ///
         /// Global methods - regular methods inside of the `#[program]`.
         ///
         /// Care must be taken by the codegen to prevent collisions between
-        /// methods in these different namespaces. For this reason, Anchor uses
+        /// methods in these different namespaces. For this reason, TrezoaAnchor uses
         /// a variant of sighash to perform method dispatch, rather than
         /// something like a simple enum variant discriminator.
         ///
@@ -34,22 +34,22 @@ pub fn generate(program: &Program) -> proc_macro2::TokenStream {
         ///   context, invoking the user's code, and finally running the exit
         ///   routine, which typically persists account changes.
         ///
-        /// The `entry` function here, defines the standard entry to a Solana
+        /// The `entry` function here, defines the standard entry to a Trezoa
         /// program, where execution begins.
-        pub fn entry<'info>(program_id: &Pubkey, accounts: &'info [AccountInfo<'info>], data: &[u8]) -> anchor_lang::solana_program::entrypoint::ProgramResult {
+        pub fn entry<'info>(program_id: &Pubkey, accounts: &'info [AccountInfo<'info>], data: &[u8]) -> trezoaanchor-lang::trezoa_program::entrypoint::ProgramResult {
             try_entry(program_id, accounts, data).map_err(|e| {
                 e.log();
                 e.into()
             })
         }
 
-        fn try_entry<'info>(program_id: &Pubkey, accounts: &'info [AccountInfo<'info>], data: &[u8]) -> anchor_lang::Result<()> {
-            #[cfg(feature = "anchor-debug")]
+        fn try_entry<'info>(program_id: &Pubkey, accounts: &'info [AccountInfo<'info>], data: &[u8]) -> trezoaanchor-lang::Result<()> {
+            #[cfg(feature = "trezoaanchor-debug")]
             {
-                msg!("anchor-debug is active");
+                msg!("trezoaanchor-debug is active");
             }
             if *program_id != ID {
-                return Err(anchor_lang::error::ErrorCode::DeclaredProgramIdMismatch.into());
+                return Err(trezoaanchor-lang::error::ErrorCode::DeclaredProgramIdMismatch.into());
             }
 
             dispatch(program_id, accounts, data)
@@ -63,7 +63,7 @@ pub fn generate(program: &Program) -> proc_macro2::TokenStream {
             #[derive(Clone)]
             pub struct #name;
 
-            impl anchor_lang::Id for #name {
+            impl trezoaanchor-lang::Id for #name {
                 fn id() -> Pubkey {
                     ID
                 }

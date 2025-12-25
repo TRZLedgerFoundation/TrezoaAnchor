@@ -1,7 +1,7 @@
-//! The typescript example serves to show how one would setup an Anchor
+//! The typescript example serves to show how one would setup an TrezoaAnchor
 //! workspace with TypeScript tests and migrations.
 
-use anchor_lang::prelude::*;
+use trezoaanchor-lang::prelude::*;
 
 declare_id!("Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS");
 
@@ -65,7 +65,7 @@ pub struct TestRelation<'info> {
     nested: Nested<'info>,
 }
 
-// Test https://github.com/solana-foundation/anchor/issues/4143
+// Test https://github.com/trz-ledger-foundation/trezoaanchor/issues/4143
 pub const ADDRESS_WITH_NUMBER_V2: Pubkey = pubkey!("D8cy77BBepLMngZx6ZukaTff5hCt1HrWyKk3Hnd9oitf");
 
 #[derive(Accounts)]

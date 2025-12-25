@@ -4,18 +4,18 @@ set -e
 # Generate temp directory
 tmp_dir=$(mktemp -d)
 
-# Fix external type resolution not working in CI due to missing `anchor-lang`
+# Fix external type resolution not working in CI due to missing `trezoaanchor-lang`
 # crates.io entry in runner machine.
 pushd $tmp_dir
 cargo new external-ci
 pushd external-ci
-cargo add anchor-lang
+cargo add trezoaanchor-lang
 cargo b
 popd
 popd
 
-# Run anchor test
-anchor test --skip-lint
+# Run trezoaanchor test
+trezoaanchor test --skip-lint
 
 # Generate IDLs
 ./generate.sh $tmp_dir

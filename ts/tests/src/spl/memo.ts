@@ -1,19 +1,19 @@
 import assert from "assert";
-import { splMemoProgram } from "@coral-xyz/spl-memo";
-import { Keypair } from "@solana/web3.js";
+import { splMemoProgram } from "@trezoa-xyz/spl-memo";
+import { Keypair } from "@trezoa/web3.js";
 
-import { SPL_MEMO_PROGRAM_ID } from "../constants";
+import { TPL_MEMO_PROGRAM_ID } from "../constants";
 import { confirmTx, getProvider, loadKp, test } from "../utils";
 
 export async function memoTests() {
   const provider = await getProvider();
   const program = splMemoProgram({
     provider,
-    programId: SPL_MEMO_PROGRAM_ID,
+    programId: TPL_MEMO_PROGRAM_ID,
   });
   const kp = await loadKp();
 
-  const msg = "Memo from Anchor";
+  const msg = "Memo from TrezoaAnchor";
   let memoTxHash: string;
 
   async function memo() {

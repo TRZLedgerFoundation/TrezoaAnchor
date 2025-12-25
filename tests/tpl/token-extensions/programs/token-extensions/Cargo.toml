@@ -1,0 +1,25 @@
+[package]
+name = "token-extensions"
+version = "0.1.0"
+description = "Created with TrezoaAnchor"
+edition = "2021"
+
+[lib]
+crate-type = ["cdylib", "lib"]
+name = "token_extensions"
+
+[features]
+no-entrypoint = []
+no-idl = []
+cpi = ["no-entrypoint"]
+default = []
+idl-build = ["trezoaanchor-lang/idl-build", "trezoaanchor-tpl/idl-build"]
+
+[dependencies]
+trezoaanchor-lang = { path = "../../../../../lang", features = ["init-if-needed"] }
+trezoaanchor-tpl = { path = "../../../../../spl" }
+trezoa-sysvar = "3"
+spl-tlv-account-resolution = "0.10.0"
+spl-transfer-hook-interface = "0.10.0"
+spl-type-length-value = "0.9"
+spl-pod = "0.7"

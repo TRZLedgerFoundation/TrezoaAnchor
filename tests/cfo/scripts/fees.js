@@ -2,14 +2,14 @@
 
 const process = require("process");
 const fs = require("fs");
-const anchor = require("@coral-xyz/anchor");
-const { Market, OpenOrders } = require("@project-serum/serum");
-const Account = anchor.web3.Account;
-const Program = anchor.Program;
-const provider = anchor.AnchorProvider.local();
+const trezoaanchor = require("@trezoa-xyz/trezoaanchor");
+const { Market, OpenOrders } = require("@trezoa-serum/serum");
+const Account = trezoaanchor.web3.Account;
+const Program = trezoaanchor.Program;
+const provider = trezoaanchor.TrezoaAnchorProvider.local();
 const secret = JSON.parse(fs.readFileSync("./scripts/market-maker.json"));
 const MARKET_MAKER = new Account(secret);
-const PublicKey = anchor.web3.PublicKey;
+const PublicKey = trezoaanchor.web3.PublicKey;
 
 const DEX_PID = new PublicKey("srmqPvymJeFKQ4zGQed1GFppgkRHL9kaELCbyksJtPX");
 

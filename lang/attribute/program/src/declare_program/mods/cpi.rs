@@ -1,4 +1,4 @@
-use anchor_lang_idl::types::Idl;
+use trezoaanchor-lang_idl::types::Idl;
 use heck::CamelCase;
 use quote::{format_ident, quote};
 
@@ -53,30 +53,30 @@ fn gen_cpi_instructions(idl: &Idl) -> proc_macro2::TokenStream {
             Some(ty) => {
                 let ty = convert_idl_type_to_syn_type(ty);
                 (
-                    quote! { anchor_lang::Result<Return::<#ty>> },
+                    quote! { trezoaanchor-lang::Result<Return::<#ty>> },
                     quote! { Ok(Return::<#ty> { phantom: std::marker::PhantomData }) },
                 )
             },
             None => (
-                quote! { anchor_lang::Result<()> },
+                quote! { trezoaanchor-lang::Result<()> },
                 quote! { Ok(()) },
             )
         };
 
         quote! {
             pub fn #method_name<'a, 'b, 'c, 'info>(
-                ctx: anchor_lang::context::CpiContext<'a, 'b, 'c, 'info, accounts::#accounts_ident #accounts_generic>,
+                ctx: trezoaanchor-lang::context::CpiContext<'a, 'b, 'c, 'info, accounts::#accounts_ident #accounts_generic>,
                 #(#args),*
             ) -> #ret_type {
                 let ix = {
                     let ix = internal::args::#arg_value;
                     let mut data = Vec::with_capacity(256);
                     data.extend_from_slice(internal::args::#accounts_ident::DISCRIMINATOR);
-                    AnchorSerialize::serialize(&ix, &mut data)
-                        .map_err(|_| anchor_lang::error::ErrorCode::InstructionDidNotSerialize)?;
+                    TrezoaAnchorSerialize::serialize(&ix, &mut data)
+                        .map_err(|_| trezoaanchor-lang::error::ErrorCode::InstructionDidNotSerialize)?;
 
                     let accounts = ctx.to_account_metas(None);
-                    anchor_lang::solana_program::instruction::Instruction {
+                    trezoaanchor-lang::trezoa_program::instruction::Instruction {
                         program_id: ctx.program_id.key(),
                         accounts,
                         data,
@@ -84,7 +84,7 @@ fn gen_cpi_instructions(idl: &Idl) -> proc_macro2::TokenStream {
                 };
 
                 let mut acc_infos = ctx.to_account_infos();
-                anchor_lang::solana_program::program::invoke_signed(
+                trezoaanchor-lang::trezoa_program::program::invoke_signed(
                     &ix,
                     &acc_infos,
                     ctx.signer_seeds,
@@ -107,9 +107,9 @@ fn gen_cpi_return_type() -> proc_macro2::TokenStream {
             phantom: std::marker::PhantomData<T>
         }
 
-        impl<T: AnchorDeserialize> Return<T> {
+        impl<T: TrezoaAnchorDeserialize> Return<T> {
             pub fn get(&self) -> T {
-                let (_key, data) = anchor_lang::solana_program::program::get_return_data().unwrap();
+                let (_key, data) = trezoaanchor-lang::trezoa_program::program::get_return_data().unwrap();
                 T::try_from_slice(&data).unwrap()
             }
         }

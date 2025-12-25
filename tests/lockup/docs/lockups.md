@@ -8,7 +8,7 @@ The **Lockup** program provides a simple mechanism to lockup tokens
 of any mint, and release those funds over time as defined by a vesting schedule.
 Although these lockups track a target **beneficiary**, who will eventually receive the
 funds upon vesting, a proper deployment of the program will ensure this **beneficiary**
-can never actually retrieve tokens before vesting. Funds are *never* in an SPL
+can never actually retrieve tokens before vesting. Funds are *never* in an TPL
 token wallet owned by a user, and are completely program controlled.
 
 ## Accounts
@@ -30,7 +30,7 @@ There are three parameters to specify:
 * Realizer - the program defining if and when vested tokens can be distributed to a beneficiary.
 
 Together these parameters form a linearly unlocked vesting schedule. For example,
-if one wanted to lock 100 SPL tokens that unlocked twice, 50 each time, over the next year, one
+if one wanted to lock 100 TPL tokens that unlocked twice, 50 each time, over the next year, one
 would use the following parameters (in JavaScript).
 
 ```javascript
@@ -84,7 +84,7 @@ a single admin, or the zero address--in which case the authority ceases to exist
 program will reject transactions signing from that address. Although the **authority** can never
 move a **Vesting** account's funds, whoever controls the **authority** key
 controls the whitelist. So when using the **Lockup** program, one should always be
-cognizant of its whitelist governance, which ultimately anchors one's trust in the program,
+cognizant of its whitelist governance, which ultimately trezoaanchors one's trust in the program,
 if any at all.
 
 ## Creating a Whitelisted Program

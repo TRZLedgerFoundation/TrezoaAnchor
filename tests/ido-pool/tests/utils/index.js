@@ -1,11 +1,11 @@
-const spl = require("@solana/spl-token");
-const anchor = require("@coral-xyz/anchor");
-const serumCmn = require("@project-serum/common");
-const TokenInstructions = require("@project-serum/serum").TokenInstructions;
+const spl = require("@trezoa/tpl-token");
+const trezoaanchor = require("@trezoa-xyz/trezoaanchor");
+const serumCmn = require("@trezoa-serum/common");
+const TokenInstructions = require("@trezoa-serum/serum").TokenInstructions;
 
-// TODO: remove this constant once @project-serum/serum uses the same version
-//       of @solana/web3.js as anchor (or switch packages).
-const TOKEN_PROGRAM_ID = new anchor.web3.PublicKey(
+// TODO: remove this constant once @trezoa-serum/serum uses the same version
+//       of @trezoa/web3.js as trezoaanchor (or switch packages).
+const TOKEN_PROGRAM_ID = new trezoaanchor.web3.PublicKey(
   TokenInstructions.TOKEN_PROGRAM_ID.toString()
 );
 

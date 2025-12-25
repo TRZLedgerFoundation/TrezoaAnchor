@@ -4,7 +4,7 @@
     "name": "amm_v3",
     "version": "0.1.0",
     "spec": "0.1.0",
-    "description": "Anchor client and source for Raydium concentrated liquidity AMM"
+    "description": "TrezoaAnchor client and source for Raydium concentrated liquidity AMM"
   },
   "instructions": [
     {
@@ -177,14 +177,14 @@
         {
           "name": "token_program",
           "docs": [
-            "The SPL program to perform token transfers"
+            "The TPL program to perform token transfers"
           ],
           "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
         },
         {
           "name": "token_program_2022",
           "docs": [
-            "The SPL program 2022 to perform token transfers"
+            "The TPL program 2022 to perform token transfers"
           ],
           "address": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb"
         }
@@ -286,14 +286,14 @@
         {
           "name": "token_program",
           "docs": [
-            "The SPL program to perform token transfers"
+            "The TPL program to perform token transfers"
           ],
           "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
         },
         {
           "name": "token_program_2022",
           "docs": [
-            "The SPL program 2022 to perform token transfers"
+            "The TPL program 2022 to perform token transfers"
           ],
           "address": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb"
         }
@@ -1011,7 +1011,7 @@
         {
           "name": "token_program",
           "docs": [
-            "SPL program to transfer out tokens"
+            "TPL program to transfer out tokens"
           ],
           "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
         }
@@ -1159,7 +1159,7 @@
         {
           "name": "token_program",
           "docs": [
-            "SPL program to transfer out tokens"
+            "TPL program to transfer out tokens"
           ],
           "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
         },
@@ -2941,7 +2941,7 @@
         {
           "name": "token_program",
           "docs": [
-            "SPL program for token transfers"
+            "TPL program for token transfers"
           ],
           "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
         },
@@ -3016,14 +3016,14 @@
         {
           "name": "token_program",
           "docs": [
-            "SPL program for token transfers"
+            "TPL program for token transfers"
           ],
           "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
         },
         {
           "name": "token_program_2022",
           "docs": [
-            "SPL program 2022 for token transfers"
+            "TPL program 2022 for token transfers"
           ],
           "address": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb"
         },
@@ -3129,14 +3129,14 @@
         {
           "name": "token_program",
           "docs": [
-            "SPL program for token transfers"
+            "TPL program for token transfers"
           ],
           "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
         },
         {
           "name": "token_program_2022",
           "docs": [
-            "SPL program 2022 for token transfers"
+            "TPL program 2022 for token transfers"
           ],
           "address": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb"
         },

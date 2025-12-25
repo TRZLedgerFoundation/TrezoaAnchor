@@ -1,20 +1,20 @@
 ---
 title: Local Development
 description:
-  Learn how to build Solana programs using the Anchor framework on your local
+  Learn how to build Trezoa programs using the TrezoaAnchor framework on your local
   machine.
 ---
 
-The Anchor framework is a tool that simplifies the process of building Solana
+The TrezoaAnchor framework is a tool that simplifies the process of building Trezoa
 programs. Whether you're new to blockchain development or an experienced
-programmer, Anchor simplifies the process of writing, testing, and deploying
-Solana programs.
+programmer, TrezoaAnchor simplifies the process of writing, testing, and deploying
+Trezoa programs.
 
 In this section, we'll walk through:
 
-- Creating a new Anchor project
+- Creating a new TrezoaAnchor project
 - Building and testing your program
-- Deploying to Solana clusters
+- Deploying to Trezoa clusters
 - Understanding the project file structure
 
 ## Prerequisites
@@ -24,26 +24,26 @@ For detailed installation instructions, visit the
 
 Before you begin, ensure you have the following installed:
 
-- Rust: The programming language for building Solana programs.
-- Solana CLI: Command-line tool for Solana development.
-- Anchor CLI: Command-line tool for the Anchor framework.
+- Rust: The programming language for building Trezoa programs.
+- Trezoa CLI: Command-line tool for Trezoa development.
+- TrezoaAnchor CLI: Command-line tool for the TrezoaAnchor framework.
 
-To verify Anchor CLI installation, open your terminal and run:
+To verify TrezoaAnchor CLI installation, open your terminal and run:
 
 ```shell filename="Terminal"
-anchor --version
+trezoaanchor --version
 ```
 
 Expected output:
 
 ```shell filename="Terminal"
-anchor-cli 0.32.1
+trezoaanchor-cli 0.32.1
 ```
 
 ## Getting Started
 
 This section covers the basic steps to create, build, and test your first local
-Anchor program.
+TrezoaAnchor program.
 
 <Steps>
 
@@ -51,12 +51,12 @@ Anchor program.
 
 ### Create a new Project
 
-To start a new project, use the `anchor init` command followed by your project's
+To start a new project, use the `trezoaanchor init` command followed by your project's
 name. This command creates a new directory with the specified name and sets up a
 default program and test file.
 
 ```shell filename="Terminal"
-anchor init my-project
+trezoaanchor init my-project
 ```
 
 Navigate to the new project directory and open it in your code editor.
@@ -65,7 +65,7 @@ Navigate to the new project directory and open it in your code editor.
 cd my-project
 ```
 
-By default, Anchor generates a modular program structure to promote better code
+By default, TrezoaAnchor generates a modular program structure to promote better code
 organization and maintainability. The program files are organized as follows:
 
 - `/programs/my-project/src/lib.rs` - Main entry point with module declarations
@@ -91,7 +91,7 @@ pub mod error;
 pub mod instructions;
 pub mod state;
 
-use anchor_lang::prelude::*;
+use trezoaanchor-lang::prelude::*;
 
 pub use constants::*;
 pub use instructions::*;
@@ -112,7 +112,7 @@ pub mod my_project {
 **Instruction handler** (`instructions/initialize.rs`):
 
 ```rust filename="instructions/initialize.rs"
-use anchor_lang::prelude::*;
+use trezoaanchor-lang::prelude::*;
 
 #[derive(Accounts)]
 pub struct Initialize {}
@@ -126,7 +126,7 @@ pub fn handler(ctx: Context<Initialize>) -> Result<()> {
 <Callout type="info">
 
 For simpler projects or quick prototyping, you can use the single-file template
-with `anchor init --template single`. However, the modular structure is
+with `trezoaanchor init --template single`. However, the modular structure is
 recommended for production code as it improves code organization, readability,
 and maintainability.
 
@@ -144,15 +144,15 @@ This file demonstrates how to invoke the default program's `initialize`
 instruction in Typescript.
 
 ```ts filename="my-project.ts"
-import * as anchor from "@coral-xyz/anchor";
-import { Program } from "@coral-xyz/anchor";
+import * as trezoaanchor from "@trezoa-xyz/trezoaanchor";
+import { Program } from "@trezoa-xyz/trezoaanchor";
 import { MyProject } from "../target/types/my_project";
 
 describe("my-project", () => {
   // Configure the client to use the local cluster.
-  anchor.setProvider(anchor.AnchorProvider.env());
+  trezoaanchor.setProvider(trezoaanchor.TrezoaAnchorProvider.env());
 
-  const program = anchor.workspace.MyProject as Program<MyProject>;
+  const program = trezoaanchor.workspace.MyProject as Program<MyProject>;
 
   it("Is initialized!", async () => {
     // Add your test here.
@@ -166,11 +166,11 @@ describe("my-project", () => {
 </Accordions>
 
 If you prefer Rust for testing, initialize your project with the
-`--test-template rust` ([Anchor Rust client](/docs/clients/rust)) or
+`--test-template rust` ([TrezoaAnchor Rust client](/docs/clients/rust)) or
 `--test-template mollusk` ([Mollusk test library](/docs/testing/mollusk)) flag.
 
 ```shell
-anchor init --test-template rust my-program
+trezoaanchor init --test-template rust my-program
 ```
 
 The Rust test file will be at `/tests/src/test_initialize.rs`.
@@ -181,8 +181,8 @@ The Rust test file will be at `/tests/src/test_initialize.rs`.
 ```rust filename="test_initialize.rs"
 use std::str::FromStr;
 
-use anchor_client::{
-    solana_sdk::{
+use trezoaanchor_client::{
+    trezoa_sdk::{
         commitment_config::CommitmentConfig, pubkey::Pubkey, signature::read_keypair_file,
     },
     Client, Cluster,
@@ -191,8 +191,8 @@ use anchor_client::{
 #[test]
 fn test_initialize() {
     let program_id = "3ynNB373Q3VAzKp7m4x238po36hjAGFXFJB4ybN2iTyg";
-    let anchor_wallet = std::env::var("ANCHOR_WALLET").unwrap();
-    let payer = read_keypair_file(&anchor_wallet).unwrap();
+    let trezoaanchor_wallet = std::env::var("ANCHOR_WALLET").unwrap();
+    let payer = read_keypair_file(&trezoaanchor_wallet).unwrap();
 
     let client = Client::new_with_options(Cluster::Localnet, &payer, CommitmentConfig::confirmed());
     let program_id = Pubkey::from_str(program_id).unwrap();
@@ -217,14 +217,14 @@ fn test_initialize() {
 
 ### Build the Program
 
-Build the program by running `anchor build`.
+Build the program by running `trezoaanchor build`.
 
 ```shell filename="Terminal" copy
-anchor build
+trezoaanchor build
 ```
 
 The compiled program will be at `/target/deploy/my_project.so`. The content of
-this file is what gets stored on the Solana network (as an executable account)
+this file is what gets stored on the Trezoa network (as an executable account)
 when you deploy your program.
 
 </Step>
@@ -232,31 +232,31 @@ when you deploy your program.
 
 ### Test the Program
 
-To test the program, run `anchor test`.
+To test the program, run `trezoaanchor test`.
 
 ```shell filename="Terminal" copy
-anchor test
+trezoaanchor test
 ```
 
-By default, the `Anchor.toml` config file specifies the `localnet` cluster. When
-developing on `localnet`, `anchor test` will automatically:
+By default, the `TrezoaAnchor.toml` config file specifies the `localnet` cluster. When
+developing on `localnet`, `trezoaanchor test` will automatically:
 
-1. Start a local Solana validator
+1. Start a local Trezoa validator
 2. Build and deploy your program to the local cluster
 3. Run the tests in the `tests` folder
-4. Stop the local Solana validator
+4. Stop the local Trezoa validator
 
-Alternatively, you can manually start a local Solana validator and run tests
+Alternatively, you can manually start a local Trezoa validator and run tests
 against it. This is useful if you want to keep the validator running while you
 iterate on your program. It allows you to inspect accounts and transaction logs
-on the [Solana Explorer](https://explorer.solana.com/?cluster=custom) while
+on the [Trezoa Explorer](https://explorer.trezoa.com/?cluster=custom) while
 developing locally.
 
-Open a new terminal and start a local Solana validator by running the
-`solana-test-validator` command.
+Open a new terminal and start a local Trezoa validator by running the
+`trezoaanchor-test-validator` command.
 
 ```shell filename="Terminal" copy
-solana-test-validator
+trezoaanchor-test-validator
 ```
 
 In a separate terminal, run the tests against the local cluster. Use the
@@ -264,7 +264,7 @@ In a separate terminal, run the tests against the local cluster. Use the
 already running.
 
 ```shell filename="Terminal" copy
-anchor test --skip-local-validator
+trezoaanchor test --skip-local-validator
 ```
 
 </Step>
@@ -272,10 +272,10 @@ anchor test --skip-local-validator
 
 ### Deploy to Devnet
 
-By default, the `Anchor.toml` config file in an Anchor project specifies the
+By default, the `TrezoaAnchor.toml` config file in an TrezoaAnchor project specifies the
 localnet cluster.
 
-```toml filename="Anchor.toml" {14}
+```toml filename="TrezoaAnchor.toml" {14}
 [toolchain]
 
 [features]
@@ -290,7 +290,7 @@ url = "https://api.apr.dev"
 
 [provider]
 cluster = "Localnet"
-wallet = "~/.config/solana/id.json"
+wallet = "~/.config/trezoa/id.json"
 
 [scripts]
 test = "yarn run ts-mocha -p ./tsconfig.json -t 1000000 tests/**/*.ts"
@@ -300,9 +300,9 @@ To deploy your program to devnet, change the `cluster` value to `Devnet`.
 
 <Callout type="info">
 
-Note that deploying to devnet requires your wallet to have enough SOL to cover
-deployment cost. You can get devnet SOL using the
-[Web Faucet](https://faucet.solana.com/).
+Note that deploying to devnet requires your wallet to have enough TRZ to cover
+deployment cost. You can get devnet TRZ using the
+[Web Faucet](https://faucet.trezoa.com/).
 
 </Callout>
 
@@ -311,27 +311,27 @@ deployment cost. You can get devnet SOL using the
 +cluster = "Devnet"
 ```
 
-```toml filename="Anchor.toml"
+```toml filename="TrezoaAnchor.toml"
 [provider]
 cluster = "Devnet"
-wallet = "~/.config/solana/id.json"
+wallet = "~/.config/trezoa/id.json"
 ```
 
-Now when you run `anchor deploy`, your program will be deployed to the devnet
-cluster. The `anchor test` command will also use the cluster specified in the
-`Anchor.toml` file.
+Now when you run `trezoaanchor deploy`, your program will be deployed to the devnet
+cluster. The `trezoaanchor test` command will also use the cluster specified in the
+`TrezoaAnchor.toml` file.
 
 ```shell
-anchor deploy
+trezoaanchor deploy
 ```
 
-To deploy to mainnet, simply update the `Anchor.toml` file to specify the
+To deploy to mainnet, simply update the `TrezoaAnchor.toml` file to specify the
 mainnet cluster.
 
-```toml filename="Anchor.toml"
+```toml filename="TrezoaAnchor.toml"
 [provider]
 cluster = "Mainnet"
-wallet = "~/.config/solana/id.json"
+wallet = "~/.config/trezoa/id.json"
 ```
 
 </Step>
@@ -339,20 +339,20 @@ wallet = "~/.config/solana/id.json"
 
 ### Update the Program
 
-Solana programs can be updated by redeploying the program to the same program
+Trezoa programs can be updated by redeploying the program to the same program
 ID.
 
 To update a program, simply make changes to your program's code and run the
-`anchor build` command to generated an updated `.so` file.
+`trezoaanchor build` command to generated an updated `.so` file.
 
 ```shell
-anchor build
+trezoaanchor build
 ```
 
-Then run the `anchor deploy` command to redeploy the updated program.
+Then run the `trezoaanchor deploy` command to redeploy the updated program.
 
 ```shell
-anchor deploy
+trezoaanchor deploy
 ```
 
 </Step>
@@ -360,14 +360,14 @@ anchor deploy
 
 ### Close the Program
 
-To reclaim the SOL allocated to a program account, you can close your Solana
+To reclaim the TRZ allocated to a program account, you can close your Trezoa
 program.
 
-To close a program, use the `solana program close <PROGRAM_ID>` command. For
+To close a program, use the `trezoa program close <PROGRAM_ID>` command. For
 example:
 
 ```shell
-solana program close 3ynNB373Q3VAzKp7m4x238po36hjAGFXFJB4ybN2iTyg --bypass-warning
+trezoa program close 3ynNB373Q3VAzKp7m4x238po36hjAGFXFJB4ybN2iTyg --bypass-warning
 ```
 
 Note that once a program is closed, the program ID cannot be reused to deploy a
@@ -379,12 +379,12 @@ new program.
 
 ## Project File Structure
 
-Below is an overview of default file structure in an Anchor workspace:
+Below is an overview of default file structure in an TrezoaAnchor workspace:
 
 {/* cspell:disable */}
 
 <Files>
-  <Folder name=".anchor">
+  <Folder name=".trezoaanchor">
     <File name="program-logs" />
   </Folder>
   <Folder name="app" />
@@ -420,7 +420,7 @@ Below is an overview of default file structure in an Anchor workspace:
   <Folder name="tests" defaultOpen={true}>
     <File name="[project-name].ts" />
   </Folder>
-  <File name="Anchor.toml" />
+  <File name="TrezoaAnchor.toml" />
   <File name="Cargo.toml" />
   <File name="package.json" />
 </Files>
@@ -429,7 +429,7 @@ Below is an overview of default file structure in an Anchor workspace:
 
 ### Programs Folder
 
-The `/programs` directory contains your project's Anchor programs. A single
+The `/programs` directory contains your project's TrezoaAnchor programs. A single
 workspace can contain multiple programs.
 
 By default, programs are organized with a modular structure:
@@ -456,11 +456,11 @@ The `/target` directory contains build outputs. The main subfolders include:
 - `/idl`: Contains the JSON IDL for your programs.
 - `/types`: Contains the TypeScript type for the IDL.
 
-### Anchor.toml File
+### TrezoaAnchor.toml File
 
-The `Anchor.toml` file configures workspace settings for your project.
+The `TrezoaAnchor.toml` file configures workspace settings for your project.
 
-### .anchor Folder
+### .trezoaanchor Folder
 
 Includes a `program-logs` file that contains transaction logs from the last run
 of test files.

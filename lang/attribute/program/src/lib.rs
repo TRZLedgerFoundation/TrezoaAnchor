@@ -7,18 +7,18 @@ use quote::ToTokens;
 use syn::parse_macro_input;
 
 /// The `#[program]` attribute defines the module containing all instruction
-/// handlers defining all entries into a Solana program.
+/// handlers defining all entries into a Trezoa program.
 #[proc_macro_attribute]
 pub fn program(
     _args: proc_macro::TokenStream,
     input: proc_macro::TokenStream,
 ) -> proc_macro::TokenStream {
-    let program = parse_macro_input!(input as anchor_syn::Program);
+    let program = parse_macro_input!(input as trezoaanchor_syn::Program);
     let program_tokens = program.to_token_stream();
 
     #[cfg(feature = "idl-build")]
     {
-        use anchor_syn::idl::gen_idl_print_fn_program;
+        use trezoaanchor_syn::idl::gen_idl_print_fn_program;
         let idl_tokens = gen_idl_print_fn_program(&program);
         return proc_macro::TokenStream::from(quote::quote! {
             #program_tokens
@@ -33,7 +33,7 @@ pub fn program(
 /// Declare an external program based on its IDL.
 ///
 /// The IDL of the program must exist in a directory named `idls`. This directory can be at any
-/// depth, e.g. both inside the program's directory (`<PROGRAM_DIR>/idls`) and inside Anchor
+/// depth, e.g. both inside the program's directory (`<PROGRAM_DIR>/idls`) and inside TrezoaAnchor
 /// workspace root directory (`<PROGRAM_DIR>/../../idls`) are valid.
 ///
 /// # Usage
@@ -62,7 +62,7 @@ pub fn program(
 ///
 /// A full on-chain CPI usage example can be found [here].
 ///
-/// [here]: https://github.com/coral-xyz/anchor/tree/v0.32.1/tests/declare-program
+/// [here]: https://github.com/trezoa-xyz/trezoaanchor/tree/v0.32.1/tests/declare-program
 #[proc_macro]
 pub fn declare_program(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
     parse_macro_input!(input as DeclareProgram)
@@ -77,9 +77,9 @@ pub fn declare_program(input: proc_macro::TokenStream) -> proc_macro::TokenStrea
 /// # Example
 ///
 /// ```rust,ignore
-/// use anchor_lang::prelude::*;
+/// use trezoaanchor-lang::prelude::*;
 ///
-/// // SPL Transfer Hook Interface: `Execute` instruction.
+/// // TPL Transfer Hook Interface: `Execute` instruction.
 /// //
 /// // This instruction is invoked by Token-2022 when a transfer occurs,
 /// // if a mint has specified this program as its transfer hook.
@@ -106,7 +106,7 @@ pub fn declare_program(input: proc_macro::TokenStream) -> proc_macro::TokenStrea
 #[deprecated(
     since = "0.32.1",
     note = "Use `#[instruction(discriminator = <EXPR>)]` instead.
-    See examples in https://github.com/coral-xyz/anchor/tree/v0.32.1/tests/spl/transfer-hook"
+    See examples in https://github.com/trezoa-xyz/trezoaanchor/tree/v0.32.1/tests/spl/transfer-hook"
 )]
 #[proc_macro_attribute]
 pub fn interface(
@@ -121,7 +121,7 @@ pub fn interface(
     input
 }
 
-/// This attribute is used to override the Anchor defaults of program instructions.
+/// This attribute is used to override the TrezoaAnchor defaults of program instructions.
 ///
 /// # Arguments
 ///
@@ -142,7 +142,7 @@ pub fn interface(
 /// # Example
 ///
 /// ```ignore
-/// use anchor_lang::prelude::*;
+/// use trezoaanchor-lang::prelude::*;
 ///
 /// declare_id!("CustomDiscriminator111111111111111111111111");
 ///

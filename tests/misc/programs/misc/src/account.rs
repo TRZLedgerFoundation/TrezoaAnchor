@@ -1,4 +1,4 @@
-use anchor_lang::prelude::*;
+use trezoaanchor-lang::prelude::*;
 
 macro_rules! size {
     ($name: ident, $size:expr) => {
@@ -73,7 +73,7 @@ pub struct CoolEnumWrapperAccount {
     pub my_enum: CoolEnum,
 }
 
-#[derive(Clone, AnchorSerialize, AnchorDeserialize)]
+#[derive(Clone, TrezoaAnchorSerialize, TrezoaAnchorDeserialize)]
 pub enum CoolEnum {
     Variant1,
     Variant2 {
@@ -89,7 +89,7 @@ pub enum CoolEnum {
     },
 }
 
-#[derive(Debug, Clone, Copy, AnchorSerialize, AnchorDeserialize, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy, TrezoaAnchorSerialize, TrezoaAnchorDeserialize, PartialEq, Eq)]
 pub struct TestStruct {
     pub data1: u8,
     pub data2: u16,

@@ -1,6 +1,6 @@
 #![cfg_attr(docsrs, feature(doc_cfg))]
 
-//! An RPC client to interact with Solana programs written in [`anchor_lang`].
+//! An RPC client to interact with Trezoa programs written in [`trezoaanchor-lang`].
 //!
 //! # Examples
 //!
@@ -9,8 +9,8 @@
 //! ```ignore
 //! use std::rc::Rc;
 //!
-//! use anchor_client::{
-//!     solana_sdk::{
+//! use trezoaanchor_client::{
+//!     trezoa_sdk::{
 //!         signature::{read_keypair_file, Keypair},
 //!         signer::Signer,
 //!         system_program,
@@ -50,7 +50,7 @@
 //!
 //! More examples can be found in [here].
 //!
-//! [here]: https://github.com/coral-xyz/anchor/tree/v0.32.1/client/example/src
+//! [here]: https://github.com/trezoa-xyz/trezoaanchor/tree/v0.32.1/client/example/src
 //!
 //! # Features
 //!
@@ -59,7 +59,7 @@
 //! The client is blocking by default. To enable asynchronous client, add `async` feature:
 //!
 //! ```toml
-//! anchor-client = { version = "0.32.1 ", features = ["async"] }
+//! trezoaanchor-client = { version = "0.32.1 ", features = ["async"] }
 //! ````
 //!
 //! ## `mock`
@@ -67,21 +67,21 @@
 //! This feature allows passing in a custom RPC client when creating program instances, which is
 //! useful for mocking RPC responses, e.g. via [`RpcClient::new_mock`].
 //!
-//! [`RpcClient::new_mock`]: https://docs.rs/solana-rpc-client/3.0.0/solana_rpc_client/rpc_client/struct.RpcClient.html#method.new_mock
+//! [`RpcClient::new_mock`]: https://docs.rs/trezoaanchor-rpc-client/3.0.0/trezoa_rpc_client/rpc_client/struct.RpcClient.html#method.new_mock
 
-use anchor_lang::solana_program::program_error::ProgramError;
-use anchor_lang::solana_program::pubkey::Pubkey;
-use anchor_lang::{AccountDeserialize, Discriminator, InstructionData, ToAccountMetas};
+use trezoaanchor-lang::trezoa_program::program_error::ProgramError;
+use trezoaanchor-lang::trezoa_program::pubkey::Pubkey;
+use trezoaanchor-lang::{AccountDeserialize, Discriminator, InstructionData, ToAccountMetas};
 use futures::{Future, StreamExt};
 use regex::Regex;
-use solana_account_decoder::{UiAccount, UiAccountEncoding};
-use solana_commitment_config::CommitmentConfig;
-use solana_instruction::{AccountMeta, Instruction};
-use solana_program::hash::Hash;
-use solana_pubsub_client::nonblocking::pubsub_client::{PubsubClient, PubsubClientError};
-use solana_rpc_client::nonblocking::rpc_client::RpcClient as AsyncRpcClient;
-use solana_rpc_client_api::{
-    client_error::Error as SolanaClientError,
+use trezoa_account_decoder::{UiAccount, UiAccountEncoding};
+use trezoa_commitment_config::CommitmentConfig;
+use trezoa_instruction::{AccountMeta, Instruction};
+use trezoa_program::hash::Hash;
+use trezoa_pubsub_client::nonblocking::pubsub_client::{PubsubClient, PubsubClientError};
+use trezoa_rpc_client::nonblocking::rpc_client::RpcClient as AsyncRpcClient;
+use trezoa_rpc_client_api::{
+    client_error::Error as TrezoaClientError,
     config::{
         RpcAccountInfoConfig, RpcProgramAccountsConfig, RpcSendTransactionConfig,
         RpcTransactionLogsConfig, RpcTransactionLogsFilter,
@@ -89,9 +89,9 @@ use solana_rpc_client_api::{
     filter::{Memcmp, RpcFilterType},
     response::{Response as RpcResponse, RpcLogsResponse},
 };
-use solana_signature::Signature;
-use solana_signer::{Signer, SignerError};
-use solana_transaction::Transaction;
+use trezoa_signature::Signature;
+use trezoa_signer::{Signer, SignerError};
+use trezoa_transaction::Transaction;
 use std::iter::Map;
 use std::marker::PhantomData;
 use std::ops::Deref;
@@ -108,11 +108,11 @@ use tokio::{
     task::JoinHandle,
 };
 
-pub use anchor_lang;
+pub use trezoaanchor-lang;
 pub use cluster::Cluster;
 #[cfg(feature = "async")]
 pub use nonblocking::ThreadSafeSigner;
-pub use solana_account_decoder;
+pub use trezoa_account_decoder;
 
 mod cluster;
 
@@ -126,7 +126,7 @@ const PROGRAM_DATA: &str = "Program data: ";
 
 type UnsubscribeFn = Box<dyn FnOnce() -> Pin<Box<dyn Future<Output = ()> + Send>> + Send>;
 /// Client defines the base configuration for building RPC clients to
-/// communicate with Anchor programs running on a Solana cluster. It's
+/// communicate with TrezoaAnchor programs running on a Trezoa cluster. It's
 /// primary use is to build a `Program` client via the `program` method.
 pub struct Client<C> {
     cfg: Config<C>,
@@ -173,7 +173,7 @@ impl<C: Clone + Deref<Target = impl Signer>> Client<C> {
     }
 }
 
-/// Auxiliary data structure to align the types of the Solana CLI utils with Anchor client.
+/// Auxiliary data structure to align the types of the Trezoa CLI utils with TrezoaAnchor client.
 /// Client<C> implementation requires <C: Clone + Deref<Target = impl Signer>> which does not comply with Box<dyn Signer>
 /// that's used when loaded Signer from keypair file. This struct is used to wrap the usage.
 pub struct DynSigner(pub Arc<dyn Signer>);
@@ -311,7 +311,7 @@ impl<C: Deref<Target = impl Signer> + Clone> Program<C> {
         Ok(())
     }
 
-    async fn on_internal<T: anchor_lang::Event + anchor_lang::AnchorDeserialize>(
+    async fn on_internal<T: trezoaanchor-lang::Event + trezoaanchor-lang::TrezoaAnchorDeserialize>(
         &self,
         f: impl Fn(&EventContext, T) + Send + 'static,
     ) -> Result<
@@ -339,7 +339,7 @@ impl<C: Deref<Target = impl Signer> + Clone> Program<C> {
                     .map_err(Box::new)?;
 
                 tx.send(unsubscribe).map_err(|e| {
-                    ClientError::SolanaClientPubsubError(Box::new(
+                    ClientError::TrezoaClientPubsubError(Box::new(
                         PubsubClientError::RequestFailed {
                             message: "Unsubscribe failed".to_string(),
                             reason: e.to_string(),
@@ -371,7 +371,7 @@ pub struct ProgramAccountsIterator<T> {
     inner: Map<IntoIter<(Pubkey, UiAccount)>, AccountConverterFunction<T>>,
 }
 
-/// Function type that accepts solana accounts and returns deserialized anchor accounts
+/// Function type that accepts trezoa accounts and returns deserialized trezoaanchor accounts
 type AccountConverterFunction<T> = fn((Pubkey, UiAccount)) -> Result<(Pubkey, T), ClientError>;
 
 impl<T> Iterator for ProgramAccountsIterator<T> {
@@ -382,11 +382,11 @@ impl<T> Iterator for ProgramAccountsIterator<T> {
     }
 }
 
-pub fn handle_program_log<T: anchor_lang::Event + anchor_lang::AnchorDeserialize>(
+pub fn handle_program_log<T: trezoaanchor-lang::Event + trezoaanchor-lang::TrezoaAnchorDeserialize>(
     self_program_str: &str,
     l: &str,
 ) -> Result<(Option<T>, Option<String>, bool), ClientError> {
-    use anchor_lang::__private::base64;
+    use trezoaanchor-lang::__private::base64;
     use base64::engine::general_purpose::STANDARD;
     use base64::Engine;
 
@@ -488,13 +488,13 @@ pub enum ClientError {
     #[error("Account not found")]
     AccountNotFound,
     #[error("{0}")]
-    AnchorError(#[from] anchor_lang::error::Error),
+    TrezoaAnchorError(#[from] trezoaanchor-lang::error::Error),
     #[error("{0}")]
     ProgramError(#[from] ProgramError),
     #[error("{0}")]
-    SolanaClientError(#[from] Box<SolanaClientError>),
+    TrezoaClientError(#[from] Box<TrezoaClientError>),
     #[error("{0}")]
-    SolanaClientPubsubError(#[from] Box<PubsubClientError>),
+    TrezoaClientPubsubError(#[from] Box<PubsubClientError>),
     #[error("Unable to parse log: {0}")]
     LogParseError(String),
     #[error(transparent)]
@@ -684,7 +684,7 @@ impl<C: Deref<Target = impl Signer> + Clone, S: AsSigner> RequestBuilder<'_, C, 
     }
 }
 
-fn parse_logs_response<T: anchor_lang::Event + anchor_lang::AnchorDeserialize>(
+fn parse_logs_response<T: trezoaanchor-lang::Event + trezoaanchor-lang::TrezoaAnchorDeserialize>(
     logs: RpcResponse<RpcLogsResponse>,
     program_id_str: &str,
 ) -> Result<Vec<T>, ClientError> {
@@ -744,11 +744,11 @@ fn parse_logs_response<T: anchor_lang::Event + anchor_lang::AnchorDeserialize>(
 
 #[cfg(test)]
 mod tests {
-    use solana_rpc_client_api::response::RpcResponseContext;
+    use trezoa_rpc_client_api::response::RpcResponseContext;
 
-    // Creating a mock struct that implements `anchor_lang::events`
+    // Creating a mock struct that implements `trezoaanchor-lang::events`
     // for type inference in `test_logs`
-    use anchor_lang::prelude::*;
+    use trezoaanchor-lang::prelude::*;
     #[derive(Debug, Clone, Copy)]
     #[event]
     pub struct MockEvent {}

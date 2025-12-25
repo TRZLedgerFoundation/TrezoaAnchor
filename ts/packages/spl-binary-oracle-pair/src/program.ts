@@ -1,15 +1,15 @@
-import { PublicKey } from "@solana/web3.js";
-import { Program, AnchorProvider } from "@coral-xyz/anchor";
+import { PublicKey } from "@trezoa/web3.js";
+import { Program, TrezoaAnchorProvider } from "@trezoa-xyz/trezoaanchor";
 
 import { SplBinaryOraclePairCoder } from "./coder";
 
-export const SPL_BINARY_ORACLE_PAIR_PROGRAM_ID = new PublicKey(
+export const TPL_BINARY_ORACLE_PAIR_PROGRAM_ID = new PublicKey(
   "Fd7btgySsrjuo25CJCj7oE7VPMyezDhnx7pZkj2v69Nk"
 );
 
 interface GetProgramParams {
   programId?: PublicKey;
-  provider?: AnchorProvider;
+  provider?: TrezoaAnchorProvider;
 }
 
 export function splBinaryOraclePairProgram(
@@ -17,7 +17,7 @@ export function splBinaryOraclePairProgram(
 ): Program<SplBinaryOraclePair> {
   return new Program<SplBinaryOraclePair>(
     IDL,
-    params?.programId ?? SPL_BINARY_ORACLE_PAIR_PROGRAM_ID,
+    params?.programId ?? TPL_BINARY_ORACLE_PAIR_PROGRAM_ID,
     params?.provider,
     new SplBinaryOraclePairCoder(IDL)
   );

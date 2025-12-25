@@ -5,7 +5,7 @@
 //! With zero-copy, we can create accounts larger than the size of the stack or heap,
 //! as is demonstrated by the event queue in this example.
 
-use anchor_lang::prelude::*;
+use trezoaanchor-lang::prelude::*;
 
 declare_id!("Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS");
 
@@ -165,16 +165,16 @@ pub struct Event {
 
 // A separate type is used for the RPC interface for two main reasons.
 //
-// 1. AnchorSerialize and AnchorDeserialize must be derived. Anchor requires
-//    *all* instructions to implement the AnchorSerialize and AnchorDeserialize
+// 1. TrezoaAnchorSerialize and TrezoaAnchorDeserialize must be derived. TrezoaAnchor requires
+//    *all* instructions to implement the TrezoaAnchorSerialize and TrezoaAnchorDeserialize
 //    traits, so any types in method signatures must as well.
 // 2. All types for zero copy deserialization are `#[repr(packed)]`. However,
-//    the implementation of AnchorSerialize (i.e. borsh), uses references
+//    the implementation of TrezoaAnchorSerialize (i.e. borsh), uses references
 //    to the fields it serializes. So if we were to just throw these derives
 //    onto the other `Event` struct, we would have references to
 //    `#[repr(packed)]` fields, which is unsafe. To avoid the unsafeness, we
 //    just use a separate type.
-#[derive(AnchorSerialize, AnchorDeserialize)]
+#[derive(TrezoaAnchorSerialize, TrezoaAnchorDeserialize)]
 pub struct RpcEvent {
     pub from: Pubkey,
     pub data: u64,

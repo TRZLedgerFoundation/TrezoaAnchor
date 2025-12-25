@@ -1,8 +1,8 @@
-//! Testing of handling of remaining accounts with anchor Account structs
+//! Testing of handling of remaining accounts with trezoaanchor Account structs
 
 use account::*;
-use anchor_lang::prelude::*;
-use anchor_spl::token::TokenAccount;
+use trezoaanchor-lang::prelude::*;
+use trezoaanchor_spl::token::TokenAccount;
 use context::*;
 
 mod account;

@@ -1,12 +1,12 @@
-import * as anchor from "@coral-xyz/anchor";
-import { Program } from "@coral-xyz/anchor";
+import * as trezoaanchor from "@trezoa-xyz/trezoaanchor";
+import { Program } from "@trezoa-xyz/trezoaanchor";
 import { assert } from "chai";
 
 import { Idl } from "../target/types/idl";
 
 describe("IDL", () => {
-  anchor.setProvider(anchor.AnchorProvider.env());
-  const program = anchor.workspace.idl as Program<Idl>;
+  trezoaanchor.setProvider(trezoaanchor.TrezoaAnchorProvider.env());
+  const program = trezoaanchor.workspace.idl as Program<Idl>;
 
   it("Includes constants that use `#[constant]` macro", () => {
     const checkDefined = (

@@ -13,7 +13,7 @@ import {
   LockFile,
   Toml,
   VersionManager,
-  runAnchorTest,
+  runTrezoaAnchorTest,
   spawn,
 } from "./utils";
 
@@ -23,7 +23,7 @@ import {
   const cargoToml = await Toml.open(
     path.join("..", "programs", "bench", "Cargo.toml")
   );
-  const anchorToml = await Toml.open(path.join("..", "Anchor.toml"));
+  const trezoaanchorToml = await Toml.open(path.join("..", "TrezoaAnchor.toml"));
 
   for (const version of bench.getVersions()) {
     console.log(`Updating '${version}'...`);
@@ -33,12 +33,12 @@ import {
     // Use the lock file from cache
     await LockFile.replace(version);
 
-    // Set active solana version
-    VersionManager.setSolanaVersion(bench.get(version).solanaVersion);
+    // Set active trezoa version
+    VersionManager.setTrezoaVersion(bench.get(version).trezoaVersion);
 
-    // Update the anchor dependency versions
+    // Update the trezoaanchor dependency versions
     for (const dependency of ["lang", "spl"]) {
-      cargoToml.replaceValue(`anchor-${dependency}`, () => {
+      cargoToml.replaceValue(`trezoaanchor-${dependency}`, () => {
         return isUnreleased
           ? `{ path = "../../../../${dependency}" }`
           : `"${version}"`;
@@ -48,8 +48,8 @@ import {
     // Save Cargo.toml
     await cargoToml.save();
 
-    // Update `anchor test` command to pass version in Anchor.toml
-    anchorToml.replaceValue(
+    // Update `trezoaanchor test` command to pass version in TrezoaAnchor.toml
+    trezoaanchorToml.replaceValue(
       "test",
       (cmd) => {
         return cmd.includes(ANCHOR_VERSION_ARG)
@@ -62,11 +62,11 @@ import {
       { insideQuotes: true }
     );
 
-    // Save Anchor.toml
-    await anchorToml.save();
+    // Save TrezoaAnchor.toml
+    await trezoaanchorToml.save();
 
     // Run the command to update the current version's results
-    const result = runAnchorTest();
+    const result = runTrezoaAnchorTest();
 
     // Check failure
     if (result.status !== 0) {
@@ -77,5 +77,5 @@ import {
   }
 
   // Sync markdown files
-  spawn("anchor", ["run", "sync-markdown"]);
+  spawn("trezoaanchor", ["run", "sync-markdown"]);
 })();

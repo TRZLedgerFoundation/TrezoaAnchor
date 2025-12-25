@@ -1,13 +1,13 @@
 ---
 title: Account Constraints
-description: Anchor Account Constraints Examples
+description: TrezoaAnchor Account Constraints Examples
 ---
 
-Minimal reference examples for Anchor account
-[constraints](https://docs.rs/anchor-lang/latest/anchor_lang/derive.Accounts.html).
+Minimal reference examples for TrezoaAnchor account
+[constraints](https://docs.rs/trezoaanchortrezoaanchor-lang/latest/trezoaanchor-lang/derive.Accounts.html).
 
 See the account constraints
-[source code](https://github.com/coral-xyz/anchor/blob/0e5285aecdf410fa0779b7cd09a47f235882c156/lang/syn/src/codegen/accounts/constraints.rs)
+[source code](https://github.com/trezoa-xyz/trezoaanchor/blob/0e5285aecdf410fa0779b7cd09a47f235882c156/lang/syn/src/codegen/accounts/constraints.rs)
 for implementation details.
 
 ## Normal Constraints
@@ -16,9 +16,9 @@ for implementation details.
 
 Description: Checks the given account signed the transaction. Consider using the
 Signer type if you would only have this constraint on the account.  
-Examples: [Github](https://github.com/solana-developers/anchor-examples/tree/main/account-constraints/signer)
+Examples: [Github](https://github.com/trezoa-developers/trezoaanchor-examples/tree/main/account-constraints/signer)
 |
-[Solpg](https://beta.solpg.io/https://github.com/solana-developers/anchor-examples/tree/main/account-constraints/signer)
+[Solpg](https://beta.solpg.io/https://github.com/trezoa-developers/trezoaanchor-examples/tree/main/account-constraints/signer)
 
 ```rust title="attribute"
 #[account(signer)]
@@ -27,11 +27,11 @@ Examples: [Github](https://github.com/solana-developers/anchor-examples/tree/mai
 
 ### `#[account(mut)]`
 
-Description: Checks the given account is mutable. Makes anchor persist any state
+Description: Checks the given account is mutable. Makes trezoaanchor persist any state
 changes.  
-Examples: [Github](https://github.com/solana-developers/anchor-examples/tree/main/account-constraints/mut)
+Examples: [Github](https://github.com/trezoa-developers/trezoaanchor-examples/tree/main/account-constraints/mut)
 |
-[Solpg](https://beta.solpg.io/https://github.com/solana-developers/anchor-examples/tree/main/account-constraints/mut)
+[Solpg](https://beta.solpg.io/https://github.com/trezoa-developers/trezoaanchor-examples/tree/main/account-constraints/mut)
 
 ```rust title="attribute"
 #[account(mut)]
@@ -40,7 +40,7 @@ Examples: [Github](https://github.com/solana-developers/anchor-examples/tree/mai
 
 ### `#[account(dup)]`
 
-Description: By default, Anchor will prevents duplicate mutable accounts to avoid potential security issues and unintended behavior. 
+Description: By default, TrezoaAnchor will prevents duplicate mutable accounts to avoid potential security issues and unintended behavior. 
 The `dup` constraint explicitly allows this for cases where it's intentional and safe.
 
 **Note**: This constraint only applies to mutable accounts (`mut`). Readonly accounts naturally allow duplicates without requiring the `dup` constraint.
@@ -69,9 +69,9 @@ pub fn allows_duplicate_mutable(ctx: Context<AllowsDuplicateMutable>) -> Result<
 
 Description: Creates the account via a CPI to the system program and initializes
 it (sets its account discriminator).  
-Examples: [Github](https://github.com/solana-developers/anchor-examples/tree/main/account-constraints/init)
+Examples: [Github](https://github.com/trezoa-developers/trezoaanchor-examples/tree/main/account-constraints/init)
 |
-[Solpg](https://beta.solpg.io/https://github.com/solana-developers/anchor-examples/tree/main/account-constraints/init)
+[Solpg](https://beta.solpg.io/https://github.com/trezoa-developers/trezoaanchor-examples/tree/main/account-constraints/init)
 
 ```rust title="attribute"
 #[account(
@@ -85,9 +85,9 @@ Examples: [Github](https://github.com/solana-developers/anchor-examples/tree/mai
 
 Description: Same as init but only runs if the account does not exist yet.
 Requires init-if-needed cargo feature.  
-Examples: [Github](https://github.com/solana-developers/anchor-examples/tree/main/account-constraints/init_if_needed)
+Examples: [Github](https://github.com/trezoa-developers/trezoaanchor-examples/tree/main/account-constraints/init_if_needed)
 |
-[Solpg](https://beta.solpg.io/https://github.com/solana-developers/anchor-examples/tree/main/account-constraints/init_if_needed)
+[Solpg](https://beta.solpg.io/https://github.com/trezoa-developers/trezoaanchor-examples/tree/main/account-constraints/init_if_needed)
 
 ```rust title="attribute"
 #[account(
@@ -106,9 +106,9 @@ Examples: [Github](https://github.com/solana-developers/anchor-examples/tree/mai
 
 Description: Checks that given account is a PDA derived from the currently
 executing program, the seeds, and if provided, the bump.  
-Examples: [Github](https://github.com/solana-developers/anchor-examples/tree/main/account-constraints/seed-bump)
+Examples: [Github](https://github.com/trezoa-developers/trezoaanchor-examples/tree/main/account-constraints/seed-bump)
 |
-[Solpg](https://beta.solpg.io/https://github.com/solana-developers/anchor-examples/tree/main/account-constraints/seed-bump)
+[Solpg](https://beta.solpg.io/https://github.com/trezoa-developers/trezoaanchor-examples/tree/main/account-constraints/seed-bump)
 
 ```rust title="attribute"
 #[account(
@@ -138,9 +138,9 @@ Examples: [Github](https://github.com/solana-developers/anchor-examples/tree/mai
 
 Description: Checks the target field on the account matches the key of the
 target field in the Accounts struct.  
-Examples: [Github](https://github.com/solana-developers/anchor-examples/tree/main/account-constraints/has_one)
+Examples: [Github](https://github.com/trezoa-developers/trezoaanchor-examples/tree/main/account-constraints/has_one)
 |
-[Solpg](https://beta.solpg.io/https://github.com/solana-developers/anchor-examples/tree/main/account-constraints/has_one)
+[Solpg](https://beta.solpg.io/https://github.com/trezoa-developers/trezoaanchor-examples/tree/main/account-constraints/has_one)
 
 ```rust title="attribute"
 #[account(
@@ -155,9 +155,9 @@ Examples: [Github](https://github.com/solana-developers/anchor-examples/tree/mai
 ### `#[account(address = expr)]`
 
 Description: Checks the account key matches the pubkey.  
-Examples: [Github](https://github.com/solana-developers/anchor-examples/tree/main/account-constraints/address)
+Examples: [Github](https://github.com/trezoa-developers/trezoaanchor-examples/tree/main/account-constraints/address)
 |
-[Solpg](https://beta.solpg.io/https://github.com/solana-developers/anchor-examples/tree/main/account-constraints/address)
+[Solpg](https://beta.solpg.io/https://github.com/trezoa-developers/trezoaanchor-examples/tree/main/account-constraints/address)
 
 ```rust title="attribute"
 #[account(address = <expr>)]
@@ -167,9 +167,9 @@ Examples: [Github](https://github.com/solana-developers/anchor-examples/tree/mai
 ### `#[account(owner = expr)]`
 
 Description: Checks the account owner matches expr.  
-Examples: [Github](https://github.com/solana-developers/anchor-examples/tree/main/account-constraints/owner)
+Examples: [Github](https://github.com/trezoa-developers/trezoaanchor-examples/tree/main/account-constraints/owner)
 |
-[Solpg](https://beta.solpg.io/https://github.com/solana-developers/anchor-examples/tree/main/account-constraints/owner)
+[Solpg](https://beta.solpg.io/https://github.com/trezoa-developers/trezoaanchor-examples/tree/main/account-constraints/owner)
 
 ```rust title="attribute"
 #[account(owner = <expr>)]
@@ -179,9 +179,9 @@ Examples: [Github](https://github.com/solana-developers/anchor-examples/tree/mai
 ### `#[account(executable)]`
 
 Description: Checks the account is executable (i.e. the account is a program).  
-Examples: [Github](https://github.com/solana-developers/anchor-examples/tree/main/account-constraints/executable)
+Examples: [Github](https://github.com/trezoa-developers/trezoaanchor-examples/tree/main/account-constraints/executable)
 |
-[Solpg](https://beta.solpg.io/https://github.com/solana-developers/anchor-examples/tree/main/account-constraints/executable)
+[Solpg](https://beta.solpg.io/https://github.com/trezoa-developers/trezoaanchor-examples/tree/main/account-constraints/executable)
 
 ```rust title="attribute"
 #[account(executable)]
@@ -191,9 +191,9 @@ Examples: [Github](https://github.com/solana-developers/anchor-examples/tree/mai
 
 Description: Checks the account discriminator is zero. Use for accounts larger
 than 10 Kibibyte.  
-Examples: [Github](https://github.com/solana-developers/anchor-examples/tree/main/account-constraints/zero)
+Examples: [Github](https://github.com/trezoa-developers/trezoaanchor-examples/tree/main/account-constraints/zero)
 |
-[Solpg](https://beta.solpg.io/https://github.com/solana-developers/anchor-examples/tree/main/account-constraints/zero)
+[Solpg](https://beta.solpg.io/https://github.com/trezoa-developers/trezoaanchor-examples/tree/main/account-constraints/zero)
 
 ```rust title="attribute"
 #[account(zero)]
@@ -203,9 +203,9 @@ Examples: [Github](https://github.com/solana-developers/anchor-examples/tree/mai
 
 Description: Closes the account by sending lamports to target and resetting
 data.  
-Examples: [Github](https://github.com/solana-developers/anchor-examples/tree/main/account-constraints/close)
+Examples: [Github](https://github.com/trezoa-developers/trezoaanchor-examples/tree/main/account-constraints/close)
 |
-[Solpg](https://beta.solpg.io/https://github.com/solana-developers/anchor-examples/tree/main/account-constraints/close)
+[Solpg](https://beta.solpg.io/https://github.com/trezoa-developers/trezoaanchor-examples/tree/main/account-constraints/close)
 
 ```rust title="attribute"
 #[account(close = <target_account>)]
@@ -215,9 +215,9 @@ Examples: [Github](https://github.com/solana-developers/anchor-examples/tree/mai
 
 Description: Custom constraint that checks whether the given expression
 evaluates to true.  
-Examples: [Github](https://github.com/solana-developers/anchor-examples/tree/main/account-constraints/constraint)
+Examples: [Github](https://github.com/trezoa-developers/trezoaanchor-examples/tree/main/account-constraints/constraint)
 |
-[Solpg](https://beta.solpg.io/https://github.com/solana-developers/anchor-examples/tree/main/account-constraints/constraint)
+[Solpg](https://beta.solpg.io/https://github.com/trezoa-developers/trezoaanchor-examples/tree/main/account-constraints/constraint)
 
 ```rust title="attribute"
 #[account(constraint = <expr>)]
@@ -230,9 +230,9 @@ Examples: [Github](https://github.com/solana-developers/anchor-examples/tree/mai
 
 Description: Used to realloc program account space at the beginning of an
 instruction.  
-Examples: [Github](https://github.com/solana-developers/anchor-examples/tree/main/account-constraints/realloc)
+Examples: [Github](https://github.com/trezoa-developers/trezoaanchor-examples/tree/main/account-constraints/realloc)
 |
-[Solpg](https://beta.solpg.io/https://github.com/solana-developers/anchor-examples/tree/main/account-constraints/realloc)
+[Solpg](https://beta.solpg.io/https://github.com/trezoa-developers/trezoaanchor-examples/tree/main/account-constraints/realloc)
 
 ```rust title="attribute"
 #[account(
@@ -242,15 +242,15 @@ Examples: [Github](https://github.com/solana-developers/anchor-examples/tree/mai
 )]
 ```
 
-## SPL Constraints
+## TPL Constraints
 
 ### `#[account(token::*)]`
 
 Description: Create or validate token accounts with specified mint and
 authority.  
-Examples: [Github](https://github.com/solana-developers/anchor-examples/tree/main/account-constraints/token)
+Examples: [Github](https://github.com/trezoa-developers/trezoaanchor-examples/tree/main/account-constraints/token)
 |
-[Solpg](https://beta.solpg.io/https://github.com/solana-developers/anchor-examples/tree/main/account-constraints/token)
+[Solpg](https://beta.solpg.io/https://github.com/trezoa-developers/trezoaanchor-examples/tree/main/account-constraints/token)
 
 ```rust title="attribute"
 #[account(
@@ -268,9 +268,9 @@ Examples: [Github](https://github.com/solana-developers/anchor-examples/tree/mai
 ### `#[account(mint::*)]`
 
 Description: Create or validate mint accounts with specified parameters.  
-Examples: [Github](https://github.com/solana-developers/anchor-examples/tree/main/account-constraints/mint)
+Examples: [Github](https://github.com/trezoa-developers/trezoaanchor-examples/tree/main/account-constraints/mint)
 |
-[Solpg](https://beta.solpg.io/https://github.com/solana-developers/anchor-examples/tree/main/account-constraints/mint)
+[Solpg](https://beta.solpg.io/https://github.com/trezoa-developers/trezoaanchor-examples/tree/main/account-constraints/mint)
 
 ```rust title="attribute"
 #[account(
@@ -288,9 +288,9 @@ Examples: [Github](https://github.com/solana-developers/anchor-examples/tree/mai
 ### `#[account(associated_token::*)]`
 
 Description: Create or validate associated token accounts.  
-Examples: [Github](https://github.com/solana-developers/anchor-examples/tree/main/account-constraints/associated_token)
+Examples: [Github](https://github.com/trezoa-developers/trezoaanchor-examples/tree/main/account-constraints/associated_token)
 |
-[Solpg](https://beta.solpg.io/https://github.com/solana-developers/anchor-examples/tree/main/account-constraints/associated_token)
+[Solpg](https://beta.solpg.io/https://github.com/trezoa-developers/trezoaanchor-examples/tree/main/account-constraints/associated_token)
 
 ```rust title="attribute"
 #[account(
@@ -308,9 +308,9 @@ Examples: [Github](https://github.com/solana-developers/anchor-examples/tree/mai
 ### `#[account(*::token_program = expr)]`
 
 Description: The token_program can optionally be overridden.  
-Examples: [Github](https://github.com/solana-developers/anchor-examples/tree/main/account-constraints/token_program)
+Examples: [Github](https://github.com/trezoa-developers/trezoaanchor-examples/tree/main/account-constraints/token_program)
 |
-[Solpg](https://beta.solpg.io/https://github.com/solana-developers/anchor-examples/tree/main/account-constraints/token_program)
+[Solpg](https://beta.solpg.io/https://github.com/trezoa-developers/trezoaanchor-examples/tree/main/account-constraints/token_program)
 
 ```rust title="attribute"
 #[account(*::token_program = <target_account>)]
@@ -392,9 +392,9 @@ instruction handler but you can omit all arguments after the last one you need.
 Skipping arguments will result in an error.
 
 Examples:
-[Github](https://github.com/solana-developers/anchor-examples/tree/main/account-constraints/instruction)
+[Github](https://github.com/trezoa-developers/trezoaanchor-examples/tree/main/account-constraints/instruction)
 |
-[Solpg](https://beta.solpg.io/https://github.com/solana-developers/anchor-examples/tree/main/account-constraints/instruction)
+[Solpg](https://beta.solpg.io/https://github.com/trezoa-developers/trezoaanchor-examples/tree/main/account-constraints/instruction)
 
 ```rust title="snippet"
 // [!code word:input]

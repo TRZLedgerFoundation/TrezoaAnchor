@@ -1,4 +1,4 @@
-# Anchor Docs
+# TrezoaAnchor Docs
 
 Created with [Fumadocs](https://fumadocs.vercel.app). Page contents located in
 [`docs/content/docs`](/docs/content/docs).

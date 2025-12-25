@@ -1,20 +1,20 @@
 // deploy.js is a simple deploy script to initialize a program. This is run
 // immediately after a deploy.
 
-const serumCmn = require("@project-serum/common");
-const anchor = require("@coral-xyz/anchor");
-const PublicKey = anchor.web3.PublicKey;
+const serumCmn = require("@trezoa-serum/common");
+const trezoaanchor = require("@trezoa-xyz/trezoaanchor");
+const PublicKey = trezoaanchor.web3.PublicKey;
 
 module.exports = async function (provider) {
   // Configure client to use the provider.
-  anchor.setProvider(provider);
+  trezoaanchor.setProvider(provider);
 
   // Setup genesis state.
   const registrarConfigs = await genesis(provider);
 
   // Program clients.
-  const lockup = anchor.workspace.Lockup;
-  const registry = anchor.workspace.Registry;
+  const lockup = trezoaanchor.workspace.Lockup;
+  const registry = trezoaanchor.workspace.Registry;
 
   // Registry state constructor.
   await registry.state.rpc.new({
@@ -31,7 +31,7 @@ module.exports = async function (provider) {
   });
 
   // Delete the default whitelist entries.
-  const defaultEntry = { programId: new anchor.web3.PublicKey.default() };
+  const defaultEntry = { programId: new trezoaanchor.web3.PublicKey.default() };
   await lockup.state.rpc.whitelistDelete(defaultEntry, {
     accounts: {
       authority: provider.wallet.publicKey,
@@ -57,7 +57,7 @@ module.exports = async function (provider) {
       r.withdrawalTimelock,
       r.stakeRate,
       r.rewardQLen,
-      new anchor.web3.PublicKey(r.mint)
+      new trezoaanchor.web3.PublicKey(r.mint)
     );
     r["registrar"] = registrar.toString();
   }
@@ -86,7 +86,7 @@ mints: { ${mints} },
 
 async function genesis(provider) {
   if (
-    provider.connection._rpcEndpoint === "https://api.mainnet-beta.solana.com"
+    provider.connection._rpcEndpoint === "https://api.mainnet-beta.trezoa.com"
   ) {
     return {
       srm: {
@@ -105,13 +105,13 @@ async function genesis(provider) {
   } else {
     const [token1Mint, _god1] = await serumCmn.createMintAndVault(
       provider,
-      new anchor.BN(10000000000000),
+      new trezoaanchor.BN(10000000000000),
       undefined,
       6
     );
     const [token2Mint, _god2] = await serumCmn.createMintAndVault(
       provider,
-      new anchor.BN(10000000000),
+      new trezoaanchor.BN(10000000000),
       undefined,
       0
     );
@@ -139,12 +139,12 @@ async function registrarInit(
   rewardQLen,
   mint
 ) {
-  const registrar = anchor.web3.Keypair.generate();
-  const rewardQ = anchor.web3.Keypair.generate();
-  const withdrawalTimelock = new anchor.BN(_withdrawalTimelock);
-  const stakeRate = new anchor.BN(_stakeRate);
+  const registrar = trezoaanchor.web3.Keypair.generate();
+  const rewardQ = trezoaanchor.web3.Keypair.generate();
+  const withdrawalTimelock = new trezoaanchor.BN(_withdrawalTimelock);
+  const stakeRate = new trezoaanchor.BN(_stakeRate);
   const [registrarSigner, nonce] =
-    await anchor.web3.PublicKey.findProgramAddress(
+    await trezoaanchor.web3.PublicKey.findProgramAddress(
       [registrar.publicKey.toBuffer()],
       registry.programId
     );
@@ -164,7 +164,7 @@ async function registrarInit(
         registrar: registrar.publicKey,
         poolMint,
         rewardEventQ: rewardQ.publicKey,
-        rent: anchor.web3.SYSVAR_RENT_PUBKEY,
+        rent: trezoaanchor.web3.SYSVAR_RENT_PUBKEY,
       },
       signers: [registrar, rewardQ],
       instructions: [

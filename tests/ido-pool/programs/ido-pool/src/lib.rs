@@ -2,8 +2,8 @@
 //! https://docs.mango.markets/litepaper#token-sale.
 // #![warn(clippy::all)]
 
-use anchor_lang::prelude::*;
-use anchor_spl::token::{self, Burn, CloseAccount, Mint, MintTo, Token, TokenAccount, Transfer};
+use trezoaanchor-lang::prelude::*;
+use trezoaanchor_spl::token::{self, Burn, CloseAccount, Mint, MintTo, Token, TokenAccount, Transfer};
 
 use std::ops::Deref;
 
@@ -558,7 +558,7 @@ pub struct IdoAccount {
     pub ido_times: IdoTimes, // 32
 }
 
-#[derive(AnchorSerialize, AnchorDeserialize, InitSpace, Default, Clone, Copy)]
+#[derive(TrezoaAnchorSerialize, TrezoaAnchorDeserialize, InitSpace, Default, Clone, Copy)]
 pub struct IdoTimes {
     pub start_ido: i64,    // 8
     pub end_deposits: i64, // 8
@@ -566,7 +566,7 @@ pub struct IdoTimes {
     pub end_escrow: i64,   // 8
 }
 
-#[derive(AnchorSerialize, AnchorDeserialize, InitSpace, Default, Clone)]
+#[derive(TrezoaAnchorSerialize, TrezoaAnchorDeserialize, InitSpace, Default, Clone)]
 pub struct PoolBumps {
     pub ido_account: u8,     // 1
     pub redeemable_mint: u8, // 1

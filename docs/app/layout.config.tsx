@@ -27,7 +27,7 @@ export const baseOptions: HomeLayoutProps = {
     {
       icon: <GithubIcon />,
       text: "Github",
-      url: "https://github.com/coral-xyz/anchor",
+      url: "https://github.com/trezoa-xyz/trezoaanchor",
       active: "none",
     },
     {

@@ -1,17 +1,17 @@
-const anchor = require("@coral-xyz/anchor");
-const serumCmn = require("@project-serum/common");
+const trezoaanchor = require("@trezoa-xyz/trezoaanchor");
+const serumCmn = require("@trezoa-serum/common");
 const { assert } = require("chai");
-const { TOKEN_PROGRAM_ID } = require("@solana/spl-token");
+const { TOKEN_PROGRAM_ID } = require("@trezoa/tpl-token");
 
 describe("cashiers-check", () => {
   // Configure the client to use the local cluster.
-  const provider = anchor.AnchorProvider.env();
+  const provider = trezoaanchor.TrezoaAnchorProvider.env();
   // hack so we don't have to update serum-common library
-  // to the new AnchorProvider class and Provider interface
+  // to the new TrezoaAnchorProvider class and Provider interface
   provider.send = provider.sendAndConfirm;
-  anchor.setProvider(provider);
+  trezoaanchor.setProvider(provider);
 
-  const program = anchor.workspace.CashiersCheck;
+  const program = trezoaanchor.workspace.CashiersCheck;
 
   let mint = null;
   let god = null;
@@ -20,7 +20,7 @@ describe("cashiers-check", () => {
   it("Sets up initial test state", async () => {
     const [_mint, _god] = await serumCmn.createMintAndVault(
       program.provider,
-      new anchor.BN(1000000)
+      new trezoaanchor.BN(1000000)
     );
     mint = _mint;
     god = _god;
@@ -32,19 +32,19 @@ describe("cashiers-check", () => {
     );
   });
 
-  const check = anchor.web3.Keypair.generate();
-  const vault = anchor.web3.Keypair.generate();
+  const check = trezoaanchor.web3.Keypair.generate();
+  const vault = trezoaanchor.web3.Keypair.generate();
 
   let checkSigner = null;
 
   it("Creates a check!", async () => {
-    let [_checkSigner, nonce] = await anchor.web3.PublicKey.findProgramAddress(
+    let [_checkSigner, nonce] = await trezoaanchor.web3.PublicKey.findProgramAddress(
       [check.publicKey.toBuffer()],
       program.programId
     );
     checkSigner = _checkSigner;
 
-    await program.rpc.createCheck(new anchor.BN(100), "Hello world", nonce, {
+    await program.rpc.createCheck(new trezoaanchor.BN(100), "Hello world", nonce, {
       accounts: {
         check: check.publicKey,
         vault: vault.publicKey,
@@ -53,7 +53,7 @@ describe("cashiers-check", () => {
         to: receiver,
         owner: program.provider.wallet.publicKey,
         tokenProgram: TOKEN_PROGRAM_ID,
-        rent: anchor.web3.SYSVAR_RENT_PUBKEY,
+        rent: trezoaanchor.web3.SYSVAR_RENT_PUBKEY,
       },
       signers: [check, vault],
       instructions: [
@@ -70,7 +70,7 @@ describe("cashiers-check", () => {
     const checkAccount = await program.account.check.fetch(check.publicKey);
     assert.isTrue(checkAccount.from.equals(god));
     assert.isTrue(checkAccount.to.equals(receiver));
-    assert.isTrue(checkAccount.amount.eq(new anchor.BN(100)));
+    assert.isTrue(checkAccount.amount.eq(new trezoaanchor.BN(100)));
     assert.strictEqual(checkAccount.memo, "Hello world");
     assert.isTrue(checkAccount.vault.equals(vault.publicKey));
     assert.strictEqual(checkAccount.nonce, nonce);
@@ -80,7 +80,7 @@ describe("cashiers-check", () => {
       program.provider,
       checkAccount.vault
     );
-    assert.isTrue(vaultAccount.amount.eq(new anchor.BN(100)));
+    assert.isTrue(vaultAccount.amount.eq(new trezoaanchor.BN(100)));
   });
 
   it("Cashes a check", async () => {
@@ -102,12 +102,12 @@ describe("cashiers-check", () => {
       program.provider,
       checkAccount.vault
     );
-    assert.isTrue(vaultAccount.amount.eq(new anchor.BN(0)));
+    assert.isTrue(vaultAccount.amount.eq(new trezoaanchor.BN(0)));
 
     let receiverAccount = await serumCmn.getTokenAccount(
       program.provider,
       receiver
     );
-    assert.isTrue(receiverAccount.amount.eq(new anchor.BN(100)));
+    assert.isTrue(receiverAccount.amount.eq(new trezoaanchor.BN(100)));
   });
 });

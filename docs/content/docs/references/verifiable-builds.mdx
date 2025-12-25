@@ -1,16 +1,16 @@
 ---
 title: Verifiable Builds
-description: Anchor - Verifiable Builds
+description: TrezoaAnchor - Verifiable Builds
 ---
 
-Building programs with the Solana CLI may embed machine specific code into the
+Building programs with the Trezoa CLI may embed machine specific code into the
 resulting binary. As a result, building the same program on different machines
 may produce different executables. To get around this problem, one can build
 inside a docker image with pinned dependencies to produce a verifiable build.
 
 ---
 
-Anchor makes this easy by providing CLI commands to build and take care of
+TrezoaAnchor makes this easy by providing CLI commands to build and take care of
 docker for you. To get started, first make sure you
 [install](https://docs.docker.com/get-docker/) docker on your local machine.
 
@@ -19,7 +19,7 @@ docker for you. To get started, first make sure you
 To produce a verifiable build, run
 
 ```shell
-anchor build --verifiable
+trezoaanchor build --verifiable
 ```
 
 ## Verifying
@@ -27,7 +27,7 @@ anchor build --verifiable
 To verify a build against a program deployed on mainnet, run
 
 ```shell
-anchor verify -p <lib-name> <program-id>
+trezoaanchor verify -p <lib-name> <program-id>
 ```
 
 where the `<lib-name>` is defined by your program's Cargo.toml.
@@ -36,13 +36,13 @@ If the program has an IDL, it will also check the IDL deployed on chain matches.
 
 ## Images
 
-A docker image for each version of Anchor is published on
-[Docker Hub](https://hub.docker.com/r/solanafoundation/anchor). They are tagged
-in the form `solanafoundation/anchor:<version>`. For example, to get the image
-for Anchor `v0.32.1` one can run
+A docker image for each version of TrezoaAnchor is published on
+[Docker Hub](https://hub.docker.com/r/trezoafoundation/trezoaanchor). They are tagged
+in the form `trezoafoundation/trezoaanchor:<version>`. For example, to get the image
+for TrezoaAnchor `v0.32.1` one can run
 
 ```shell
-docker pull solanafoundation/anchor:v0.32.1
+docker pull trezoafoundation/trezoaanchor:v0.32.1
 ```
 
 ## Removing an Image
@@ -53,8 +53,8 @@ possible the docker image may still be building in the background.
 To remove, run
 
 ```shell
-docker rm -f anchor-program
+docker rm -f trezoaanchor-program
 ```
 
-where `anchor-program` is the name of the image created by default from within
-the Anchor CLI.
+where `trezoaanchor-program` is the name of the image created by default from within
+the TrezoaAnchor CLI.

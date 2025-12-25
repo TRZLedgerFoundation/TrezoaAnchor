@@ -1,7 +1,7 @@
 use crate::error::ErrorCode;
 use crate::prelude::*;
-use crate::solana_program::instruction::Instruction;
-use solana_sdk_ids::secp256k1_program;
+use crate::trezoa_program::instruction::Instruction;
+use trezoa_sdk_ids::secp256k1_program;
 
 /// Verifies a Secp256k1 instruction created under the assumption that the
 /// signature, address, and message bytes all live inside the same instruction

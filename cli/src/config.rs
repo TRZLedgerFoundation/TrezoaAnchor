@@ -1,6 +1,6 @@
 use crate::{get_keypair, is_hidden, keys_sync, DEFAULT_RPC_PORT};
-use anchor_client::Cluster;
-use anchor_lang_idl::types::Idl;
+use trezoaanchor_client::Cluster;
+use trezoaanchor-lang_idl::types::Idl;
 use anyhow::{anyhow, bail, Context, Error, Result};
 use clap::{Parser, ValueEnum};
 use dirs::home_dir;
@@ -9,12 +9,12 @@ use reqwest::Url;
 use serde::de::{self, MapAccess, Visitor};
 use serde::ser::SerializeMap;
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
-use solana_cli_config::{Config as SolanaConfig, CONFIG_FILE};
-use solana_clock::Slot;
-use solana_commitment_config::CommitmentLevel;
-use solana_keypair::Keypair;
-use solana_pubkey::Pubkey;
-use solana_signer::Signer;
+use trezoa_cli_config::{Config as TrezoaConfig, CONFIG_FILE};
+use trezoa_clock::Slot;
+use trezoa_commitment_config::CommitmentLevel;
+use trezoa_keypair::Keypair;
+use trezoa_pubkey::Pubkey;
+use trezoa_signer::Signer;
 use std::collections::{BTreeMap, HashMap};
 use std::convert::TryFrom;
 use std::fs::{self, File};
@@ -139,7 +139,7 @@ impl Manifest {
         let mut cwd_opt = Some(start_from.as_path());
 
         while let Some(cwd) = cwd_opt {
-            let mut anchor_toml = false;
+            let mut trezoaanchor_toml = false;
 
             for f in fs::read_dir(cwd).with_context(|| {
                 format!("Error reading the directory with path: {}", cwd.display())
@@ -153,14 +153,14 @@ impl Manifest {
                     if filename == "Cargo.toml" {
                         return Ok(Some(WithPath::new(Manifest::from_path(&p)?, p)));
                     }
-                    if filename == "Anchor.toml" {
-                        anchor_toml = true;
+                    if filename == "TrezoaAnchor.toml" {
+                        trezoaanchor_toml = true;
                     }
                 }
             }
 
-            // Not found. Go up a directory level, but don't go up from Anchor.toml
-            if anchor_toml {
+            // Not found. Go up a directory level, but don't go up from TrezoaAnchor.toml
+            if trezoaanchor_toml {
                 break;
             }
 
@@ -327,7 +327,7 @@ pub struct Config {
     pub hooks: HooksConfig,
     pub workspace: WorkspaceConfig,
     // Separate entry next to test_config because
-    // "anchor localnet" only has access to the Anchor.toml,
+    // "trezoaanchor localnet" only has access to the TrezoaAnchor.toml,
     // not the Test.toml files
     pub validator: Option<ValidatorType>,
     pub test_validator: Option<TestValidator>,
@@ -339,13 +339,13 @@ pub struct Config {
 pub enum ValidatorType {
     /// Use Surfpool validator (default)
     Surfpool,
-    /// Use Solana test validator
+    /// Use Trezoa test validator
     Legacy,
 }
 #[derive(Default, Clone, Debug, Serialize, Deserialize)]
 pub struct ToolchainConfig {
-    pub anchor_version: Option<String>,
-    pub solana_version: Option<String>,
+    pub trezoaanchor_version: Option<String>,
+    pub trezoa_version: Option<String>,
     pub package_manager: Option<PackageManager>,
 }
 
@@ -505,7 +505,7 @@ impl ProgramArch {
 #[derive(Debug, Clone)]
 pub struct BuildConfig {
     pub verifiable: bool,
-    pub solana_version: Option<String>,
+    pub trezoa_version: Option<String>,
     pub docker_image: String,
     pub bootstrap: BootstrapMode,
 }
@@ -523,10 +523,10 @@ impl Config {
     pub fn docker(&self) -> String {
         let version = self
             .toolchain
-            .anchor_version
+            .trezoaanchor_version
             .as_deref()
             .unwrap_or(crate::DOCKER_BUILDER_VERSION);
-        format!("solanafoundation/anchor:v{version}")
+        format!("trezoafoundation/trezoaanchor:v{version}")
     }
 
     pub fn discover(cfg_override: &ConfigOverride) -> Result<Option<WithPath<Config>>> {
@@ -543,7 +543,7 @@ impl Config {
         })
     }
 
-    // Climbs each parent directory until we find an Anchor.toml.
+    // Climbs each parent directory until we find an TrezoaAnchor.toml.
     fn _discover() -> Result<Option<WithPath<Config>>> {
         let _cwd = std::env::current_dir()?;
         let mut cwd_opt = Some(_cwd.as_path());
@@ -558,7 +558,7 @@ impl Config {
                     })?
                     .path();
                 if let Some(filename) = p.file_name() {
-                    if filename.to_str() == Some("Anchor.toml") {
+                    if filename.to_str() == Some("TrezoaAnchor.toml") {
                         // Make sure the program id is correct (only on the initial build)
                         let mut cfg = Config::from_path(&p)?;
                         let deploy_dir = p.parent().unwrap().join("target").join("deploy");
@@ -764,14 +764,14 @@ impl FromStr for Config {
     }
 }
 
-pub fn get_solana_cfg_url() -> Result<String, io::Error> {
+pub fn get_trezoa_cfg_url() -> Result<String, io::Error> {
     let config_file = CONFIG_FILE.as_ref().ok_or_else(|| {
         io::Error::new(
             io::ErrorKind::NotFound,
-            "Default Solana config was not found",
+            "Default Trezoa config was not found",
         )
     })?;
-    SolanaConfig::load(config_file).map(|config| config.json_rpc_url)
+    TrezoaConfig::load(config_file).map(|config| config.json_rpc_url)
 }
 
 fn ser_programs(
@@ -1006,8 +1006,8 @@ impl TestConfig {
     }
 }
 
-// This file needs to have the same (sub)structure as Anchor.toml
-// so it can be parsed as a base test file from an Anchor.toml
+// This file needs to have the same (sub)structure as TrezoaAnchor.toml
+// so it can be parsed as a base test file from an TrezoaAnchor.toml
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct _TestToml {
     pub extends: Option<Vec<String>>,
@@ -1219,7 +1219,7 @@ pub struct _Validator {
     // Enable the faucet on this port [default: 9900].
     #[serde(skip_serializing_if = "Option::is_none")]
     pub faucet_port: Option<u16>,
-    // Give the faucet address this much SOL in genesis. [default: 1000000]
+    // Give the faucet address this much TRZ in genesis. [default: 1000000]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub faucet_sol: Option<String>,
     // Geyser plugin config location
@@ -1231,7 +1231,7 @@ pub struct _Validator {
     // Gossip port number for the validator
     #[serde(skip_serializing_if = "Option::is_none")]
     pub gossip_port: Option<u16>,
-    // URL for Solana's JSON RPC or moniker.
+    // URL for Trezoa's JSON RPC or moniker.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub url: Option<String>,
     // Use DIR as ledger location
@@ -1349,7 +1349,7 @@ impl From<Validator> for _Validator {
 }
 
 pub fn get_default_ledger_path() -> PathBuf {
-    Path::new(".anchor").join("test-ledger")
+    Path::new(".trezoaanchor").join("test-ledger")
 }
 
 const DEFAULT_BIND_ADDRESS: &str = "0.0.0.0";
@@ -1537,13 +1537,13 @@ pub struct ProgramWorkspace {
 }
 
 #[derive(Debug, Serialize, Deserialize)]
-pub struct AnchorPackage {
+pub struct TrezoaAnchorPackage {
     pub name: String,
     pub address: String,
     pub idl: Option<String>,
 }
 
-impl AnchorPackage {
+impl TrezoaAnchorPackage {
     pub fn from(name: String, cfg: &WithPath<Config>) -> Result<Self> {
         let cluster = &cfg.provider.cluster;
         if cluster != &Cluster::Mainnet {
@@ -1552,9 +1552,9 @@ impl AnchorPackage {
         let program_details = cfg
             .programs
             .get(cluster)
-            .ok_or_else(|| anyhow!("Program not provided in Anchor.toml"))?
+            .ok_or_else(|| anyhow!("Program not provided in TrezoaAnchor.toml"))?
             .get(&name)
-            .ok_or_else(|| anyhow!("Program not provided in Anchor.toml"))?;
+            .ok_or_else(|| anyhow!("Program not provided in TrezoaAnchor.toml"))?;
         let idl = program_details.idl.clone();
         let address = program_details.address.to_string();
         Ok(Self { name, address, idl })
@@ -1619,7 +1619,7 @@ macro_rules! home_path {
     };
 }
 
-home_path!(WalletPath, ".config/solana/id.json");
+home_path!(WalletPath, ".config/trezoa/id.json");
 
 #[cfg(test)]
 mod tests {

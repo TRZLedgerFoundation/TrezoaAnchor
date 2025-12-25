@@ -1,22 +1,22 @@
-use anchor_lang_idl::types::Idl;
+use trezoaanchor-lang_idl::types::Idl;
 use anyhow::{anyhow, bail, Result};
-use solana_client::send_and_confirm_transactions_in_parallel::{
+use trezoa_client::send_and_confirm_transactions_in_parallel::{
     send_and_confirm_transactions_in_parallel_blocking_v2, SendAndConfirmConfigV2,
 };
-use solana_commitment_config::CommitmentConfig;
-use solana_keypair::Keypair;
-use solana_loader_v3_interface::{
+use trezoa_commitment_config::CommitmentConfig;
+use trezoa_keypair::Keypair;
+use trezoa_loader_v3_interface::{
     instruction as loader_v3_instruction, state::UpgradeableLoaderState,
 };
-use solana_message::{Hash, Message};
-use solana_packet::PACKET_DATA_SIZE;
-use solana_pubkey::Pubkey;
-use solana_rpc_client::rpc_client::RpcClient;
-use solana_rpc_client_api::config::RpcSendTransactionConfig;
-use solana_sdk_ids::bpf_loader_upgradeable as bpf_loader_upgradeable_id;
-use solana_signature::Signature;
-use solana_signer::{EncodableKey, Signer};
-use solana_transaction::Transaction;
+use trezoa_message::{Hash, Message};
+use trezoa_packet::PACKET_DATA_SIZE;
+use trezoa_pubkey::Pubkey;
+use trezoa_rpc_client::rpc_client::RpcClient;
+use trezoa_rpc_client_api::config::RpcSendTransactionConfig;
+use trezoa_sdk_ids::bpf_loader_upgradeable as bpf_loader_upgradeable_id;
+use trezoa_signature::Signature;
+use trezoa_signer::{EncodableKey, Signer};
+use trezoa_transaction::Transaction;
 use std::{
     fs::{self, File},
     io::Write,
@@ -31,7 +31,7 @@ use crate::{
     ConfigOverride, ProgramCommand,
 };
 
-/// Parse priority fee from solana args
+/// Parse priority fee from trezoa args
 fn parse_priority_fee_from_args(args: &[String]) -> Option<u64> {
     args.windows(2)
         .find(|pair| pair[0] == "--with-compute-unit-price")
@@ -41,12 +41,12 @@ fn parse_priority_fee_from_args(args: &[String]) -> Option<u64> {
 /// Calculate the IDL account address for a program
 fn idl_account_address(program_id: &Pubkey) -> Pubkey {
     let program_signer = Pubkey::find_program_address(&[], program_id).0;
-    Pubkey::create_with_seed(&program_signer, "anchor:idl", program_id)
+    Pubkey::create_with_seed(&program_signer, "trezoaanchor:idl", program_id)
         .expect("Seed is always valid")
 }
 
-/// Discover Solana programs from a non-Anchor Cargo workspace
-pub fn discover_solana_programs(program_name: Option<String>) -> Result<Vec<Program>> {
+/// Discover Trezoa programs from a non-TrezoaAnchor Cargo workspace
+pub fn discover_trezoa_programs(program_name: Option<String>) -> Result<Vec<Program>> {
     let current_dir = std::env::current_dir()?;
     let mut program_paths = Vec::new();
 
@@ -69,7 +69,7 @@ pub fn discover_solana_programs(program_name: Option<String>) -> Result<Vec<Prog
                     }
                 }
             }
-        } else if is_solana_program(&current_dir)? {
+        } else if is_trezoa_program(&current_dir)? {
             // It's a single program Cargo.toml with cdylib - use current directory
             program_paths.push(current_dir.clone());
         }
@@ -89,10 +89,10 @@ pub fn discover_solana_programs(program_name: Option<String>) -> Result<Vec<Prog
         }
     }
 
-    // Filter to only Solana programs and build Program structs
+    // Filter to only Trezoa programs and build Program structs
     let mut programs = Vec::new();
     for path in program_paths {
-        if !is_solana_program(&path)? {
+        if !is_trezoa_program(&path)? {
             continue;
         }
 
@@ -107,7 +107,7 @@ pub fn discover_solana_programs(program_name: Option<String>) -> Result<Vec<Prog
             }
         }
 
-        // Try to read IDL if it exists (will be None for non-Anchor programs)
+        // Try to read IDL if it exists (will be None for non-TrezoaAnchor programs)
         let idl_filepath = current_dir
             .join("target")
             .join("idl")
@@ -127,9 +127,9 @@ pub fn discover_solana_programs(program_name: Option<String>) -> Result<Vec<Prog
     Ok(programs)
 }
 
-/// Check if a given Cargo project is a Solana program
-/// A deployable Solana program must have crate-type = ["cdylib", ...]
-fn is_solana_program(path: &Path) -> Result<bool> {
+/// Check if a given Cargo project is a Trezoa program
+/// A deployable Trezoa program must have crate-type = ["cdylib", ...]
+fn is_trezoa_program(path: &Path) -> Result<bool> {
     let cargo_path = path.join("Cargo.toml");
     if !cargo_path.exists() {
         return Ok(false);
@@ -138,7 +138,7 @@ fn is_solana_program(path: &Path) -> Result<bool> {
     let cargo_content = fs::read_to_string(&cargo_path)?;
     let cargo_toml: toml::Value = toml::from_str(&cargo_content)?;
 
-    // Check if it has cdylib (required for deployable Solana programs)
+    // Check if it has cdylib (required for deployable Trezoa programs)
     // This is the definitive marker - libraries and client tools won't have this
     if let Some(lib) = cargo_toml.get("lib") {
         if let Some(crate_type) = lib.get("crate-type").and_then(|ct| ct.as_array()) {
@@ -151,28 +151,28 @@ fn is_solana_program(path: &Path) -> Result<bool> {
     Ok(false)
 }
 
-/// Get programs from workspace (Anchor or non-Anchor)
+/// Get programs from workspace (TrezoaAnchor or non-TrezoaAnchor)
 pub fn get_programs_from_workspace(
     cfg_override: &ConfigOverride,
     program_name: Option<String>,
 ) -> Result<Vec<Program>> {
-    // First try Anchor workspace
+    // First try TrezoaAnchor workspace
     if let Some(cfg) = Config::discover(cfg_override)? {
         return cfg.get_programs(program_name);
     }
 
-    // Fallback to non-Anchor Solana workspace
-    let programs = discover_solana_programs(program_name.clone())?;
+    // Fallback to non-TrezoaAnchor Trezoa workspace
+    let programs = discover_trezoa_programs(program_name.clone())?;
 
     if programs.is_empty() {
         if let Some(name) = program_name {
             return Err(anyhow!(
-                "Program '{}' not found. Make sure you're in a Solana workspace (Anchor or non-Anchor) with programs in the programs/ directory, or provide a program filepath.",
+                "Program '{}' not found. Make sure you're in a Trezoa workspace (TrezoaAnchor or non-TrezoaAnchor) with programs in the programs/ directory, or provide a program filepath.",
                 name
             ));
         } else {
             return Err(anyhow!(
-                "No Solana programs found. Make sure you're in a Solana workspace (Anchor or non-Anchor) with programs in the programs/ directory, or provide a program filepath."
+                "No Trezoa programs found. Make sure you're in a Trezoa workspace (TrezoaAnchor or non-TrezoaAnchor) with programs in the programs/ directory, or provide a program filepath."
             ));
         }
     }
@@ -194,7 +194,7 @@ pub fn process_deploy(
     verifiable: bool,
     no_idl: bool,
     make_final: bool,
-    solana_args: Vec<String>,
+    trezoa_args: Vec<String>,
 ) -> Result<()> {
     // If explicit filepath provided, deploy single program
     if program_filepath.is_some() {
@@ -209,11 +209,11 @@ pub fn process_deploy(
             max_len,
             no_idl,
             make_final,
-            solana_args,
+            trezoa_args,
         );
     }
 
-    // Discover from workspace (Anchor or non-Anchor)
+    // Discover from workspace (TrezoaAnchor or non-TrezoaAnchor)
     let programs = get_programs_from_workspace(cfg_override, program_name.clone())?;
 
     // Multiple programs and no specific program requested -> deploy all
@@ -248,7 +248,7 @@ pub fn process_deploy(
             verifiable,
             no_idl,
             make_final,
-            solana_args,
+            trezoa_args,
         );
     }
 
@@ -264,7 +264,7 @@ pub fn process_deploy(
         max_len,
         no_idl,
         make_final,
-        solana_args,
+        trezoa_args,
     )
 }
 
@@ -276,20 +276,20 @@ fn deploy_workspace(
     verifiable: bool,
     no_idl: bool,
     make_final: bool,
-    solana_args: Vec<String>,
+    trezoa_args: Vec<String>,
 ) -> Result<()> {
-    // Get programs from workspace (Anchor or non-Anchor)
+    // Get programs from workspace (TrezoaAnchor or non-TrezoaAnchor)
     let programs = get_programs_from_workspace(cfg_override, program_name.clone())?;
 
     // For Cargo workspaces, we don't have cluster/wallet in config, so just print basic info
     if let Ok(Some(cfg)) = Config::discover(cfg_override) {
-        // Anchor workspace - we have cluster/wallet config
+        // TrezoaAnchor workspace - we have cluster/wallet config
         let url = crate::cluster_url(&cfg, &cfg.test_validator, &cfg.surfpool_config);
         let keypair = cfg.provider.wallet.to_string();
         println!("Deploying cluster: {url}");
         println!("Upgrade authority: {keypair}");
     } else {
-        // Cargo workspace - cluster/wallet will come from Solana CLI config or flags
+        // Cargo workspace - cluster/wallet will come from Trezoa CLI config or flags
         println!("Deploying programs from Cargo workspace");
     }
 
@@ -322,7 +322,7 @@ fn deploy_workspace(
             None, // max_len
             no_idl,
             make_final,
-            solana_args.clone(),
+            trezoa_args.clone(),
         )?;
     }
 
@@ -343,7 +343,7 @@ pub fn program(cfg_override: &ConfigOverride, cmd: ProgramCommand) -> Result<()>
             max_len,
             no_idl,
             make_final,
-            solana_args,
+            trezoa_args,
         } => process_deploy(
             cfg_override,
             program_filepath,
@@ -356,7 +356,7 @@ pub fn program(cfg_override: &ConfigOverride, cmd: ProgramCommand) -> Result<()>
             false, // verifiable
             no_idl,
             make_final,
-            solana_args,
+            trezoa_args,
         ),
         ProgramCommand::WriteBuffer {
             program_filepath,
@@ -405,7 +405,7 @@ pub fn program(cfg_override: &ConfigOverride, cmd: ProgramCommand) -> Result<()>
             buffer,
             upgrade_authority,
             max_retries,
-            solana_args,
+            trezoa_args,
         } => program_upgrade(
             cfg_override,
             program_id,
@@ -414,7 +414,7 @@ pub fn program(cfg_override: &ConfigOverride, cmd: ProgramCommand) -> Result<()>
             buffer,
             upgrade_authority,
             max_retries,
-            solana_args,
+            trezoa_args,
         ),
         ProgramCommand::Dump {
             account,
@@ -445,7 +445,7 @@ pub fn program(cfg_override: &ConfigOverride, cmd: ProgramCommand) -> Result<()>
 fn get_rpc_client_and_config(
     cfg_override: &ConfigOverride,
 ) -> Result<(RpcClient, Option<WithPath<Config>>)> {
-    // Try to discover Anchor config first
+    // Try to discover TrezoaAnchor config first
     let config = Config::discover(cfg_override)?;
 
     let (url, _wallet_path) = crate::get_cluster_and_wallet(cfg_override)?;
@@ -454,7 +454,7 @@ fn get_rpc_client_and_config(
     Ok((rpc_client, config))
 }
 
-/// Get payer keypair from either Anchor config or Solana CLI config
+/// Get payer keypair from either TrezoaAnchor config or Trezoa CLI config
 fn get_payer_keypair(
     cfg_override: &ConfigOverride,
     config: &Option<WithPath<Config>>,
@@ -462,7 +462,7 @@ fn get_payer_keypair(
     if let Some(cfg) = config {
         cfg.wallet_kp()
     } else {
-        // No Anchor config - get wallet from Solana CLI config
+        // No TrezoaAnchor config - get wallet from Trezoa CLI config
         let (_url, wallet_path) = crate::get_cluster_and_wallet(cfg_override)?;
         Keypair::read_from_file(&wallet_path)
             .map_err(|e| anyhow!("Failed to read wallet keypair from {}: {}", wallet_path, e))
@@ -482,7 +482,7 @@ pub fn program_deploy(
     max_len: Option<usize>,
     no_idl: bool,
     make_final: bool,
-    solana_args: Vec<String>,
+    trezoa_args: Vec<String>,
 ) -> Result<()> {
     let (rpc_client, config) = get_rpc_client_and_config(cfg_override)?;
     let payer = get_payer_keypair(cfg_override, &config)?;
@@ -492,7 +492,7 @@ pub fn program_deploy(
         // Explicit filepath provided
         filepath
     } else {
-        // Discover from workspace (Anchor or non-Anchor)
+        // Discover from workspace (TrezoaAnchor or non-TrezoaAnchor)
         let programs = get_programs_from_workspace(cfg_override, program_name.clone())?;
 
         let program = &programs[0];
@@ -503,11 +503,11 @@ pub fn program_deploy(
         binary_path.display().to_string()
     };
 
-    // Augment solana_args with recommended defaults (priority fees, max sign attempts, buffer)
-    let solana_args = crate::add_recommended_deployment_solana_args(&rpc_client, solana_args)?;
+    // Augment trezoa_args with recommended defaults (priority fees, max sign attempts, buffer)
+    let trezoa_args = crate::add_recommended_deployment_trezoa_args(&rpc_client, trezoa_args)?;
 
-    // Parse priority fee from solana_args
-    let priority_fee = parse_priority_fee_from_args(&solana_args);
+    // Parse priority fee from trezoa_args
+    let priority_fee = parse_priority_fee_from_args(&trezoa_args);
 
     // Read program data
     let program_data = fs::read(&program_filepath)
@@ -977,7 +977,7 @@ fn program_write_buffer(
     let program_filepath = if let Some(filepath) = program_filepath {
         filepath
     } else {
-        // Discover from workspace (Anchor or non-Anchor)
+        // Discover from workspace (TrezoaAnchor or non-TrezoaAnchor)
         let programs = get_programs_from_workspace(cfg_override, program_name.clone())?;
 
         if programs.len() > 1 && program_name.is_none() {
@@ -1097,7 +1097,7 @@ fn program_set_upgrade_authority(
             return Err(anyhow!(
                 "Error: {} is a ProgramData account, not a Program account.\n\n\
                 To set the upgrade authority, you must provide the Program ID, not the ProgramData address.\n\
-                Use 'anchor program show {}' to find the associated Program ID.",
+                Use 'trezoaanchor program show {}' to find the associated Program ID.",
                 program_id,
                 program_id
             ));
@@ -1311,20 +1311,20 @@ pub fn program_upgrade(
     buffer: Option<Pubkey>,
     upgrade_authority: Option<String>,
     max_retries: u32,
-    solana_args: Vec<String>,
+    trezoa_args: Vec<String>,
 ) -> Result<()> {
     let (rpc_client, config) = get_rpc_client_and_config(cfg_override)?;
     let payer = get_payer_keypair(cfg_override, &config)?;
 
-    // Augment solana_args with recommended defaults if provided
-    let solana_args = if !solana_args.is_empty() {
-        crate::add_recommended_deployment_solana_args(&rpc_client, solana_args)?
+    // Augment trezoa_args with recommended defaults if provided
+    let trezoa_args = if !trezoa_args.is_empty() {
+        crate::add_recommended_deployment_trezoa_args(&rpc_client, trezoa_args)?
     } else {
-        solana_args
+        trezoa_args
     };
 
-    // Parse priority fee from solana_args
-    let priority_fee = parse_priority_fee_from_args(&solana_args);
+    // Parse priority fee from trezoa_args
+    let priority_fee = parse_priority_fee_from_args(&trezoa_args);
 
     // Determine upgrade authority
     let upgrade_authority_keypair = if let Some(auth_path) = upgrade_authority {
@@ -1358,7 +1358,7 @@ pub fn program_upgrade(
         // Explicit filepath provided
         filepath
     } else {
-        // Discover from workspace (Anchor or non-Anchor)
+        // Discover from workspace (TrezoaAnchor or non-TrezoaAnchor)
         let programs = get_programs_from_workspace(cfg_override, program_name.clone())?;
 
         let program = &programs[0];
@@ -1512,7 +1512,7 @@ fn program_close(
     let account = if let Some(acc) = account {
         acc
     } else if let Some(name) = program_name {
-        // Discover from workspace (Anchor or non-Anchor)
+        // Discover from workspace (TrezoaAnchor or non-TrezoaAnchor)
         let programs = get_programs_from_workspace(cfg_override, Some(name.clone()))?;
 
         let program = &programs[0];
@@ -1647,7 +1647,7 @@ fn program_extend(
     let program_id = if let Some(id) = program_id {
         id
     } else if let Some(name) = program_name {
-        // Discover from workspace (Anchor or non-Anchor)
+        // Discover from workspace (TrezoaAnchor or non-TrezoaAnchor)
         let programs = get_programs_from_workspace(cfg_override, Some(name.clone()))?;
 
         let program = &programs[0];
@@ -1752,7 +1752,7 @@ fn program_extend(
     Ok(())
 }
 
-// ========== Agave's core parallel deployment functions ==========
+// ========== Trezoa-team's core parallel deployment functions ==========
 
 pub fn calculate_max_chunk_size(baseline_msg: Message) -> usize {
     let tx_size = bincode::serialized_size(&Transaction {

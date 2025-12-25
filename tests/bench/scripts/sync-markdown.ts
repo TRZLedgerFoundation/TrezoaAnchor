@@ -61,7 +61,7 @@ import { BenchData, BenchResult, Markdown, formatNumber } from "./utils";
       // Update version data
       markdown.updateVersion({
         version: nextVersion,
-        solanaVersion: newData.solanaVersion,
+        trezoaVersion: newData.trezoaVersion,
         table,
       });
     }

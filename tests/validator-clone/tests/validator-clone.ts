@@ -1,21 +1,21 @@
-import * as anchor from "@coral-xyz/anchor";
-import { Program } from "@coral-xyz/anchor";
+import * as trezoaanchor from "@trezoa-xyz/trezoaanchor";
+import { Program } from "@trezoa-xyz/trezoaanchor";
 import { assert } from "chai";
 import { ValidatorClone } from "../target/types/validator_clone";
 
 describe("validator-clone", () => {
   // Configure the client to use the local cluster.
-  anchor.setProvider(anchor.AnchorProvider.env());
+  trezoaanchor.setProvider(trezoaanchor.TrezoaAnchorProvider.env());
 
-  const program = anchor.workspace.ValidatorClone as Program<ValidatorClone>;
+  const program = trezoaanchor.workspace.ValidatorClone as Program<ValidatorClone>;
   const connection = program.provider.connection;
 
   it("Cloned non-executable account", async () => {
     // Metadata program upgrade authority
     const account = "AqH29mZfQFgRpfwaPoTMWSKJ5kqauoc1FwVBRksZyQrt";
-    const [accountInfo] = await anchor.utils.rpc.getMultipleAccounts(
+    const [accountInfo] = await trezoaanchor.utils.rpc.getMultipleAccounts(
       connection,
-      [new anchor.web3.PublicKey(account)]
+      [new trezoaanchor.web3.PublicKey(account)]
     );
     assert.isNotNull(accountInfo, "Account " + account + " not found");
   });
@@ -23,9 +23,9 @@ describe("validator-clone", () => {
   it("Cloned bpf2-program account", async () => {
     // Memo program
     const account = "MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr";
-    const [accountInfo] = await anchor.utils.rpc.getMultipleAccounts(
+    const [accountInfo] = await trezoaanchor.utils.rpc.getMultipleAccounts(
       connection,
-      [new anchor.web3.PublicKey(account)]
+      [new trezoaanchor.web3.PublicKey(account)]
     );
     assert.isNotNull(accountInfo, "Account " + account + " not found");
   });
@@ -41,9 +41,9 @@ describe("validator-clone", () => {
       // Solend program executable data
       "DMCvGv1fS5rMcAvEDPDDBawPqbDRSzJh2Bo6qXCmgJkR",
     ];
-    const accountInfos = await anchor.utils.rpc.getMultipleAccounts(
+    const accountInfos = await trezoaanchor.utils.rpc.getMultipleAccounts(
       connection,
-      accounts.map((acc) => new anchor.web3.PublicKey(acc))
+      accounts.map((acc) => new trezoaanchor.web3.PublicKey(acc))
     );
 
     accountInfos.forEach((acc, i) => {
@@ -58,9 +58,9 @@ describe("validator-clone", () => {
       // Mango v3 program executable data
       "8DKwAVrCEVStDYNPCsmxHtUj8LH9oXNtkVRrBfpNKvhp",
     ];
-    const accountInfos = await anchor.utils.rpc.getMultipleAccounts(
+    const accountInfos = await trezoaanchor.utils.rpc.getMultipleAccounts(
       connection,
-      accounts.map((acc) => new anchor.web3.PublicKey(acc))
+      accounts.map((acc) => new trezoaanchor.web3.PublicKey(acc))
     );
 
     accountInfos.forEach((acc, i) => {
@@ -72,7 +72,7 @@ describe("validator-clone", () => {
     // USDC mint
     const account = "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v";
     const accountInfo = await connection.getAccountInfo(
-      new anchor.web3.PublicKey(account)
+      new trezoaanchor.web3.PublicKey(account)
     );
     assert.isNotNull(accountInfo, "Account " + account + " not found");
   });

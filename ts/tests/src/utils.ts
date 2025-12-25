@@ -1,20 +1,20 @@
 import * as fs from "fs/promises";
-import { splTokenProgram } from "@coral-xyz/spl-token";
-import { splAssociatedTokenAccountProgram } from "@coral-xyz/spl-associated-token-account";
+import { tplTokenProgram } from "@trezoa-xyz/tpl-token";
+import { tplAssociatedTokenAccountProgram } from "@trezoa-xyz/tpl-associated-token-account";
 import {
   Connection,
   Keypair,
-  LAMPORTS_PER_SOL,
+  LAMPORTS_PER_TRZ,
   PublicKey,
   Signer,
   SystemProgram,
   SYSVAR_RENT_PUBKEY,
   Transaction,
   TransactionInstruction,
-} from "@solana/web3.js";
-import { AnchorProvider, Wallet } from "@coral-xyz/anchor";
+} from "@trezoa/web3.js";
+import { TrezoaAnchorProvider, Wallet } from "@trezoa-xyz/trezoaanchor";
 
-import { SPL_ATA_PROGRAM_ID, SPL_TOKEN_PROGRAM_ID } from "./constants";
+import { TPL_ATA_PROGRAM_ID, TPL_TOKEN_PROGRAM_ID } from "./constants";
 
 const KEYPAIR_PATH = "test-keypair.json";
 
@@ -99,22 +99,22 @@ let hasBalance = false;
 export async function getProvider() {
   const kp = await loadKp();
   const ENDPOINT = "http://localhost:8899";
-  // const ENDPOINT = "https://api.devnet.solana.com";
+  // const ENDPOINT = "https://api.devnet.trezoa.com";
   const conn = new Connection(ENDPOINT, {
     commitment: "confirmed",
   });
   const wallet = new Wallet(kp);
 
-  const provider = new AnchorProvider(
+  const provider = new TrezoaAnchorProvider(
     conn,
     wallet,
-    AnchorProvider.defaultOptions()
+    TrezoaAnchorProvider.defaultOptions()
   );
 
   if (!hasBalance && !(await provider.connection.getBalance(kp.publicKey))) {
     const txHash = await provider.connection.requestAirdrop(
       kp.publicKey,
-      1000 * LAMPORTS_PER_SOL
+      1000 * LAMPORTS_PER_TRZ
     );
     await confirmTx(txHash);
     hasBalance = true;
@@ -172,9 +172,9 @@ export async function createMint(ownerPk?: PublicKey) {
   const provider = await getProvider();
   const kp = await loadKp();
   if (!ownerPk) ownerPk = kp.publicKey;
-  const tokenProgram = splTokenProgram({
+  const tokenProgram = tplTokenProgram({
     provider,
-    programId: SPL_TOKEN_PROGRAM_ID,
+    programId: TPL_TOKEN_PROGRAM_ID,
   });
   const mintKp = new Keypair();
   const createMintAccountIx = await tokenProgram.account.mint.createInstruction(
@@ -195,11 +195,11 @@ export async function createMint(ownerPk?: PublicKey) {
 
 export async function createTokenAccount(
   mintPk: PublicKey,
-  programId: PublicKey = SPL_TOKEN_PROGRAM_ID
+  programId: PublicKey = TPL_TOKEN_PROGRAM_ID
 ) {
   const provider = await getProvider();
   const kp = await loadKp();
-  const tokenProgram = splTokenProgram({
+  const tokenProgram = tplTokenProgram({
     provider,
     programId,
   });
@@ -228,8 +228,8 @@ export async function createTokenAccount(
 export async function getAta(mintPk: PublicKey, ownerPk: PublicKey) {
   return (
     await PublicKey.findProgramAddress(
-      [ownerPk.toBuffer(), SPL_TOKEN_PROGRAM_ID.toBuffer(), mintPk.toBuffer()],
-      SPL_ATA_PROGRAM_ID
+      [ownerPk.toBuffer(), TPL_TOKEN_PROGRAM_ID.toBuffer(), mintPk.toBuffer()],
+      TPL_ATA_PROGRAM_ID
     )
   )[0];
 }
@@ -239,9 +239,9 @@ export async function createAta(mintPk: PublicKey, ownerPk: PublicKey) {
   const ataPk = await getAta(mintPk, ownerPk);
 
   if (!(await provider.connection.getAccountInfo(ataPk))) {
-    const ataProgram = splAssociatedTokenAccountProgram({
+    const ataProgram = tplAssociatedTokenAccountProgram({
       provider,
-      programId: SPL_ATA_PROGRAM_ID,
+      programId: TPL_ATA_PROGRAM_ID,
     });
     await ataProgram.methods
       .create()
@@ -250,7 +250,7 @@ export async function createAta(mintPk: PublicKey, ownerPk: PublicKey) {
         fundingAddress: provider.publicKey,
         systemProgram: SystemProgram.programId,
         tokenMintAddress: mintPk,
-        tokenProgram: SPL_TOKEN_PROGRAM_ID,
+        tokenProgram: TPL_TOKEN_PROGRAM_ID,
         walletAddress: ownerPk,
       })
       .rpc();

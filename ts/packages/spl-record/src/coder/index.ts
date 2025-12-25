@@ -1,4 +1,4 @@
-import { Idl, Coder } from "@coral-xyz/anchor";
+import { Idl, Coder } from "@trezoa-xyz/trezoaanchor";
 
 import { SplRecordAccountsCoder } from "./accounts";
 import { SplRecordEventsCoder } from "./events";

@@ -1,19 +1,19 @@
 ---
-title: Anchor CLI
-description: Anchor CLI reference documentation
+title: TrezoaAnchor CLI
+description: TrezoaAnchor CLI reference documentation
 ---
 
-A CLI is provided to support building and managing an Anchor workspace. For a
-comprehensive list of commands and options, run `anchor -h` on any of the
+A CLI is provided to support building and managing an TrezoaAnchor workspace. For a
+comprehensive list of commands and options, run `trezoaanchor -h` on any of the
 following subcommands.
 
 ---
 
 ```shell
-anchor-cli
+trezoaanchor-cli
 
 USAGE:
-    anchor <SUBCOMMAND>
+    trezoaanchor <SUBCOMMAND>
 
 FLAGS:
     -h, --help       Prints help information
@@ -31,7 +31,7 @@ SUBCOMMANDS:
     keys       Program keypair commands
     migrate    Runs the deploy migration script
     new        Creates a new program
-    shell      Starts a node shell with an Anchor client setup according to the local config
+    shell      Starts a node shell with an TrezoaAnchor client setup according to the local config
     test       Runs integration tests against a localnetwork
     upgrade    Upgrades a single program. The configured wallet must be the upgrade authority
     verify     Verifies the on-chain bytecode matches the locally compiled artifact. Run this
@@ -42,7 +42,7 @@ SUBCOMMANDS:
 ## Account
 
 ```
-anchor account <program-name>.<AccountTypeName> <account_pubkey>
+trezoaanchor account <program-name>.<AccountTypeName> <account_pubkey>
 ```
 
 Fetches an account with the given public key and deserializes the data to JSON
@@ -60,12 +60,12 @@ The `account_pubkey` refers to the Pubkey of the account to deserialize, in
 Base58.
 
 Example Usage:
-`anchor account anchor-escrow.EscrowAccount 3PNkzWKXCsbjijbasnx55NEpJe8DFXvEEbJKdRKpDcfK`,
+`trezoaanchor account trezoaanchor-escrow.EscrowAccount 3PNkzWKXCsbjijbasnx55NEpJe8DFXvEEbJKdRKpDcfK`,
 deserializes an account in the given pubkey with the account struct
-`EscrowAccount` defined in the `anchor-escrow` program.
+`EscrowAccount` defined in the `trezoaanchor-escrow` program.
 
 ```
-anchor account <program-name>.<AccountTypeName> <account_pubkey> --idl <path/to/idl.json>
+trezoaanchor account <program-name>.<AccountTypeName> <account_pubkey> --idl <path/to/idl.json>
 ```
 
 Deserializes the account with the data types provided in the given IDL file even
@@ -74,14 +74,14 @@ if inside a workspace.
 ## Build
 
 ```shell
-anchor build
+trezoaanchor build
 ```
 
-Builds programs in the workspace targeting Solana's BPF runtime and emitting
+Builds programs in the workspace targeting Trezoa's BPF runtime and emitting
 IDLs in the `target/idl` directory.
 
 ```shell
-anchor build --verifiable
+trezoaanchor build --verifiable
 ```
 
 Runs the build inside a docker image so that the output binary is deterministic
@@ -93,7 +93,7 @@ single crate subdirectory within the workspace. For example,
 It's possible to pass arguments to the underlying `cargo build-sbf` command with `-- <ARGS>`. For example:
 
 ```
-anchor build -- --features my-feature
+trezoaanchor build -- --features my-feature
 ```
 
 </Callout>
@@ -103,7 +103,7 @@ anchor build -- --features my-feature
 ### Cluster list
 
 ```shell
-anchor cluster list
+trezoaanchor cluster list
 ```
 
 This lists cluster endpoints:
@@ -111,28 +111,28 @@ This lists cluster endpoints:
 ```shell
 Cluster Endpoints:
 
-* Mainnet - https://api.mainnet-beta.solana.com
-* Devnet  - https://api.devnet.solana.com
-* Testnet - https://api.testnet.solana.com
+* Mainnet - https://api.mainnet-beta.trezoa.com
+* Devnet  - https://api.devnet.trezoa.com
+* Testnet - https://api.testnet.trezoa.com
 ```
 
 ## Deploy
 
 ```shell
-anchor deploy
+trezoaanchor deploy
 ```
 
 Deploys all programs in the workspace to the configured cluster.
 
 <Callout title="Tip">
-  This is different from the `solana program deploy` command, because every time
+  This is different from the `trezoa program deploy` command, because every time
   it's run it will generate a _new_ program address.
 </Callout>
 
 ## Expand
 
 ```shell
-anchor expand
+trezoaanchor expand
 ```
 
 If run inside a program folder, expands the macros of the program.
@@ -152,7 +152,7 @@ allows us to generate clients for a program using nothing but the program ID.
 ### Idl Build
 
 ```shell
-anchor idl build
+trezoaanchor idl build
 ```
 
 Generates the IDL for the program using the compilation method.
@@ -160,7 +160,7 @@ Generates the IDL for the program using the compilation method.
 ### Idl Init
 
 ```shell
-anchor idl init -f <target/idl/program.json> <program-id>
+trezoaanchor idl init -f <target/idl/program.json> <program-id>
 ```
 
 Creates an idl account, writing the given `<target/idl/program.json>` file into
@@ -171,20 +171,20 @@ future.
 ### Idl Fetch
 
 ```shell
-anchor idl fetch -o <out-file.json> <program-id>
+trezoaanchor idl fetch -o <out-file.json> <program-id>
 ```
 
 Fetches an IDL from the configured blockchain. For example, make sure your
-`Anchor.toml` is pointing to the `mainnet` cluster and run
+`TrezoaAnchor.toml` is pointing to the `mainnet` cluster and run
 
 ```shell
-anchor idl fetch GrAkKfEpTKQuVHG2Y97Y2FF4i7y7Q5AHLK94JBy7Y5yv
+trezoaanchor idl fetch GrAkKfEpTKQuVHG2Y97Y2FF4i7y7Q5AHLK94JBy7Y5yv
 ```
 
 ### Idl Authority
 
 ```shell
-anchor idl authority <program-id>
+trezoaanchor idl authority <program-id>
 ```
 
 Outputs the IDL account's authority. This is the wallet that has the ability to
@@ -193,7 +193,7 @@ update the IDL.
 ### Idl Erase Authority
 
 ```shell
-anchor idl erase-authority -p <program-id>
+trezoaanchor idl erase-authority -p <program-id>
 ```
 
 Erases the IDL account's authority so that upgrades can no longer occur. The
@@ -202,14 +202,14 @@ configured wallet must be the current authority.
 ### Idl Upgrade
 
 ```shell
-anchor idl upgrade <program-id> -f <target/idl/program.json>
+trezoaanchor idl upgrade <program-id> -f <target/idl/program.json>
 ```
 
 Upgrades the IDL file on chain to the new `target/idl/program.json` idl. The
 configured wallet must be the current authority.
 
 ```shell
-anchor idl set-authority -n <new-authority> -p <program-id>
+trezoaanchor idl set-authority -n <new-authority> -p <program-id>
 ```
 
 Sets a new authority on the IDL account. Both the `new-authority` and
@@ -218,15 +218,15 @@ Sets a new authority on the IDL account. Both the `new-authority` and
 ## Init
 
 ```shell
-anchor init <project-name>
+trezoaanchor init <project-name>
 ```
 
 Initializes a project workspace with the following structure.
 
-- `Anchor.toml`: Anchor configuration file.
+- `TrezoaAnchor.toml`: TrezoaAnchor configuration file.
 - `Cargo.toml`: Rust workspace configuration file.
 - `package.json`: JavaScript dependencies file.
-- `programs/`: Directory for Solana program crates.
+- `programs/`: Directory for Trezoa program crates.
 - `app/`: Directory for your application frontend.
 - `tests/`: Directory for JavaScript integration tests.
 - `migrations/deploy.js`: Deploy script.
@@ -238,8 +238,8 @@ production code.
 **Template Options:**
 
 ```shell
-anchor init --template multiple  # Default: Modular structure (recommended)
-anchor init --template single     # Single lib.rs file (for prototyping)
+trezoaanchor init --template multiple  # Default: Modular structure (recommended)
+trezoaanchor init --template single     # Single lib.rs file (for prototyping)
 ```
 
 The modular template organizes code into separate files for instructions, state,
@@ -253,7 +253,7 @@ Program keypair commands.
 ### Keys List
 
 ```shell
-anchor keys list
+trezoaanchor keys list
 ```
 
 List all of the program keys.
@@ -261,7 +261,7 @@ List all of the program keys.
 ### Keys Sync
 
 ```shell
-anchor keys sync
+trezoaanchor keys sync
 ```
 
 Sync program `declare_id!` pubkeys with the program's actual pubkey.
@@ -269,19 +269,19 @@ Sync program `declare_id!` pubkeys with the program's actual pubkey.
 ## Migrate
 
 ```shell
-anchor migrate
+trezoaanchor migrate
 ```
 
 Runs the deploy script located at `migrations/deploy.js`, injecting a provider
-configured from the workspace's `Anchor.toml`. For example,
+configured from the workspace's `TrezoaAnchor.toml`. For example,
 
 ```javascript
 // File: migrations/deploys.js
 
-const anchor = require("@coral-xyz/anchor");
+const trezoaanchor = require("@trezoa-xyz/trezoaanchor");
 
 module.exports = async function (provider) {
-  anchor.setProvider(provider);
+  trezoaanchor.setProvider(provider);
 
   // Add your deploy script here.
 };
@@ -293,7 +293,7 @@ moment.
 ## New
 
 ```shell
-anchor new <program-name>
+trezoaanchor new <program-name>
 ```
 
 Creates a new program in the workspace's `programs/` directory initialized with
@@ -303,24 +303,24 @@ By default, uses the **modular structure** template (recommended). You can
 specify a different template with the `--template` flag:
 
 ```shell
-anchor new --template multiple <program-name>  # Default: Modular (recommended)
-anchor new --template single <program-name>    # Single file (for prototyping)
+trezoaanchor new --template multiple <program-name>  # Default: Modular (recommended)
+trezoaanchor new --template single <program-name>    # Single file (for prototyping)
 ```
 
 ## Shell
 
 ```shell
-anchor shell
+trezoaanchor shell
 ```
 
-Starts a node js shell with an Anchor client setup according to the local
-config. This client can be used to interact with deployed Solana programs in the
+Starts a node js shell with an TrezoaAnchor client setup according to the local
+config. This client can be used to interact with deployed Trezoa programs in the
 workspace.
 
 ## Test
 
 ```shell
-anchor test
+trezoaanchor test
 ```
 
 Run an integration test suit against the configured cluster, deploying new
@@ -330,28 +330,28 @@ If the configured network is a localnet, then automatically starts the
 localnetwork and runs the test.
 
 <Callout title="Note">
-Be sure to shutdown any other local validators, otherwise `anchor test` will fail to run.
+Be sure to shutdown any other local validators, otherwise `trezoaanchor test` will fail to run.
 
 If you'd prefer to run the program against your local validator use
-`anchor test --skip-local-validator`.
+`trezoaanchor test --skip-local-validator`.
 
 </Callout>
 
 When running tests we stream program logs to
-`.anchor/program-logs/<address>.<program-name>.log`
+`.trezoaanchor/program-logs/<address>.<program-name>.log`
 
 ## Upgrade
 
 ```shell
-anchor upgrade <target/deploy/program.so> --program-id <program-id>
+trezoaanchor upgrade <target/deploy/program.so> --program-id <program-id>
 ```
 
-Uses Solana's upgradeable BPF loader to upgrade the on chain program code.
+Uses Trezoa's upgradeable BPF loader to upgrade the on chain program code.
 
 ## Verify
 
 ```shell
-anchor verify <program-id>
+trezoaanchor verify <program-id>
 ```
 
 Verifies the on-chain bytecode matches the locally compiled artifact.

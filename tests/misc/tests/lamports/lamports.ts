@@ -1,16 +1,16 @@
-import * as anchor from "@coral-xyz/anchor";
+import * as trezoaanchor from "@trezoa-xyz/trezoaanchor";
 
 import { Lamports } from "../../target/types/lamports";
 
 describe("lamports", () => {
   // Configure the client to use the local cluster
-  anchor.setProvider(anchor.AnchorProvider.env());
+  trezoaanchor.setProvider(trezoaanchor.TrezoaAnchorProvider.env());
 
-  const program = anchor.workspace.Lamports as anchor.Program<Lamports>;
+  const program = trezoaanchor.workspace.Lamports as trezoaanchor.Program<Lamports>;
 
   it("Can transfer from/to PDA", async () => {
     await program.methods
-      .transfer(new anchor.BN(anchor.web3.LAMPORTS_PER_SOL))
+      .transfer(new trezoaanchor.BN(trezoaanchor.web3.LAMPORTS_PER_TRZ))
       .rpc();
   });
 

@@ -2,7 +2,7 @@
 title: Extensions
 description:
   Learn how to enable token extensions to add optional features to token mints
-  and accounts using the Token Extensions Program (Token 2022) in an Anchor
+  and accounts using the Token Extensions Program (Token 2022) in an TrezoaAnchor
   program.
 ---
 
@@ -13,7 +13,7 @@ additional instructions referred to as extensions. Extensions are optional
 functionality that can be added to a token mint or token account. You can find
 the implementation of these extension instructions in the Token Extensions
 Program
-[source code](https://github.com/solana-program/token-2022/tree/main/program/src/extension).
+[source code](https://github.com/trezoa-program/token-2022/tree/main/program/src/extension).
 
 Each extension adds specific state that is usually initialized during mint or token
 account creation. When initializing either type of account, you can enable
@@ -38,7 +38,7 @@ The exceptions to this, which require the account to be initialized before they 
 </Callout>
 
 The Token Extensions Program defines an
-[`ExtensionType`](https://github.com/solana-program/token-2022/blob/main/program/src/extension/mod.rs#L1054-L1139)
+[`ExtensionType`](https://github.com/trezoa-program/token-2022/blob/main/program/src/extension/mod.rs#L1054-L1139)
 enum that specifies all available extensions that can be added to a token mint
 or token account. Each variant represents a different extension with unique
 functionality.
@@ -137,7 +137,7 @@ pub enum ExtensionType {
 Each extension adds specialized functionality by including additional state that
 must be initialized when creating a mint or token account. All extension
 specific state is stored in the in the
-[`tlv_data`](https://github.com/solana-program/token-2022/blob/main/program/src/extension/mod.rs#L541-L549)
+[`tlv_data`](https://github.com/trezoa-program/token-2022/blob/main/program/src/extension/mod.rs#L541-L549)
 field, which follows the base account data type. The `tlv_data` (containing
 extension state) must be further deserialized according to the specific
 extension types enabled for that account.
@@ -158,17 +158,17 @@ pub struct PodStateWithExtensions<'data, S: BaseState + Pod> {
 
 ## Examples
 
-The `anchor-spl` crate provides a
-[`token_2022_extensions`](https://github.com/coral-xyz/anchor/tree/0e5285aecdf410fa0779b7cd09a47f235882c156/spl/src/token_2022_extensions)
+The `trezoaanchor-tpl` crate provides a
+[`token_2022_extensions`](https://github.com/trezoa-xyz/trezoaanchor/tree/0e5285aecdf410fa0779b7cd09a47f235882c156/spl/src/token_2022_extensions)
 module that contains helper functions and types for working with token extension
 instructions.
 
-You can find examples for how to work with Token Extensions in an Anchor program
+You can find examples for how to work with Token Extensions in an TrezoaAnchor program
 in this
-[program examples repository](https://github.com/solana-developers/program-examples/tree/main/tokens/token-2022).
+[program examples repository](https://github.com/trezoa-developers/program-examples/tree/main/tokens/token-2022).
 
 <Callout type="info">
-  Note that while the anchor-spl crate provides helper functions for working
+  Note that while the trezoaanchor-tpl crate provides helper functions for working
   with Token Extensions, not all extension instructions have been fully
   implemented yet. You may need to manually implement CPI calls for some
   extension instructions.

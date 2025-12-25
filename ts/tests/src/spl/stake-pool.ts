@@ -1,10 +1,10 @@
 import assert from "assert";
-import { splStakePoolProgram } from "@coral-xyz/spl-stake-pool";
-import { splTokenProgram } from "@coral-xyz/spl-token";
-import { BN } from "@coral-xyz/anchor";
+import { splStakePoolProgram } from "@trezoa-xyz/spl-stake-pool";
+import { tplTokenProgram } from "@trezoa-xyz/tpl-token";
+import { BN } from "@trezoa-xyz/trezoaanchor";
 import {
   Keypair,
-  LAMPORTS_PER_SOL,
+  LAMPORTS_PER_TRZ,
   PublicKey,
   StakeProgram,
   STAKE_CONFIG_ID,
@@ -13,9 +13,9 @@ import {
   SYSVAR_RENT_PUBKEY,
   SYSVAR_STAKE_HISTORY_PUBKEY,
   VoteProgram,
-} from "@solana/web3.js";
+} from "@trezoa/web3.js";
 
-import { SPL_STAKE_POOL_PROGRAM_ID, SPL_TOKEN_PROGRAM_ID } from "../constants";
+import { TPL_STAKE_POOL_PROGRAM_ID, TPL_TOKEN_PROGRAM_ID } from "../constants";
 import {
   createAta,
   createMint,
@@ -31,11 +31,11 @@ export async function stakePoolTests() {
   const provider = await getProvider();
   const program = splStakePoolProgram({
     provider,
-    programId: SPL_STAKE_POOL_PROGRAM_ID,
+    programId: TPL_STAKE_POOL_PROGRAM_ID,
   });
-  const tokenProgram = splTokenProgram({
+  const tokenProgram = tplTokenProgram({
     provider,
-    programId: SPL_TOKEN_PROGRAM_ID,
+    programId: TPL_TOKEN_PROGRAM_ID,
   });
   const kp = await loadKp();
 
@@ -90,7 +90,7 @@ export async function stakePoolTests() {
         (await provider.connection.getMinimumBalanceForRentExemption(
           StakeProgram.space
         )) +
-        LAMPORTS_PER_SOL * 11,
+        LAMPORTS_PER_TRZ * 11,
       stakePubkey: reserveStakePk,
     }).instructions;
 
@@ -227,7 +227,7 @@ export async function stakePoolTests() {
   async function increaseValidatorStake() {
     await program.methods
       .increaseValidatorStake(
-        new BN(LAMPORTS_PER_SOL),
+        new BN(LAMPORTS_PER_TRZ),
         new BN(TRANSIENT_STAKE_SEED)
       )
       .accounts({
@@ -252,7 +252,7 @@ export async function stakePoolTests() {
   async function decreaseValidatorStake() {
     const decreaseValidatorStakeIx = await program.methods
       .decreaseValidatorStake(
-        new BN(LAMPORTS_PER_SOL),
+        new BN(LAMPORTS_PER_TRZ),
         new BN(TRANSIENT_STAKE_SEED + 1)
       )
       .accounts({
@@ -333,7 +333,7 @@ export async function stakePoolTests() {
   }
 
   async function depositStake() {
-    const DEPOSIT_AMOUNT = LAMPORTS_PER_SOL;
+    const DEPOSIT_AMOUNT = LAMPORTS_PER_TRZ;
 
     const [poolDepositAuthorityPk] = await PublicKey.findProgramAddress(
       [stakePoolPk.toBuffer(), Buffer.from("deposit")],

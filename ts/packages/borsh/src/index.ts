@@ -8,7 +8,7 @@ import {
   u8,
   union,
 } from "buffer-layout";
-import { PublicKey } from "@solana/web3.js";
+import { PublicKey } from "@trezoa/web3.js";
 import BN from "bn.js";
 
 export {

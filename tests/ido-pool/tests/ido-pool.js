@@ -1,28 +1,28 @@
-const anchor = require("@coral-xyz/anchor");
+const trezoaanchor = require("@trezoa-xyz/trezoaanchor");
 const { assert } = require("chai");
 const {
   ASSOCIATED_TOKEN_PROGRAM_ID,
   TOKEN_PROGRAM_ID,
   Token,
-} = require("@solana/spl-token");
+} = require("@trezoa/tpl-token");
 const {
   sleep,
   getTokenAccount,
   createMint,
   createTokenAccount,
 } = require("./utils");
-const { token } = require("@coral-xyz/anchor/dist/cjs/utils");
+const { token } = require("@trezoa-xyz/trezoaanchor/dist/cjs/utils");
 
 describe("ido-pool", () => {
-  const provider = anchor.AnchorProvider.local();
+  const provider = trezoaanchor.TrezoaAnchorProvider.local();
 
   // Configure the client to use the local cluster.
-  anchor.setProvider(provider);
+  trezoaanchor.setProvider(provider);
 
-  const program = anchor.workspace.IdoPool;
+  const program = trezoaanchor.workspace.IdoPool;
 
   // All mints default to 6 decimal places.
-  const watermelonIdoAmount = new anchor.BN(5000000);
+  const watermelonIdoAmount = new trezoaanchor.BN(5000000);
 
   // These are all of the variables we assume exist in the world already and
   // are available to the client.
@@ -73,39 +73,39 @@ describe("ido-pool", () => {
     let bumps = new PoolBumps();
 
     const [idoAccount, idoAccountBump] =
-      await anchor.web3.PublicKey.findProgramAddress(
+      await trezoaanchor.web3.PublicKey.findProgramAddress(
         [Buffer.from(idoName)],
         program.programId
       );
     bumps.idoAccount = idoAccountBump;
 
     const [redeemableMint, redeemableMintBump] =
-      await anchor.web3.PublicKey.findProgramAddress(
+      await trezoaanchor.web3.PublicKey.findProgramAddress(
         [Buffer.from(idoName), Buffer.from("redeemable_mint")],
         program.programId
       );
     bumps.redeemableMint = redeemableMintBump;
 
     const [poolWatermelon, poolWatermelonBump] =
-      await anchor.web3.PublicKey.findProgramAddress(
+      await trezoaanchor.web3.PublicKey.findProgramAddress(
         [Buffer.from(idoName), Buffer.from("pool_watermelon")],
         program.programId
       );
     bumps.poolWatermelon = poolWatermelonBump;
 
     const [poolUsdc, poolUsdcBump] =
-      await anchor.web3.PublicKey.findProgramAddress(
+      await trezoaanchor.web3.PublicKey.findProgramAddress(
         [Buffer.from(idoName), Buffer.from("pool_usdc")],
         program.programId
       );
     bumps.poolUsdc = poolUsdcBump;
 
     idoTimes = new IdoTimes();
-    const nowBn = new anchor.BN(Date.now() / 1000);
-    idoTimes.startIdo = nowBn.add(new anchor.BN(5));
-    idoTimes.endDeposits = nowBn.add(new anchor.BN(10));
-    idoTimes.endIdo = nowBn.add(new anchor.BN(15));
-    idoTimes.endEscrow = nowBn.add(new anchor.BN(16));
+    const nowBn = new trezoaanchor.BN(Date.now() / 1000);
+    idoTimes.startIdo = nowBn.add(new trezoaanchor.BN(5));
+    idoTimes.endDeposits = nowBn.add(new trezoaanchor.BN(10));
+    idoTimes.endIdo = nowBn.add(new trezoaanchor.BN(15));
+    idoTimes.endEscrow = nowBn.add(new trezoaanchor.BN(16));
 
     await program.rpc.initializePool(
       idoName,
@@ -122,7 +122,7 @@ describe("ido-pool", () => {
           redeemableMint,
           poolWatermelon,
           poolUsdc,
-          systemProgram: anchor.web3.SystemProgram.programId,
+          systemProgram: trezoaanchor.web3.SystemProgram.programId,
           tokenProgram: TOKEN_PROGRAM_ID,
         },
       }
@@ -132,7 +132,7 @@ describe("ido-pool", () => {
       provider,
       idoAuthorityWatermelon
     );
-    assert.isTrue(idoAuthorityWatermelonAccount.amount.eq(new anchor.BN(0)));
+    assert.isTrue(idoAuthorityWatermelonAccount.amount.eq(new trezoaanchor.BN(0)));
   });
 
   // We're going to need to start using the associated program account for creating token accounts
@@ -140,7 +140,7 @@ describe("ido-pool", () => {
 
   let userUsdc = null;
   // 10 usdc
-  const firstDeposit = new anchor.BN(10_000_349);
+  const firstDeposit = new trezoaanchor.BN(10_000_349);
 
   it("Exchanges user USDC for redeemable tokens", async () => {
     // Wait until the IDO has opened.
@@ -148,17 +148,17 @@ describe("ido-pool", () => {
       await sleep(idoTimes.startIdo.toNumber() * 1000 - Date.now() + 2000);
     }
 
-    const [idoAccount] = await anchor.web3.PublicKey.findProgramAddress(
+    const [idoAccount] = await trezoaanchor.web3.PublicKey.findProgramAddress(
       [Buffer.from(idoName)],
       program.programId
     );
 
-    const [redeemableMint] = await anchor.web3.PublicKey.findProgramAddress(
+    const [redeemableMint] = await trezoaanchor.web3.PublicKey.findProgramAddress(
       [Buffer.from(idoName), Buffer.from("redeemable_mint")],
       program.programId
     );
 
-    const [poolUsdc] = await anchor.web3.PublicKey.findProgramAddress(
+    const [poolUsdc] = await trezoaanchor.web3.PublicKey.findProgramAddress(
       [Buffer.from(idoName), Buffer.from("pool_usdc")],
       program.programId
     );
@@ -178,7 +178,7 @@ describe("ido-pool", () => {
       program.provider.wallet.publicKey,
       program.provider.wallet.publicKey
     );
-    let createUserUsdcTrns = new anchor.web3.Transaction().add(
+    let createUserUsdcTrns = new trezoaanchor.web3.Transaction().add(
       createUserUsdcInstr
     );
     await provider.sendAndConfirm(createUserUsdcTrns);
@@ -193,7 +193,7 @@ describe("ido-pool", () => {
     userUsdcAccount = await getTokenAccount(provider, userUsdc);
     assert.isTrue(userUsdcAccount.amount.eq(firstDeposit));
 
-    const [userRedeemable] = await anchor.web3.PublicKey.findProgramAddress(
+    const [userRedeemable] = await trezoaanchor.web3.PublicKey.findProgramAddress(
       [
         provider.wallet.publicKey.toBuffer(),
         Buffer.from(idoName),
@@ -222,7 +222,7 @@ describe("ido-pool", () => {
               userRedeemable,
               idoAccount,
               redeemableMint,
-              systemProgram: anchor.web3.SystemProgram.programId,
+              systemProgram: trezoaanchor.web3.SystemProgram.programId,
               tokenProgram: TOKEN_PROGRAM_ID,
             },
           }),
@@ -238,28 +238,28 @@ describe("ido-pool", () => {
   });
 
   // 23 usdc
-  const secondDeposit = new anchor.BN(23_000_672);
+  const secondDeposit = new trezoaanchor.BN(23_000_672);
   let totalPoolUsdc, secondUserKeypair, secondUserUsdc;
 
   it("Exchanges a second users USDC for redeemable tokens", async () => {
-    const [idoAccount] = await anchor.web3.PublicKey.findProgramAddress(
+    const [idoAccount] = await trezoaanchor.web3.PublicKey.findProgramAddress(
       [Buffer.from(idoName)],
       program.programId
     );
 
-    const [redeemableMint] = await anchor.web3.PublicKey.findProgramAddress(
+    const [redeemableMint] = await trezoaanchor.web3.PublicKey.findProgramAddress(
       [Buffer.from(idoName), Buffer.from("redeemable_mint")],
       program.programId
     );
 
-    const [poolUsdc] = await anchor.web3.PublicKey.findProgramAddress(
+    const [poolUsdc] = await trezoaanchor.web3.PublicKey.findProgramAddress(
       [Buffer.from(idoName), Buffer.from("pool_usdc")],
       program.programId
     );
 
-    secondUserKeypair = anchor.web3.Keypair.generate();
+    secondUserKeypair = trezoaanchor.web3.Keypair.generate();
 
-    transferSolInstr = anchor.web3.SystemProgram.transfer({
+    transferSolInstr = trezoaanchor.web3.SystemProgram.transfer({
       fromPubkey: provider.wallet.publicKey,
       lamports: 100_000_000_000, // 100 sol
       toPubkey: secondUserKeypair.publicKey,
@@ -278,7 +278,7 @@ describe("ido-pool", () => {
       secondUserKeypair.publicKey,
       provider.wallet.publicKey
     );
-    let createSecondUserUsdcTrns = new anchor.web3.Transaction();
+    let createSecondUserUsdcTrns = new trezoaanchor.web3.Transaction();
     createSecondUserUsdcTrns.add(transferSolInstr);
     createSecondUserUsdcTrns.add(createSecondUserUsdcInstr);
     await provider.sendAndConfirm(createSecondUserUsdcTrns);
@@ -294,7 +294,7 @@ describe("ido-pool", () => {
     assert.isTrue(secondUserUsdcAccount.amount.eq(secondDeposit));
 
     const [secondUserRedeemable] =
-      await anchor.web3.PublicKey.findProgramAddress(
+      await trezoaanchor.web3.PublicKey.findProgramAddress(
         [
           secondUserKeypair.publicKey.toBuffer(),
           Buffer.from(idoName),
@@ -322,7 +322,7 @@ describe("ido-pool", () => {
             userRedeemable: secondUserRedeemable,
             idoAccount,
             redeemableMint,
-            systemProgram: anchor.web3.SystemProgram.programId,
+            systemProgram: trezoaanchor.web3.SystemProgram.programId,
             tokenProgram: TOKEN_PROGRAM_ID,
           },
         }),
@@ -341,25 +341,25 @@ describe("ido-pool", () => {
     assert.isTrue(poolUsdcAccount.amount.eq(totalPoolUsdc));
   });
 
-  const firstWithdrawal = new anchor.BN(2_000_000);
+  const firstWithdrawal = new trezoaanchor.BN(2_000_000);
 
   it("Exchanges user Redeemable tokens for USDC", async () => {
-    const [idoAccount] = await anchor.web3.PublicKey.findProgramAddress(
+    const [idoAccount] = await trezoaanchor.web3.PublicKey.findProgramAddress(
       [Buffer.from(idoName)],
       program.programId
     );
 
-    const [redeemableMint] = await anchor.web3.PublicKey.findProgramAddress(
+    const [redeemableMint] = await trezoaanchor.web3.PublicKey.findProgramAddress(
       [Buffer.from(idoName), Buffer.from("redeemable_mint")],
       program.programId
     );
 
-    const [poolUsdc] = await anchor.web3.PublicKey.findProgramAddress(
+    const [poolUsdc] = await trezoaanchor.web3.PublicKey.findProgramAddress(
       [Buffer.from(idoName), Buffer.from("pool_usdc")],
       program.programId
     );
 
-    const [userRedeemable] = await anchor.web3.PublicKey.findProgramAddress(
+    const [userRedeemable] = await trezoaanchor.web3.PublicKey.findProgramAddress(
       [
         provider.wallet.publicKey.toBuffer(),
         Buffer.from(idoName),
@@ -368,7 +368,7 @@ describe("ido-pool", () => {
       program.programId
     );
 
-    const [escrowUsdc] = await anchor.web3.PublicKey.findProgramAddress(
+    const [escrowUsdc] = await trezoaanchor.web3.PublicKey.findProgramAddress(
       [
         provider.wallet.publicKey.toBuffer(),
         Buffer.from(idoName),
@@ -396,7 +396,7 @@ describe("ido-pool", () => {
             escrowUsdc,
             idoAccount,
             usdcMint,
-            systemProgram: anchor.web3.SystemProgram.programId,
+            systemProgram: trezoaanchor.web3.SystemProgram.programId,
             tokenProgram: TOKEN_PROGRAM_ID,
           },
         }),
@@ -416,22 +416,22 @@ describe("ido-pool", () => {
       await sleep(idoTimes.endIdo.toNumber() * 1000 - Date.now() + 3000);
     }
 
-    const [idoAccount] = await anchor.web3.PublicKey.findProgramAddress(
+    const [idoAccount] = await trezoaanchor.web3.PublicKey.findProgramAddress(
       [Buffer.from(idoName)],
       program.programId
     );
 
-    const [poolWatermelon] = await anchor.web3.PublicKey.findProgramAddress(
+    const [poolWatermelon] = await trezoaanchor.web3.PublicKey.findProgramAddress(
       [Buffer.from(idoName), Buffer.from("pool_watermelon")],
       program.programId
     );
 
-    const [redeemableMint] = await anchor.web3.PublicKey.findProgramAddress(
+    const [redeemableMint] = await trezoaanchor.web3.PublicKey.findProgramAddress(
       [Buffer.from(idoName), Buffer.from("redeemable_mint")],
       program.programId
     );
 
-    const [userRedeemable] = await anchor.web3.PublicKey.findProgramAddress(
+    const [userRedeemable] = await trezoaanchor.web3.PublicKey.findProgramAddress(
       [
         provider.wallet.publicKey.toBuffer(),
         Buffer.from(idoName),
@@ -473,18 +473,18 @@ describe("ido-pool", () => {
   });
 
   it("Exchanges second user's Redeemable tokens for watermelon", async () => {
-    const [idoAccount] = await anchor.web3.PublicKey.findProgramAddress(
+    const [idoAccount] = await trezoaanchor.web3.PublicKey.findProgramAddress(
       [Buffer.from(idoName)],
       program.programId
     );
 
-    const [redeemableMint] = await anchor.web3.PublicKey.findProgramAddress(
+    const [redeemableMint] = await trezoaanchor.web3.PublicKey.findProgramAddress(
       [Buffer.from(idoName), Buffer.from("redeemable_mint")],
       program.programId
     );
 
     const [secondUserRedeemable] =
-      await anchor.web3.PublicKey.findProgramAddress(
+      await trezoaanchor.web3.PublicKey.findProgramAddress(
         [
           secondUserKeypair.publicKey.toBuffer(),
           Buffer.from(idoName),
@@ -493,7 +493,7 @@ describe("ido-pool", () => {
         program.programId
       );
 
-    const [poolWatermelon] = await anchor.web3.PublicKey.findProgramAddress(
+    const [poolWatermelon] = await trezoaanchor.web3.PublicKey.findProgramAddress(
       [Buffer.from(idoName), Buffer.from("pool_watermelon")],
       program.programId
     );
@@ -519,16 +519,16 @@ describe("ido-pool", () => {
     });
 
     poolWatermelonAccount = await getTokenAccount(provider, poolWatermelon);
-    assert.isTrue(poolWatermelonAccount.amount.eq(new anchor.BN(0)));
+    assert.isTrue(poolWatermelonAccount.amount.eq(new trezoaanchor.BN(0)));
   });
 
   it("Withdraws total USDC from pool account", async () => {
-    const [idoAccount] = await anchor.web3.PublicKey.findProgramAddress(
+    const [idoAccount] = await trezoaanchor.web3.PublicKey.findProgramAddress(
       [Buffer.from(idoName)],
       program.programId
     );
 
-    const [poolUsdc] = await anchor.web3.PublicKey.findProgramAddress(
+    const [poolUsdc] = await trezoaanchor.web3.PublicKey.findProgramAddress(
       [Buffer.from(idoName), Buffer.from("pool_usdc")],
       program.programId
     );
@@ -546,7 +546,7 @@ describe("ido-pool", () => {
     });
 
     poolUsdcAccount = await getTokenAccount(provider, poolUsdc);
-    assert.isTrue(poolUsdcAccount.amount.eq(new anchor.BN(0)));
+    assert.isTrue(poolUsdcAccount.amount.eq(new trezoaanchor.BN(0)));
     idoAuthorityUsdcAccount = await getTokenAccount(provider, idoAuthorityUsdc);
     assert.isTrue(idoAuthorityUsdcAccount.amount.eq(totalPoolUsdc));
   });
@@ -557,12 +557,12 @@ describe("ido-pool", () => {
       await sleep(idoTimes.endEscrow.toNumber() * 1000 - Date.now() + 4000);
     }
 
-    const [idoAccount] = await anchor.web3.PublicKey.findProgramAddress(
+    const [idoAccount] = await trezoaanchor.web3.PublicKey.findProgramAddress(
       [Buffer.from(idoName)],
       program.programId
     );
 
-    const [escrowUsdc] = await anchor.web3.PublicKey.findProgramAddress(
+    const [escrowUsdc] = await trezoaanchor.web3.PublicKey.findProgramAddress(
       [
         provider.wallet.publicKey.toBuffer(),
         Buffer.from(idoName),

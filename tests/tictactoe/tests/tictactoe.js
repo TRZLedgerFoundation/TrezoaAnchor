@@ -1,18 +1,18 @@
-const anchor = require("@coral-xyz/anchor");
+const trezoaanchor = require("@trezoa-xyz/trezoaanchor");
 
 describe("tictactoe", () => {
-  anchor.setProvider(anchor.AnchorProvider.env());
-  const program = anchor.workspace.Tictactoe;
-  let dashboard = anchor.web3.Keypair.generate();
-  let game = anchor.web3.Keypair.generate();
-  let player_o = anchor.web3.Keypair.generate();
+  trezoaanchor.setProvider(trezoaanchor.TrezoaAnchorProvider.env());
+  const program = trezoaanchor.workspace.Tictactoe;
+  let dashboard = trezoaanchor.web3.Keypair.generate();
+  let game = trezoaanchor.web3.Keypair.generate();
+  let player_o = trezoaanchor.web3.Keypair.generate();
 
   it("Initialize Dashboard", async () => {
     const tx = await program.rpc.initializeDashboard({
       accounts: {
         authority: program.provider.wallet.publicKey,
         dashboard: dashboard.publicKey,
-        rent: anchor.web3.SYSVAR_RENT_PUBKEY,
+        rent: trezoaanchor.web3.SYSVAR_RENT_PUBKEY,
       },
       signers: [dashboard],
       instructions: [
@@ -29,7 +29,7 @@ describe("tictactoe", () => {
         playerX: program.provider.wallet.publicKey,
         dashboard: dashboard.publicKey,
         game: game.publicKey,
-        rent: anchor.web3.SYSVAR_RENT_PUBKEY,
+        rent: trezoaanchor.web3.SYSVAR_RENT_PUBKEY,
       },
       signers: [game],
       instructions: [await program.account.game.createInstruction(game)],

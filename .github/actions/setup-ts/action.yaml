@@ -12,25 +12,25 @@ runs:
       with:
         path: |
           ./ts/node_modules/
-        key: solana-${{ runner.os }}-v0000-${{ env.NODE_VERSION }}-${{ hashFiles('./ts/**/yarn.lock') }}
+        key: trezoa-${{ runner.os }}-v0000-${{ env.NODE_VERSION }}-${{ hashFiles('./ts/**/yarn.lock') }}
     - uses: actions/cache@v3
       name: Cache Typescript Dist
       id: cache-typescript-dist
       with:
         path: |
           ./ts/dist/
-        key: solana-${{ runner.os }}-v0000-${{ env.NODE_VERSION }}-${{ hashFiles('./ts/**/*.ts') }}
+        key: trezoa-${{ runner.os }}-v0000-${{ env.NODE_VERSION }}-${{ hashFiles('./ts/**/*.ts') }}
     - run: cd ts/packages/borsh && yarn --frozen-lockfile && yarn build && yarn link && cd ../../../
       shell: bash
-    - run: cd ts/packages/anchor-errors && yarn --frozen-lockfile && yarn build && yarn link && cd ../../../
+    - run: cd ts/packages/trezoaanchor-errors && yarn --frozen-lockfile && yarn build && yarn link && cd ../../../
       shell: bash
-    - run: cd ts/packages/anchor && yarn --frozen-lockfile && yarn build:node && yarn link && cd ../../../
+    - run: cd ts/packages/trezoaanchor && yarn --frozen-lockfile && yarn build:node && yarn link && cd ../../../
       shell: bash
-    - run: cd ts/packages/spl-associated-token-account && yarn --frozen-lockfile && yarn build:node && yarn link && cd ../../../
+    - run: cd ts/packages/tpl-associated-token-account && yarn --frozen-lockfile && yarn build:node && yarn link && cd ../../../
       shell: bash
-    - run: cd ts/packages/spl-token && yarn --frozen-lockfile && yarn build:node && yarn link && cd ../../../
+    - run: cd ts/packages/tpl-token && yarn --frozen-lockfile && yarn build:node && yarn link && cd ../../../
       shell: bash
-    - run: cd examples/tutorial && yarn link @coral-xyz/anchor @coral-xyz/borsh && yarn --frozen-lockfile && cd ../../
+    - run: cd examples/tutorial && yarn link @trezoa-xyz/trezoaanchor @trezoa-xyz/borsh && yarn --frozen-lockfile && cd ../../
       shell: bash
-    - run: cd tests && yarn link @coral-xyz/anchor @coral-xyz/borsh @coral-xyz/spl-associated-token-account @coral-xyz/spl-token && yarn --frozen-lockfile && cd ..
+    - run: cd tests && yarn link @trezoa-xyz/trezoaanchor @trezoa-xyz/borsh @trezoa-xyz/tpl-associated-token-account @trezoa-xyz/tpl-token && yarn --frozen-lockfile && cd ..
       shell: bash

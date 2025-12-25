@@ -1,6 +1,6 @@
 // @ts-nocheck
-import { AccountsCoder, Idl } from "@coral-xyz/anchor";
-import { IdlTypeDef } from "@coral-xyz/anchor/dist/cjs/idl";
+import { AccountsCoder, Idl } from "@trezoa-xyz/trezoaanchor";
+import { IdlTypeDef } from "@trezoa-xyz/trezoaanchor/dist/cjs/idl";
 
 export class SplMemoAccountsCoder<A extends string = string>
   implements AccountsCoder

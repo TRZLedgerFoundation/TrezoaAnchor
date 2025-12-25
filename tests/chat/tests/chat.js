@@ -1,22 +1,22 @@
-const anchor = require("@coral-xyz/anchor");
+const trezoaanchor = require("@trezoa-xyz/trezoaanchor");
 const { assert } = require("chai");
-const { PublicKey } = anchor.web3;
+const { PublicKey } = trezoaanchor.web3;
 
 describe("chat", () => {
   // Configure the client to use the local cluster.
-  anchor.setProvider(anchor.AnchorProvider.env());
+  trezoaanchor.setProvider(trezoaanchor.TrezoaAnchorProvider.env());
 
   // Program client handle.
-  const program = anchor.workspace.Chat;
+  const program = trezoaanchor.workspace.Chat;
 
   // Chat room account.
-  const chatRoom = anchor.web3.Keypair.generate();
+  const chatRoom = trezoaanchor.web3.Keypair.generate();
 
   it("Creates a chat room", async () => {
     await program.rpc.createChatRoom("Test Chat", {
       accounts: {
         chatRoom: chatRoom.publicKey,
-        rent: anchor.web3.SYSVAR_RENT_PUBKEY,
+        rent: trezoaanchor.web3.SYSVAR_RENT_PUBKEY,
       },
       instructions: [
         await program.account.chatRoom.createInstruction(chatRoom),
@@ -42,7 +42,7 @@ describe("chat", () => {
       accounts: {
         user,
         authority,
-        systemProgram: anchor.web3.SystemProgram.programId,
+        systemProgram: trezoaanchor.web3.SystemProgram.programId,
       },
     });
     const account = await program.account.user.fetch(user);

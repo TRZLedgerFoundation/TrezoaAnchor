@@ -1,15 +1,15 @@
-import { PublicKey } from "@solana/web3.js";
-import { Program, AnchorProvider } from "@coral-xyz/anchor";
+import { PublicKey } from "@trezoa/web3.js";
+import { Program, TrezoaAnchorProvider } from "@trezoa-xyz/trezoaanchor";
 
 import { SplTokenSwapCoder } from "./coder";
 
-export const SPL_TOKEN_SWAP_PROGRAM_ID = new PublicKey(
+export const TPL_TOKEN_SWAP_PROGRAM_ID = new PublicKey(
   "SwapsVeCiPHMUAtzQWZw7RjsKjgCjhwU55QGu4U1Szw"
 );
 
 interface GetProgramParams {
   programId?: PublicKey;
-  provider?: AnchorProvider;
+  provider?: TrezoaAnchorProvider;
 }
 
 export function splTokenSwapProgram(
@@ -17,7 +17,7 @@ export function splTokenSwapProgram(
 ): Program<SplTokenSwap> {
   return new Program<SplTokenSwap>(
     IDL,
-    params?.programId ?? SPL_TOKEN_SWAP_PROGRAM_ID,
+    params?.programId ?? TPL_TOKEN_SWAP_PROGRAM_ID,
     params?.provider,
     new SplTokenSwapCoder(IDL)
   );
@@ -631,12 +631,12 @@ type SplTokenSwap = {
     {
       code: 4;
       name: "ExpectedMint";
-      msg: "Deserialized account is not an SPL Token mint";
+      msg: "Deserialized account is not an TPL Token mint";
     },
     {
       code: 5;
       name: "ExpectedAccount";
-      msg: "Deserialized account is not an SPL Token account";
+      msg: "Deserialized account is not an TPL Token account";
     },
     {
       code: 6;
@@ -1359,12 +1359,12 @@ const IDL: SplTokenSwap = {
     {
       code: 4,
       name: "ExpectedMint",
-      msg: "Deserialized account is not an SPL Token mint",
+      msg: "Deserialized account is not an TPL Token mint",
     },
     {
       code: 5,
       name: "ExpectedAccount",
-      msg: "Deserialized account is not an SPL Token account",
+      msg: "Deserialized account is not an TPL Token account",
     },
     {
       code: 6,

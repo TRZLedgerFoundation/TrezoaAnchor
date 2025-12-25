@@ -22,7 +22,7 @@ use syn::parse_macro_input;
 ///
 /// ```ignore
 /// ...
-/// pub fn initialize(ctx: Context<Create>, bump: u8, authority: Pubkey, data: u64) -> anchor_lang::Result<()> {
+/// pub fn initialize(ctx: Context<Create>, bump: u8, authority: Pubkey, data: u64) -> trezoaanchor-lang::Result<()> {
 ///     ...
 ///     Ok(())
 /// }
@@ -43,7 +43,7 @@ use syn::parse_macro_input;
 /// used, the `target_account` must exist in the struct and the `.key()` is implicit, e.g. `payer = authority`.
 ///
 /// - [Normal Constraints](#normal-constraints)
-/// - [SPL Constraints](#spl-constraints)
+/// - [TPL Constraints](#spl-constraints)
 ///
 /// # Normal Constraints
 /// <table>
@@ -77,7 +77,7 @@ use syn::parse_macro_input;
 ///             </td>
 ///             <td>
 ///                 Checks the given account is mutable.<br>
-///                 Makes anchor persist any state changes.<br>
+///                 Makes trezoaanchor persist any state changes.<br>
 ///                 Custom errors are supported via <code>@</code>.<br><br>
 ///                 Example:
 ///                 <pre><code>
@@ -94,7 +94,7 @@ use syn::parse_macro_input;
 ///             </td>
 ///             <td>
 ///                 Allows the same mutable account to be passed multiple times within the same instruction context.<br>
-///                 By default, Anchor will prevents duplicate mutable accounts to avoid potential security issues and unintended behavior.<br>
+///                 By default, TrezoaAnchor will prevents duplicate mutable accounts to avoid potential security issues and unintended behavior.<br>
 ///                 The <code>dup</code> constraint explicitly allows this for cases where it's intentional and safe.<br>
 ///                 This constraint only applies to mutable accounts (<code>mut</code>). Readonly accounts naturally allow duplicates without requiring the <code>dup</code> constraint.<br>
 ///                 Example:
@@ -130,13 +130,13 @@ use syn::parse_macro_input;
 ///                         Requires that the <code>space</code> constraint is specified.
 ///                         When using the <code>space</code> constraint, one must remember to add 8 to it
 ///                         which is the size of the account discriminator. This only has to be done
-///                         for accounts owned by anchor programs.<br>
+///                         for accounts owned by trezoaanchor programs.<br>
 ///                         The given space number is the size of the account in bytes, so accounts that hold
 ///                         a variable number of items such as a <code>Vec</code> should allocate sufficient space for all items that may
 ///                         be added to the data structure because account size is fixed.
-///                         Check out the <a href = "https://www.anchor-lang.com/docs/space" target = "_blank" rel = "noopener noreferrer">space reference</a>
+///                         Check out the <a href = "https://www.trezoaanchor-lang.com/docs/space" target = "_blank" rel = "noopener noreferrer">space reference</a>
 ///                         and the <a href = "https://borsh.io/" target = "_blank" rel = "noopener noreferrer">borsh library</a>
-///                         (which anchor uses under the hood for serialization) specification to learn how much
+///                         (which trezoaanchor uses under the hood for serialization) specification to learn how much
 ///                         space different data structures require.
 ///                     </li>
 ///                 <br>
@@ -170,7 +170,7 @@ use syn::parse_macro_input;
 ///                         However, if you want to use the bump in your instruction,
 ///                         you can pass it in as instruction data and set the bump value like shown in the example,
 ///                         using the <code>instruction_data</code> attribute.
-///                         Anchor will then check that the bump returned by <code>find_program_address</code> equals
+///                         TrezoaAnchor will then check that the bump returned by <code>find_program_address</code> equals
 ///                         the bump in the instruction data.<br>
 ///                         <code>seeds::program</code> cannot be used together with init because the creation of an
 ///                         account requires its signature which for PDAs only the currently executing program can provide.
@@ -215,7 +215,7 @@ use syn::parse_macro_input;
 ///                 If the account does exist, it still checks whether the given init constraints are correct,
 ///                 e.g. that the account has the expected amount of space and, if it's a PDA, the correct seeds etc.<br><br>
 ///                 This feature should be used with care and is therefore behind a feature flag.
-///                 You can enable it by importing <code>anchor-lang</code> with the <code>init-if-needed</code> cargo feature.<br>
+///                 You can enable it by importing <code>trezoaanchor-lang</code> with the <code>init-if-needed</code> cargo feature.<br>
 ///                 When using <code>init_if_needed</code>, you need to make sure you properly protect yourself
 ///                 against re-initialization attacks. You need to include checks in your code that check
 ///                 that the initialized account cannot be reset to its initial settings after the first time it was
@@ -258,7 +258,7 @@ use syn::parse_macro_input;
 ///             </td>
 ///             <td>
 ///                 Checks that given account is a PDA derived from the currently executing program,
-///                 the seeds, and if provided, the bump. If not provided, anchor uses the canonical
+///                 the seeds, and if provided, the bump. If not provided, trezoaanchor uses the canonical
 ///                 bump. <br>
 ///                 Add <code>seeds::program = &lt;expr&gt;</code> to derive the PDA from a different
 ///                 program than the currently executing one.<br>
@@ -388,7 +388,7 @@ use syn::parse_macro_input;
 ///                 and then initialize it in your instruction instead of using <code>init</code>.
 ///                 This is necessary for accounts that are larger than 10 Kibibyte because those
 ///                 accounts cannot be created via a CPI (which is what <code>init</code> would do).<br><br>
-///                 Anchor adds internal data to the account when using <code>zero</code> just like it
+///                 TrezoaAnchor adds internal data to the account when using <code>zero</code> just like it
 ///                 does with <code>init</code> which is why <code>zero</code> implies <code>mut</code>.
 ///                 <br><br>
 ///                 Example:
@@ -439,7 +439,7 @@ use syn::parse_macro_input;
 ///                 <code>#[account(realloc = &lt;space&gt;, realloc::payer = &lt;target&gt;, realloc::zero = &lt;bool&gt;)]</code>
 ///             </td>
 ///             <td>
-///                 Used to <a href="https://docs.rs/solana-program/latest/solana_program/account_info/struct.AccountInfo.html#method.realloc" target = "_blank" rel = "noopener noreferrer">realloc</a>
+///                 Used to <a href="https://docs.rs/trezoaanchor-program/latest/trezoa_program/account_info/struct.AccountInfo.html#method.realloc" target = "_blank" rel = "noopener noreferrer">realloc</a>
 ///                 program account space at the beginning of an instruction.
 ///                 <br><br>
 ///                 The account must be marked as <code>mut</code> and applied to either <code>Account</code> or <code>AccountLoader</code> types.
@@ -479,9 +479,9 @@ use syn::parse_macro_input;
 ///     </tbody>
 /// </table>
 ///
-/// # SPL Constraints
+/// # TPL Constraints
 ///
-/// Anchor provides constraints that make verifying SPL accounts easier.
+/// TrezoaAnchor provides constraints that make verifying TPL accounts easier.
 ///
 /// <table>
 ///     <thead>
@@ -504,7 +504,7 @@ use syn::parse_macro_input;
 ///                 <br><br>
 ///                 Example:
 ///                 <pre>
-/// use anchor_spl::{mint, token::{TokenAccount, Mint, Token}};
+/// use trezoaanchor_spl::{mint, token::{TokenAccount, Mint, Token}};
 /// ...&#10;
 /// #[account(
 ///     init,
@@ -536,7 +536,7 @@ use syn::parse_macro_input;
 ///                 <br><br>
 ///                 Example:
 ///                 <pre>
-/// use anchor_spl::token::{Mint, Token};
+/// use trezoaanchor_spl::token::{Mint, Token};
 /// ...&#10;
 /// #[account(
 ///     init,
@@ -572,7 +572,7 @@ use syn::parse_macro_input;
 ///                 <br><br>
 ///                 Example:
 ///                 <pre>
-/// use anchor_spl::{
+/// use trezoaanchor_spl::{
 ///     associated_token::AssociatedToken,
 ///     mint,
 ///     token::{TokenAccount, Mint, Token}
@@ -608,7 +608,7 @@ use syn::parse_macro_input;
 ///                 <br><br>
 ///                 Example:
 ///                 <pre>
-/// use anchor_spl::token_interface::{TokenInterface, TokenAccount, Mint};
+/// use trezoaanchor_spl::token_interface::{TokenInterface, TokenAccount, Mint};
 /// ...&#10;
 /// #[account(
 ///     mint::token_program = token_a_token_program,
@@ -646,7 +646,7 @@ use syn::parse_macro_input;
 /// </table>
 #[proc_macro_derive(Accounts, attributes(account, instruction))]
 pub fn derive_accounts(item: TokenStream) -> TokenStream {
-    parse_macro_input!(item as anchor_syn::AccountsStruct)
+    parse_macro_input!(item as trezoaanchor_syn::AccountsStruct)
         .to_token_stream()
         .into()
 }

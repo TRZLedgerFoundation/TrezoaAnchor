@@ -1,6 +1,6 @@
 {
   "0.27.0": {
-    "solanaVersion": "1.14.16",
+    "trezoaVersion": "1.14.16",
     "result": {
       "binarySize": {
         "bench": 1137688
@@ -186,7 +186,7 @@
     }
   },
   "0.28.0": {
-    "solanaVersion": "1.16.0",
+    "trezoaVersion": "1.16.0",
     "result": {
       "binarySize": {
         "bench": 1160960
@@ -372,7 +372,7 @@
     }
   },
   "0.29.0": {
-    "solanaVersion": "1.17.0",
+    "trezoaVersion": "1.17.0",
     "result": {
       "binarySize": {
         "bench": 743056
@@ -558,7 +558,7 @@
     }
   },
   "0.30.0": {
-    "solanaVersion": "1.18.8",
+    "trezoaVersion": "1.18.8",
     "result": {
       "binarySize": {
         "bench": 791008
@@ -744,7 +744,7 @@
     }
   },
   "0.30.1": {
-    "solanaVersion": "1.18.17",
+    "trezoaVersion": "1.18.17",
     "result": {
       "binarySize": {
         "bench": 791008
@@ -930,7 +930,7 @@
     }
   },
   "0.31.0": {
-    "solanaVersion": "2.1.0",
+    "trezoaVersion": "2.1.0",
     "result": {
       "binarySize": {
         "bench": 1041928
@@ -1116,7 +1116,7 @@
     }
   },
   "0.31.1": {
-    "solanaVersion": "2.1.0",
+    "trezoaVersion": "2.1.0",
     "result": {
       "binarySize": {
         "bench": 1041928
@@ -1302,7 +1302,7 @@
     }
   },
   "0.32.0": {
-    "solanaVersion": "2.1.0",
+    "trezoaVersion": "2.1.0",
     "result": {
       "binarySize": {
         "bench": 945568
@@ -1488,7 +1488,7 @@
     }
   },
   "0.32.1": {
-    "solanaVersion": "2.3.0",
+    "trezoaVersion": "2.3.0",
     "result": {
       "binarySize": {
         "bench": 1126840
@@ -1674,7 +1674,7 @@
     }
   },
   "unreleased": {
-    "solanaVersion": "2.3.0",
+    "trezoaVersion": "2.3.0",
     "result": {
       "binarySize": {
         "bench": 1015624

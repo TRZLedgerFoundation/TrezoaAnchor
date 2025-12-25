@@ -69,7 +69,7 @@ pub struct Ix {
     pub args: Vec<IxArg>,
     pub returns: IxReturn,
     // The ident for the struct deriving Accounts.
-    pub anchor_ident: Ident,
+    pub trezoaanchor_ident: Ident,
     // The discriminator based on the `#[interface]` attribute.
     // TODO: Remove and use `overrides`
     pub interface_discriminator: Option<[u8; 8]>,
@@ -348,7 +348,7 @@ impl Field {
                 let program = &ty.account_type_path;
                 // Check if this is the generic Program<'info> (unit type)
                 let program_str = quote!(#program).to_string();
-                if program_str == "__SolanaProgramUnitType" {
+                if program_str == "__TrezoaProgramUnitType" {
                     quote! {
                         #container_ty<'info>
                     }
@@ -389,7 +389,7 @@ impl Field {
                 __program_id
             },
             _ => quote! {
-                &anchor_spl::token::ID
+                &trezoaanchor_spl::token::ID
             },
         };
         match &self.ty {
@@ -479,19 +479,19 @@ impl Field {
     pub fn container_ty(&self) -> proc_macro2::TokenStream {
         match &self.ty {
             Ty::Account(_) => quote! {
-                anchor_lang::accounts::account::Account
+                trezoaanchor-lang::accounts::account::Account
             },
             Ty::LazyAccount(_) => quote! {
-                anchor_lang::accounts::lazy_account::LazyAccount
+                trezoaanchor-lang::accounts::lazy_account::LazyAccount
             },
             Ty::AccountLoader(_) => quote! {
-                anchor_lang::accounts::account_loader::AccountLoader
+                trezoaanchor-lang::accounts::account_loader::AccountLoader
             },
-            Ty::Sysvar(_) => quote! { anchor_lang::accounts::sysvar::Sysvar },
-            Ty::Program(_) => quote! { anchor_lang::accounts::program::Program },
-            Ty::Interface(_) => quote! { anchor_lang::accounts::interface::Interface },
+            Ty::Sysvar(_) => quote! { trezoaanchor-lang::accounts::sysvar::Sysvar },
+            Ty::Program(_) => quote! { trezoaanchor-lang::accounts::program::Program },
+            Ty::Interface(_) => quote! { trezoaanchor-lang::accounts::interface::Interface },
             Ty::InterfaceAccount(_) => {
-                quote! { anchor_lang::accounts::interface_account::InterfaceAccount }
+                quote! { trezoaanchor-lang::accounts::interface_account::InterfaceAccount }
             }
             Ty::AccountInfo => quote! {},
             Ty::UncheckedAccount => quote! {},
@@ -559,7 +559,7 @@ impl Field {
                 let program = &ty.account_type_path;
                 // Check if this is the special marker for generic Program<'info> (unit type)
                 let program_str = quote!(#program).to_string();
-                if program_str == "__SolanaProgramUnitType" {
+                if program_str == "__TrezoaProgramUnitType" {
                     quote! {}
                 } else {
                     quote! {

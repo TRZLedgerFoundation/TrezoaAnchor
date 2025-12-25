@@ -1,5 +1,5 @@
-use anchor_lang_idl::types::{Idl, IdlInstructionAccountItem};
-use anchor_syn::{
+use trezoaanchor-lang_idl::types::{Idl, IdlInstructionAccountItem};
+use trezoaanchor_syn::{
     codegen::accounts::{__client_accounts, __cpi_client_accounts},
     parser::accounts,
     AccountsStruct,
@@ -51,18 +51,18 @@ fn gen_internal_args_mod(idl: &Idl) -> proc_macro2::TokenStream {
 
         let discriminator = gen_discriminator(&ix.discriminator);
         let impl_discriminator = quote! {
-            impl anchor_lang::Discriminator for #ix_struct_name {
+            impl trezoaanchor-lang::Discriminator for #ix_struct_name {
                 const DISCRIMINATOR: &'static [u8] = &#discriminator;
             }
         };
 
         let impl_ix_data = quote! {
-            impl anchor_lang::InstructionData for #ix_struct_name {}
+            impl trezoaanchor-lang::InstructionData for #ix_struct_name {}
         };
 
         let program_id = get_canonical_program_id();
         let impl_owner = quote! {
-            impl anchor_lang::Owner for #ix_struct_name {
+            impl trezoaanchor-lang::Owner for #ix_struct_name {
                 fn owner() -> Pubkey {
                     #program_id
                 }
@@ -71,7 +71,7 @@ fn gen_internal_args_mod(idl: &Idl) -> proc_macro2::TokenStream {
 
         quote! {
             /// Instruction argument
-            #[derive(AnchorSerialize, AnchorDeserialize)]
+            #[derive(TrezoaAnchorSerialize, TrezoaAnchorDeserialize)]
             #ix_struct
 
             #impl_discriminator
@@ -81,10 +81,10 @@ fn gen_internal_args_mod(idl: &Idl) -> proc_macro2::TokenStream {
     });
 
     quote! {
-        /// An Anchor generated module containing the program's set of instructions, where each
+        /// An TrezoaAnchor generated module containing the program's set of instructions, where each
         /// method handler in the `#[program]` mod is associated with a struct defining the input
         /// arguments to the method. These should be used directly, when one wants to serialize
-        /// Anchor instruction data, for example, when specifying instructions on a
+        /// TrezoaAnchor instruction data, for example, when specifying instructions on a
         /// client.
         pub mod args {
             use super::*;

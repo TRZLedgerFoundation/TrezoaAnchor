@@ -1,28 +1,28 @@
-import * as anchor from "@coral-xyz/anchor";
+import * as trezoaanchor from "@trezoa-xyz/trezoaanchor";
 import { Basic5 } from "../target/types/basic_5";
 
 describe("basic-5", () => {
-  const provider = anchor.AnchorProvider.local();
+  const provider = trezoaanchor.TrezoaAnchorProvider.local();
 
   // Configure the client to use the local cluster.
-  anchor.setProvider(provider);
+  trezoaanchor.setProvider(provider);
 
-  const program = anchor.workspace.Basic5 as anchor.Program<Basic5>;
+  const program = trezoaanchor.workspace.Basic5 as trezoaanchor.Program<Basic5>;
   const user = provider.wallet.publicKey;
 
-  let [actionState] = anchor.web3.PublicKey.findProgramAddressSync(
+  let [actionState] = trezoaanchor.web3.PublicKey.findProgramAddressSync(
     [Buffer.from("action-state"), user.toBuffer()],
     program.programId
   );
 
   it("basic-5: Robot actions!", async () => {
-    // Create instruction: set up the Solana accounts to be used
+    // Create instruction: set up the Trezoa accounts to be used
     const createInstruction = await program.methods
       .create()
       .accounts({
         actionState,
         user,
-        systemProgram: anchor.web3.SystemProgram.programId,
+        systemProgram: trezoaanchor.web3.SystemProgram.programId,
       })
       .instruction();
     // Walk instruction: Invoke the Robot to walk
@@ -59,7 +59,7 @@ describe("basic-5", () => {
       .instruction();
 
     // Array of instructions
-    const instructions: anchor.web3.TransactionInstruction[] = [
+    const instructions: trezoaanchor.web3.TransactionInstruction[] = [
       createInstruction,
       walkInstruction,
       runInstruction,
@@ -71,7 +71,7 @@ describe("basic-5", () => {
   });
 
   async function createAndSendV0Tx(
-    txInstructions: anchor.web3.TransactionInstruction[]
+    txInstructions: trezoaanchor.web3.TransactionInstruction[]
   ) {
     // Step 1 - Fetch the latest blockhash
     let latestBlockhash = await provider.connection.getLatestBlockhash(
@@ -83,13 +83,13 @@ describe("basic-5", () => {
     );
 
     // Step 2 - Generate Transaction Message
-    const messageV0 = new anchor.web3.TransactionMessage({
+    const messageV0 = new trezoaanchor.web3.TransactionMessage({
       payerKey: user,
       recentBlockhash: latestBlockhash.blockhash,
       instructions: txInstructions,
     }).compileToV0Message();
     console.log("   ✅ - Compiled Transaction Message");
-    const transaction = new anchor.web3.VersionedTransaction(messageV0);
+    const transaction = new trezoaanchor.web3.VersionedTransaction(messageV0);
 
     // Step 3 - Sign your transaction with the required `Signers`
     provider.wallet.signTransaction(transaction);

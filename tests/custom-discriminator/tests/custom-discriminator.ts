@@ -1,12 +1,12 @@
-import * as anchor from "@coral-xyz/anchor";
+import * as trezoaanchor from "@trezoa-xyz/trezoaanchor";
 import assert from "assert";
 
 import type { CustomDiscriminator } from "../target/types/custom_discriminator";
 
 describe("custom-discriminator", () => {
-  anchor.setProvider(anchor.AnchorProvider.env());
-  const program: anchor.Program<CustomDiscriminator> =
-    anchor.workspace.customDiscriminator;
+  trezoaanchor.setProvider(trezoaanchor.TrezoaAnchorProvider.env());
+  const program: trezoaanchor.Program<CustomDiscriminator> =
+    trezoaanchor.workspace.customDiscriminator;
 
   describe("Instructions", () => {
     const testCommon = async (ixName: keyof typeof program["methods"]) => {
@@ -48,7 +48,7 @@ describe("custom-discriminator", () => {
         "confirmed"
       );
       const myAccount = await program.account.myAccount.fetch(
-        pubkeys.myAccount as anchor.web3.PublicKey
+        pubkeys.myAccount as trezoaanchor.web3.PublicKey
       );
       assert.strictEqual(myAccount.field, field);
     });

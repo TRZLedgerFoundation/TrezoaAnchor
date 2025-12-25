@@ -1,18 +1,18 @@
-import * as anchor from "@coral-xyz/anchor";
-import * as token from "@coral-xyz/spl-token";
+import * as trezoaanchor from "@trezoa-xyz/trezoaanchor";
+import * as token from "@trezoa-xyz/tpl-token";
 
 import { Bench } from "../target/types/bench";
 import { BenchData, ComputeUnits } from "../scripts/utils";
 
 describe("Compute units", () => {
   // Configure the client to use the local cluster
-  anchor.setProvider(anchor.AnchorProvider.env());
+  trezoaanchor.setProvider(trezoaanchor.TrezoaAnchorProvider.env());
 
-  const program = anchor.workspace.Bench as anchor.Program<Bench>;
+  const program = trezoaanchor.workspace.Bench as trezoaanchor.Program<Bench>;
   const owner = program.provider.publicKey!;
 
-  let mintPk: anchor.web3.PublicKey;
-  let tokenPk: anchor.web3.PublicKey;
+  let mintPk: trezoaanchor.web3.PublicKey;
+  let tokenPk: trezoaanchor.web3.PublicKey;
 
   const computeUnits: ComputeUnits = {};
 
@@ -20,13 +20,13 @@ describe("Compute units", () => {
     ixName: string,
     options?: Partial<{
       accountCounts: number[];
-      generateKeypair: (accountName: string) => anchor.web3.Keypair;
-      generatePublicKey: (accountName: string) => anchor.web3.PublicKey;
+      generateKeypair: (accountName: string) => trezoaanchor.web3.Keypair;
+      generatePublicKey: (accountName: string) => trezoaanchor.web3.PublicKey;
     }>
   ) => {
     options ??= {};
     options.accountCounts ??= [1, 2, 4, 8];
-    options.generateKeypair ??= () => anchor.web3.Keypair.generate();
+    options.generateKeypair ??= () => trezoaanchor.web3.Keypair.generate();
 
     for (const accountCount of options.accountCounts) {
       // Check whether the init version of the instruction exists
@@ -41,7 +41,7 @@ describe("Compute units", () => {
         ixNames.unshift(ixNameInit);
       }
 
-      const accounts: { [key: string]: anchor.web3.PublicKey } = {};
+      const accounts: { [key: string]: trezoaanchor.web3.PublicKey } = {};
       const signers = [];
 
       for (const ixName of ixNames) {
@@ -67,7 +67,7 @@ describe("Compute units", () => {
               continue;
             }
 
-            // Skip other accounts to not override Anchor defaults
+            // Skip other accounts to not override TrezoaAnchor defaults
             if (!account.name.startsWith("account")) {
               continue;
             }
@@ -111,14 +111,14 @@ describe("Compute units", () => {
 
   before(async () => {
     // Create necessary accounts
-    const tokenProgram = token.splTokenProgram({
-      provider: anchor.AnchorProvider.local(),
+    const tokenProgram = token.tplTokenProgram({
+      provider: trezoaanchor.TrezoaAnchorProvider.local(),
     });
 
-    const tx = new anchor.web3.Transaction();
+    const tx = new trezoaanchor.web3.Transaction();
 
     // Create mint account
-    const mintKp = new anchor.web3.Keypair();
+    const mintKp = new trezoaanchor.web3.Keypair();
     mintPk = mintKp.publicKey;
     const createMintIx = await tokenProgram.account.mint.createInstruction(
       mintKp
@@ -130,7 +130,7 @@ describe("Compute units", () => {
     tx.add(createMintIx, initMintIx);
 
     // Create token account
-    const tokenKp = new anchor.web3.Keypair();
+    const tokenKp = new trezoaanchor.web3.Keypair();
     tokenPk = tokenKp.publicKey;
     const createTokenIx = await tokenProgram.account.account.createInstruction(
       tokenKp
@@ -202,13 +202,13 @@ describe("Compute units", () => {
 
   it("Interface", async () => {
     await measureComputeUnits("interface", {
-      generatePublicKey: () => token.SPL_TOKEN_PROGRAM_ID,
+      generatePublicKey: () => token.TPL_TOKEN_PROGRAM_ID,
     });
   });
 
   it("Program", async () => {
     await measureComputeUnits("program", {
-      generatePublicKey: () => anchor.web3.SystemProgram.programId,
+      generatePublicKey: () => trezoaanchor.web3.SystemProgram.programId,
     });
   });
 

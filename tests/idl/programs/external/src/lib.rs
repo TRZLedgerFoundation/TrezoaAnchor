@@ -1,4 +1,4 @@
-use anchor_lang::prelude::*;
+use trezoaanchor-lang::prelude::*;
 
 declare_id!("Externa1111111111111111111111111111111111111");
 
@@ -11,12 +11,12 @@ pub mod external {
     }
 }
 
-#[derive(AnchorSerialize, AnchorDeserialize, Clone)]
+#[derive(TrezoaAnchorSerialize, TrezoaAnchorDeserialize, Clone)]
 pub struct MyStruct {
     some_field: u8,
 }
 
-#[derive(AnchorSerialize, AnchorDeserialize, Clone)]
+#[derive(TrezoaAnchorSerialize, TrezoaAnchorDeserialize, Clone)]
 pub enum MyEnum {
     Unit,
     Named { name: String },

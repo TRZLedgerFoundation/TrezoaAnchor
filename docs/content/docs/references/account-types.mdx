@@ -1,13 +1,13 @@
 ---
 title: Account Types
-description: Anchor Account Type Examples
+description: TrezoaAnchor Account Type Examples
 ---
 
-Minimal reference examples for Anchor
-[account types](https://docs.rs/anchor-lang/latest/anchor_lang/accounts/index.html).
+Minimal reference examples for TrezoaAnchor
+[account types](https://docs.rs/trezoaanchortrezoaanchor-lang/latest/trezoaanchor-lang/accounts/index.html).
 
 See the account types
-[source code](https://github.com/coral-xyz/anchor/tree/0e5285aecdf410fa0779b7cd09a47f235882c156/lang/src/accounts)
+[source code](https://github.com/trezoa-xyz/trezoaanchor/tree/0e5285aecdf410fa0779b7cd09a47f235882c156/lang/src/accounts)
 for implementation details.
 
 ## Account Types
@@ -15,9 +15,9 @@ for implementation details.
 ### `Account<'info, T>`
 
 Description: Account container that checks ownership on deserialization  
-Examples: [Github](https://github.com/solana-developers/anchor-examples/tree/main/account-types/Account)
+Examples: [Github](https://github.com/trezoa-developers/trezoaanchor-examples/tree/main/account-types/Account)
 |
-[Solpg](https://beta.solpg.io/https://github.com/solana-developers/anchor-examples/tree/main/account-types/Account)
+[Solpg](https://beta.solpg.io/https://github.com/trezoa-developers/trezoaanchor-examples/tree/main/account-types/Account)
 
 ```rust title="snippet"
 #[derive(Accounts)]
@@ -37,9 +37,9 @@ pub struct CustomAccountType {
 
 Description: AccountInfo can be used as a type but Unchecked Account should be
 used instead  
-Examples: [Github](https://github.com/solana-developers/anchor-examples/tree/main/account-types/AccountInfo)
+Examples: [Github](https://github.com/trezoa-developers/trezoaanchor-examples/tree/main/account-types/AccountInfo)
 |
-[Solpg](https://beta.solpg.io/https://github.com/solana-developers/anchor-examples/tree/main/account-types/AccountInfo)
+[Solpg](https://beta.solpg.io/https://github.com/trezoa-developers/trezoaanchor-examples/tree/main/account-types/AccountInfo)
 
 ```rust title="snippet"
 #[derive(Accounts)]
@@ -54,9 +54,9 @@ pub struct InstructionAccounts<'info> {
 ### `AccountLoader<'info, T>`
 
 Description: Type facilitating on demand zero copy deserialization  
-Examples: [Github](https://github.com/solana-developers/anchor-examples/tree/main/account-types/AccountLoader)
+Examples: [Github](https://github.com/trezoa-developers/trezoaanchor-examples/tree/main/account-types/AccountLoader)
 |
-[Solpg](https://beta.solpg.io/https://github.com/solana-developers/anchor-examples/tree/main/account-types/AccountLoader)
+[Solpg](https://beta.solpg.io/https://github.com/trezoa-developers/trezoaanchor-examples/tree/main/account-types/AccountLoader)
 
 ```rust title="snippet"
 #[derive(Accounts)]
@@ -75,9 +75,9 @@ pub struct ZeroCopyAccountType {
 ### `Box<Account<'info, T>>`
 
 Description: Box type to save stack space  
-Examples: [Github](https://github.com/solana-developers/anchor-examples/tree/main/account-types/Box)
+Examples: [Github](https://github.com/trezoa-developers/trezoaanchor-examples/tree/main/account-types/Box)
 |
-[Solpg](https://beta.solpg.io/https://github.com/solana-developers/anchor-examples/tree/main/account-types/Box)
+[Solpg](https://beta.solpg.io/https://github.com/trezoa-developers/trezoaanchor-examples/tree/main/account-types/Box)
 
 ```rust title="snippet"
 #[derive(Accounts)]
@@ -92,13 +92,13 @@ pub struct InstructionAccounts<'info> {
 
 Description: Type validating that the account is one of a set of given
 Programs  
-Examples: [Github](https://github.com/solana-developers/anchor-examples/tree/main/account-types/Interface)
+Examples: [Github](https://github.com/trezoa-developers/trezoaanchor-examples/tree/main/account-types/Interface)
 |
-[Solpg](https://beta.solpg.io/https://github.com/solana-developers/anchor-examples/tree/main/account-types/Interface)
+[Solpg](https://beta.solpg.io/https://github.com/trezoa-developers/trezoaanchor-examples/tree/main/account-types/Interface)
 
 ```rust title="snippet"
 // Token program or Token2022 program
-use anchor_spl::token_interface::TokenInterface;
+use trezoaanchor_spl::token_interface::TokenInterface;
 
 #[derive(Accounts)]
 pub struct InstructionAccounts<'info> {
@@ -111,13 +111,13 @@ pub struct InstructionAccounts<'info> {
 ### `InterfaceAccount<'info, T>`
 
 Description: Account container that checks ownership on deserialization  
-Examples: [Github](https://github.com/solana-developers/anchor-examples/tree/main/account-types/InterfaceAccount)
+Examples: [Github](https://github.com/trezoa-developers/trezoaanchor-examples/tree/main/account-types/InterfaceAccount)
 |
-[Solpg](https://beta.solpg.io/https://github.com/solana-developers/anchor-examples/tree/main/account-types/InterfaceAccount)
+[Solpg](https://beta.solpg.io/https://github.com/trezoa-developers/trezoaanchor-examples/tree/main/account-types/InterfaceAccount)
 
 ```rust title="snippet"
 // Token program or Token2022 program Mint/TokenAccount
-use anchor_spl::token_interface::{Mint, TokenAccount, TokenInterface};
+use trezoaanchor_spl::token_interface::{Mint, TokenAccount, TokenInterface};
 
 #[derive(Accounts)]
 pub struct InstructionAccounts<'info> {
@@ -132,9 +132,9 @@ pub struct InstructionAccounts<'info> {
 ### `Option<Account<'info, T>>`
 
 Description: Option type for optional accounts  
-Examples: [Github](https://github.com/solana-developers/anchor-examples/tree/main/account-types/Option)
+Examples: [Github](https://github.com/trezoa-developers/trezoaanchor-examples/tree/main/account-types/Option)
 |
-[Solpg](https://beta.solpg.io/https://github.com/solana-developers/anchor-examples/tree/main/account-types/Option)
+[Solpg](https://beta.solpg.io/https://github.com/trezoa-developers/trezoaanchor-examples/tree/main/account-types/Option)
 
 ```rust title="snippet"
 #[derive(Accounts)]
@@ -148,12 +148,12 @@ pub struct InstructionAccounts<'info> {
 ### `Program<'info, T>`
 
 Description: Type validating that the account is the given Program  
-Examples: [Github](https://github.com/solana-developers/anchor-examples/tree/main/account-types/Program)
+Examples: [Github](https://github.com/trezoa-developers/trezoaanchor-examples/tree/main/account-types/Program)
 |
-[Solpg](https://beta.solpg.io/https://github.com/solana-developers/anchor-examples/tree/main/account-types/Program)
+[Solpg](https://beta.solpg.io/https://github.com/trezoa-developers/trezoaanchor-examples/tree/main/account-types/Program)
 
 ```rust title="snippet"
-use anchor_spl::token::Token;
+use trezoaanchor_spl::token::Token;
 
 #[derive(Accounts)]
 pub struct InstructionAccounts<'info> {
@@ -167,9 +167,9 @@ pub struct InstructionAccounts<'info> {
 ### `Signer<'info>`
 
 Description: Type validating that the account signed the transaction  
-Examples: [Github](https://github.com/solana-developers/anchor-examples/tree/main/account-types/Signer)
+Examples: [Github](https://github.com/trezoa-developers/trezoaanchor-examples/tree/main/account-types/Signer)
 |
-[Solpg](https://beta.solpg.io/https://github.com/solana-developers/anchor-examples/tree/main/account-types/Signer)
+[Solpg](https://beta.solpg.io/https://github.com/trezoa-developers/trezoaanchor-examples/tree/main/account-types/Signer)
 
 ```rust title="snippet"
 #[derive(Accounts)]
@@ -183,9 +183,9 @@ pub struct InstructionAccounts<'info> {
 ### `SystemAccount<'info>`
 
 Description: Type validating that the account is owned by the system program  
-Examples: [Github](https://github.com/solana-developers/anchor-examples/tree/main/account-types/SystemAccount)
+Examples: [Github](https://github.com/trezoa-developers/trezoaanchor-examples/tree/main/account-types/SystemAccount)
 |
-[Solpg](https://beta.solpg.io/https://github.com/solana-developers/anchor-examples/tree/main/account-types/SystemAccount)
+[Solpg](https://beta.solpg.io/https://github.com/trezoa-developers/trezoaanchor-examples/tree/main/account-types/SystemAccount)
 
 ```rust title="snippet"
 #[derive(Accounts)]
@@ -199,9 +199,9 @@ pub struct InstructionAccounts<'info> {
 ### `Sysvar<'info, T>`
 
 Description: Type validating that the account is a sysvar and deserializing it  
-Examples: [Github](https://github.com/solana-developers/anchor-examples/tree/main/account-types/Sysvar)
+Examples: [Github](https://github.com/trezoa-developers/trezoaanchor-examples/tree/main/account-types/Sysvar)
 |
-[Solpg](https://beta.solpg.io/https://github.com/solana-developers/anchor-examples/tree/main/account-types/Sysvar)
+[Solpg](https://beta.solpg.io/https://github.com/trezoa-developers/trezoaanchor-examples/tree/main/account-types/Sysvar)
 
 ```rust title="snippet"
 #[derive(Accounts)]
@@ -217,9 +217,9 @@ pub struct InstructionAccounts<'info> {
 
 Description: Explicit wrapper for AccountInfo types to emphasize that no checks
 are performed  
-Examples: [Github](https://github.com/solana-developers/anchor-examples/tree/main/account-types/UncheckedAccount)
+Examples: [Github](https://github.com/trezoa-developers/trezoaanchor-examples/tree/main/account-types/UncheckedAccount)
 |
-[Solpg](https://beta.solpg.io/https://github.com/solana-developers/anchor-examples/tree/main/account-types/UncheckedAccount)
+[Solpg](https://beta.solpg.io/https://github.com/trezoa-developers/trezoaanchor-examples/tree/main/account-types/UncheckedAccount)
 
 ```rust title="snippet"
 #[derive(Accounts)]

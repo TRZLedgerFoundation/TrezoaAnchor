@@ -1,10 +1,10 @@
 [package]
-name = "anchor-syn"
+name = "trezoaanchor-syn"
 version = "0.32.1"
-authors = ["Anchor Maintainers <accounts@200ms.io>"]
-repository = "https://github.com/coral-xyz/anchor"
+authors = ["TrezoaAnchor Maintainers <accounts@200ms.io>"]
+repository = "https://github.com/trezoa-xyz/trezoaanchor"
 license = "Apache-2.0"
-description = "Anchor syntax parsing and code generation tools"
+description = "TrezoaAnchor syntax parsing and code generation tools"
 edition = "2021"
 
 [package.metadata.docs.rs]
@@ -13,7 +13,7 @@ rustdoc-args = ["--cfg", "docsrs"]
 
 [features]
 allow-missing-optionals = []
-anchor-debug = []
+trezoaanchor-debug = []
 event-cpi = []
 hash = []
 idl-build = ["cargo_toml"]

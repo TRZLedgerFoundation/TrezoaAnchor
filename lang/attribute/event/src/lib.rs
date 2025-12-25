@@ -1,8 +1,8 @@
 extern crate proc_macro;
 
 #[cfg(feature = "event-cpi")]
-use anchor_syn::parser::accounts::event_cpi::{add_event_cpi_accounts, EventAuthority};
-use anchor_syn::{codegen::program::common::gen_discriminator, Overrides};
+use trezoaanchor_syn::parser::accounts::event_cpi::{add_event_cpi_accounts, EventAuthority};
+use trezoaanchor_syn::{codegen::program::common::gen_discriminator, Overrides};
 use quote::quote;
 use syn::parse_macro_input;
 
@@ -42,10 +42,10 @@ pub fn event(
         .unwrap_or_else(|| gen_discriminator("event", event_name));
 
     let ret = quote! {
-        #[derive(AnchorSerialize, AnchorDeserialize)]
+        #[derive(TrezoaAnchorSerialize, TrezoaAnchorDeserialize)]
         #event_strct
 
-        impl anchor_lang::Event for #event_name {
+        impl trezoaanchor-lang::Event for #event_name {
             fn data(&self) -> Vec<u8> {
                 let mut data = Vec::with_capacity(256);
                 data.extend_from_slice(#event_name::DISCRIMINATOR);
@@ -54,14 +54,14 @@ pub fn event(
             }
         }
 
-        impl anchor_lang::Discriminator for #event_name {
+        impl trezoaanchor-lang::Discriminator for #event_name {
             const DISCRIMINATOR: &'static [u8] = #discriminator;
         }
     };
 
     #[cfg(feature = "idl-build")]
     {
-        let idl_build = anchor_syn::idl::gen_idl_print_fn_event(&event_strct);
+        let idl_build = trezoaanchor_syn::idl::gen_idl_print_fn_event(&event_strct);
         return proc_macro::TokenStream::from(quote! {
             #ret
             #idl_build
@@ -73,7 +73,7 @@ pub fn event(
 }
 
 /// Logs an event that can be subscribed to by clients.
-/// Uses the [`sol_log_data`](https://docs.rs/solana-program/latest/solana_program/log/fn.sol_log_data.html)
+/// Uses the [`sol_log_data`](https://docs.rs/trezoaanchor-program/latest/trezoa_program/log/fn.sol_log_data.html)
 /// syscall which results in the following log:
 /// ```ignore
 /// Program data: <Base64EncodedEvent>
@@ -81,7 +81,7 @@ pub fn event(
 /// # Example
 ///
 /// ```rust,ignore
-/// use anchor_lang::prelude::*;
+/// use trezoaanchor-lang::prelude::*;
 ///
 /// // handler function inside #[program]
 /// pub fn initialize(_ctx: Context<Initialize>) -> Result<()> {
@@ -103,7 +103,7 @@ pub fn emit(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
     let data: proc_macro2::TokenStream = input.into();
     proc_macro::TokenStream::from(quote! {
         {
-            anchor_lang::solana_program::log::sol_log_data(&[&anchor_lang::Event::data(&#data)]);
+            trezoaanchor-lang::trezoa_program::log::sol_log_data(&[&trezoaanchor-lang::Event::data(&#data)]);
         }
     })
 }
@@ -113,7 +113,7 @@ pub fn emit(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
 /// This way of logging events is more reliable than [`emit!`](emit!) because RPCs are less likely
 /// to truncate CPI information than program logs.
 ///
-/// Uses a [`invoke_signed`](https://docs.rs/solana-program/latest/solana_program/program/fn.invoke_signed.html)
+/// Uses a [`invoke_signed`](https://docs.rs/trezoaanchor-program/latest/trezoa_program/program/fn.invoke_signed.html)
 /// syscall to store the event data in the ledger, which results in the data being stored in the
 /// transaction metadata.
 ///
@@ -127,7 +127,7 @@ pub fn emit(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
 /// # Example
 ///
 /// ```ignore
-/// use anchor_lang::prelude::*;
+/// use trezoaanchor-lang::prelude::*;
 ///
 /// #[program]
 /// pub mod my_program {
@@ -165,30 +165,30 @@ pub fn emit_cpi(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
         {
             let authority_info = ctx.accounts.#authority_name.to_account_info();
 
-            let disc = anchor_lang::event::EVENT_IX_TAG_LE;
-            let inner_data = anchor_lang::Event::data(&#event_struct);
+            let disc = trezoaanchor-lang::event::EVENT_IX_TAG_LE;
+            let inner_data = trezoaanchor-lang::Event::data(&#event_struct);
             let ix_data: Vec<u8> = disc
                 .into_iter()
                 .map(|b| *b)
                 .chain(inner_data.into_iter())
                 .collect();
 
-            let ix = anchor_lang::solana_program::instruction::Instruction::new_with_bytes(
+            let ix = trezoaanchor-lang::trezoa_program::instruction::Instruction::new_with_bytes(
                 crate::ID,
                 &ix_data,
                 vec![
-                    anchor_lang::solana_program::instruction::AccountMeta::new_readonly(
+                    trezoaanchor-lang::trezoa_program::instruction::AccountMeta::new_readonly(
                         *authority_info.key,
                         true,
                     ),
                 ],
             );
-            anchor_lang::solana_program::program::invoke_signed(
+            trezoaanchor-lang::trezoa_program::program::invoke_signed(
                 &ix,
                 &[authority_info],
                 &[&[#authority_seeds, &[crate::EVENT_AUTHORITY_AND_BUMP.1]]],
             )
-            .map_err(anchor_lang::error::Error::from)?;
+            .map_err(trezoaanchor-lang::error::Error::from)?;
         }
     })
 }

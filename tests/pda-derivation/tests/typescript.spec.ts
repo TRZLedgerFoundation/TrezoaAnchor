@@ -1,16 +1,16 @@
-import * as anchor from "@coral-xyz/anchor";
+import * as trezoaanchor from "@trezoa-xyz/trezoaanchor";
 import BN from "bn.js";
-import { Keypair, PublicKey } from "@solana/web3.js";
-import { Program } from "@coral-xyz/anchor";
+import { Keypair, PublicKey } from "@trezoa/web3.js";
+import { Program } from "@trezoa-xyz/trezoaanchor";
 import { PdaDerivation } from "../target/types/pda_derivation";
 import { expect } from "chai";
-const encode = anchor.utils.bytes.utf8.encode;
+const encode = trezoaanchor.utils.bytes.utf8.encode;
 
 describe("typescript", () => {
   // Configure the client to use the local cluster.
-  anchor.setProvider(anchor.AnchorProvider.env());
+  trezoaanchor.setProvider(trezoaanchor.TrezoaAnchorProvider.env());
 
-  const program = anchor.workspace.PdaDerivation as Program<PdaDerivation>;
+  const program = trezoaanchor.workspace.PdaDerivation as Program<PdaDerivation>;
   const base = Keypair.generate();
   const dataKey = Keypair.generate();
   const data = new BN(1);
@@ -52,11 +52,11 @@ describe("typescript", () => {
         encode(MY_SEED),
         encode(MY_SEED_STR),
         Buffer.from([MY_SEED_U8]),
-        new anchor.BN(MY_SEED_U32).toArrayLike(Buffer, "le", 4),
-        new anchor.BN(MY_SEED_U64).toArrayLike(Buffer, "le", 8),
-        new anchor.BN(data).toArrayLike(Buffer, "le", 8),
+        new trezoaanchor.BN(MY_SEED_U32).toArrayLike(Buffer, "le", 4),
+        new trezoaanchor.BN(MY_SEED_U64).toArrayLike(Buffer, "le", 8),
+        new trezoaanchor.BN(data).toArrayLike(Buffer, "le", 8),
         dataKey.publicKey.toBuffer(),
-        new anchor.BN(anotherData).toArrayLike(Buffer, "le", 8),
+        new trezoaanchor.BN(anotherData).toArrayLike(Buffer, "le", 8),
       ],
       program.programId
     )[0];
@@ -109,7 +109,7 @@ describe("typescript", () => {
   });
 
   it("Can resolve associated token accounts", async () => {
-    const mintKp = anchor.web3.Keypair.generate();
+    const mintKp = trezoaanchor.web3.Keypair.generate();
     await program.methods
       .associatedTokenResolution()
       .accounts({ mint: mintKp.publicKey })
@@ -119,7 +119,7 @@ describe("typescript", () => {
 
   // TODO: Support more expressions in the IDL e.g. math operations?
   it("Can use unsupported expressions", () => {
-    // Compilation test to fix issues like https://github.com/coral-xyz/anchor/issues/2933
+    // Compilation test to fix issues like https://github.com/trezoa-xyz/trezoaanchor/issues/2933
   });
 
   it("Includes the unresolved accounts if resolution fails", async () => {
@@ -156,6 +156,6 @@ describe("typescript", () => {
   });
 
   it("Can use arguments with `seeds::program`", async () => {
-    await program.methods.seedsProgramArg(anchor.web3.PublicKey.default).rpc();
+    await program.methods.seedsProgramArg(trezoaanchor.web3.PublicKey.default).rpc();
   });
 });

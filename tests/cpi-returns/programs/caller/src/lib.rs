@@ -1,4 +1,4 @@
-use anchor_lang::prelude::*;
+use trezoaanchor-lang::prelude::*;
 use callee::cpi::accounts::CpiReturn;
 use callee::program::Callee;
 use callee::{self, CpiReturnAccount};
@@ -9,7 +9,7 @@ declare_id!("HmbTLCmaGvZhKnn1Zfa1JVnp7vkMV4DYVxPLWBVoN65L");
 pub mod caller {
     use super::*;
 
-    #[derive(AnchorSerialize, AnchorDeserialize)]
+    #[derive(TrezoaAnchorSerialize, TrezoaAnchorDeserialize)]
     pub struct Struct {
         pub a: u64,
         pub b: u64,
@@ -22,8 +22,8 @@ pub mod caller {
         };
         let cpi_ctx = CpiContext::new(cpi_program_id, cpi_accounts);
         let result = callee::cpi::return_u64(cpi_ctx)?;
-        let solana_return = result.get();
-        anchor_lang::solana_program::log::sol_log_data(&[&borsh::to_vec(&solana_return).unwrap()]);
+        let trezoa_return = result.get();
+        trezoaanchor-lang::trezoa_program::log::sol_log_data(&[&borsh::to_vec(&trezoa_return).unwrap()]);
         Ok(())
     }
 
@@ -34,8 +34,8 @@ pub mod caller {
         };
         let cpi_ctx = CpiContext::new(cpi_program_id, cpi_accounts);
         let result = callee::cpi::return_struct(cpi_ctx)?;
-        let solana_return = result.get();
-        anchor_lang::solana_program::log::sol_log_data(&[&borsh::to_vec(&solana_return).unwrap()]);
+        let trezoa_return = result.get();
+        trezoaanchor-lang::trezoa_program::log::sol_log_data(&[&borsh::to_vec(&trezoa_return).unwrap()]);
         Ok(())
     }
 
@@ -46,8 +46,8 @@ pub mod caller {
         };
         let cpi_ctx = CpiContext::new(cpi_program_id, cpi_accounts);
         let result = callee::cpi::return_vec(cpi_ctx)?;
-        let solana_return = result.get();
-        anchor_lang::solana_program::log::sol_log_data(&[&borsh::to_vec(&solana_return).unwrap()]);
+        let trezoa_return = result.get();
+        trezoaanchor-lang::trezoa_program::log::sol_log_data(&[&borsh::to_vec(&trezoa_return).unwrap()]);
         Ok(())
     }
 

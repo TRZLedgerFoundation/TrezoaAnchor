@@ -1,6 +1,6 @@
 use crate::account::*;
-use anchor_lang::prelude::*;
-use anchor_spl::token::Token;
+use trezoaanchor-lang::prelude::*;
+use trezoaanchor_spl::token::Token;
 
 #[derive(Accounts)]
 pub struct TestInit<'info> {

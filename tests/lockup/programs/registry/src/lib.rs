@@ -1,11 +1,11 @@
-//! A relatively advanced example of a staking program. If you're new to Anchor,
+//! A relatively advanced example of a staking program. If you're new to TrezoaAnchor,
 //! it's suggested to start with the other examples.
 
-use anchor_lang::accounts::state::ProgramState;
-use anchor_lang::prelude::*;
-use anchor_lang::solana_program::account_info::next_account_info;
-use anchor_lang::solana_program::program_option::COption;
-use anchor_spl::token::{self, Mint, TokenAccount, Transfer};
+use trezoaanchor-lang::accounts::state::ProgramState;
+use trezoaanchor-lang::prelude::*;
+use trezoaanchor-lang::trezoa_program::account_info::next_account_info;
+use trezoaanchor-lang::trezoa_program::program_option::COption;
+use trezoaanchor_spl::token::{self, Mint, TokenAccount, Transfer};
 use lockup::{CreateVesting, RealizeLock, Realizor, Vesting};
 use std::convert::Into;
 
@@ -719,7 +719,7 @@ pub struct DepositLocked<'info> {
     vesting: Box<Account<'info, Vesting>>,
     #[account(mut, constraint = vesting_vault.key == &vesting.vault)]
     vesting_vault: AccountInfo<'info>,
-    // Note: no need to verify the depositor_authority since the SPL program
+    // Note: no need to verify the depositor_authority since the TPL program
     //       will fail the transaction if it's not correct.
     pub depositor_authority: Signer<'info>,
     #[account(constraint = token_program.key == &token::ID)]
@@ -1056,7 +1056,7 @@ pub struct Member {
 // Once controlled by the program, the associated `Member` account's beneficiary
 // can send funds to/from any of the accounts within the sandbox, e.g., to
 // stake.
-#[derive(AnchorSerialize, AnchorDeserialize, Default, Debug, Clone, PartialEq)]
+#[derive(TrezoaAnchorSerialize, TrezoaAnchorDeserialize, Default, Debug, Clone, PartialEq)]
 pub struct BalanceSandbox {
     // Staking pool token.
     pub spt: Pubkey,
@@ -1139,7 +1139,7 @@ impl RewardQueue {
     }
 }
 
-#[derive(Default, Clone, Copy, Debug, AnchorSerialize, AnchorDeserialize)]
+#[derive(Default, Clone, Copy, Debug, TrezoaAnchorSerialize, TrezoaAnchorDeserialize)]
 pub struct RewardEvent {
     vendor: Pubkey,
     ts: i64,
@@ -1163,7 +1163,7 @@ pub struct RewardVendor {
     pub kind: RewardVendorKind,
 }
 
-#[derive(AnchorSerialize, AnchorDeserialize, Clone, PartialEq)]
+#[derive(TrezoaAnchorSerialize, TrezoaAnchorDeserialize, Clone, PartialEq)]
 pub enum RewardVendorKind {
     Unlocked,
     Locked {

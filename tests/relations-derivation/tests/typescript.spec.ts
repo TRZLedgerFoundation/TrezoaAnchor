@@ -1,16 +1,16 @@
-import * as anchor from "@coral-xyz/anchor";
-import { AnchorProvider, Program } from "@coral-xyz/anchor";
-import { PublicKey } from "@solana/web3.js";
+import * as trezoaanchor from "@trezoa-xyz/trezoaanchor";
+import { TrezoaAnchorProvider, Program } from "@trezoa-xyz/trezoaanchor";
+import { PublicKey } from "@trezoa/web3.js";
 import { expect } from "chai";
 import { RelationsDerivation } from "../target/types/relations_derivation";
 
 describe("typescript", () => {
   // Configure the client to use the local cluster.
-  anchor.setProvider(anchor.AnchorProvider.env());
+  trezoaanchor.setProvider(trezoaanchor.TrezoaAnchorProvider.env());
 
-  const program = anchor.workspace
+  const program = trezoaanchor.workspace
     .RelationsDerivation as Program<RelationsDerivation>;
-  const provider = anchor.getProvider() as AnchorProvider;
+  const provider = trezoaanchor.getProvider() as TrezoaAnchorProvider;
 
   it("Inits the base account", async () => {
     await program.methods

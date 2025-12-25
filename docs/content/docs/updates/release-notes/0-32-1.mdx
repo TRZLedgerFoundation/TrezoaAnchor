@@ -1,40 +1,40 @@
 ---
 title: 0.32.1
-description: Anchor - Release Notes 0.32.1
+description: TrezoaAnchor - Release Notes 0.32.1
 ---
 
 `0.32.1` is a patch to fix a couple issues that showed up in `0.32.0`, most 
 notably a race condition when deploying programs. We cover the most important 
 changes below, but be sure to check out the full list of changes in the 
-[CHANGELOG](https://github.com/solana-foundation/anchor/blob/v0.32.1/CHANGELOG.md#0320---2025-10-09).
+[CHANGELOG](https://github.com/trz-ledger-foundation/trezoaanchor/blob/v0.32.1/CHANGELOG.md#0320---2025-10-09).
 
 ---
 
 ## How to upgrade
 
-1. Update `anchor-cli`:
+1. Update `trezoaanchor-cli`:
 
    ```sh
    avm install 0.32.1
    ```
 
-2. Update Anchor crate(s) to `0.32.1`.
+2. Update TrezoaAnchor crate(s) to `0.32.1`.
 
 3. Update TS package(s) to `0.32.1`.
 
-## Recommended Solana Version
+## Recommended Trezoa Version
 
-The recommended Solana version is `2.3.0`.
+The recommended Trezoa version is `2.3.0`.
 
 You can install the newer tooling by running:
 
 ```
-sh -c "$(curl -sSfL https://release.anza.xyz/v2.3.0/install)"
+sh -c "$(curl -sSfL https://release.trezoa.xyz/v2.3.0/install)"
 ```
 
 ## CLI
 
-### Fix `anchor deploy` race condition
+### Fix `trezoaanchor deploy` race condition
 
 With the addition of deploying the IDL on every program deploy by default, a 
 race condition was introduced that was not found in initial testing. We have 
@@ -43,7 +43,7 @@ deployment of the IDL.
 
 ## lang
 
-### Fix warnings and prelude solana-program inclusion
+### Fix warnings and prelude trezoa-program inclusion
 
 There was still a warning leftover for deprecation of realloc in 0.32.0. This
 has been remediated in this release.
@@ -51,4 +51,4 @@ has been remediated in this release.
 ---
 
 See the full list of notable changes in the
-[CHANGELOG](https://github.com/solana-foundation/anchor/blob/v0.32.0/CHANGELOG.md#0320---2025-10-09).
+[CHANGELOG](https://github.com/trz-ledger-foundation/trezoaanchor/blob/v0.32.0/CHANGELOG.md#0320---2025-10-09).

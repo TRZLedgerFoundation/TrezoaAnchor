@@ -6,12 +6,12 @@
 //
 //! Implementation note on leaks: we leak a few bytes per call in
 //! `pda_seeds`.  That is harmless for on‑chain programs because the
-//! binary never unloads.  Once the Anchor tests can use nightly we can
+//! binary never unloads.  Once the TrezoaAnchor tests can use nightly we can
 //! replace it with a `const fn` + `OnceLock` that avoids the leak.
 
 #![allow(dead_code)]
 
-use anchor_lang::prelude::*;
+use trezoaanchor-lang::prelude::*;
 
 declare_id!("Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS");
 

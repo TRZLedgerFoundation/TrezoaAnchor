@@ -1,17 +1,17 @@
 ---
 title: Rust
 description:
-  Learn how to use Anchor's Rust client library to interact with Solana programs
+  Learn how to use TrezoaAnchor's Rust client library to interact with Trezoa programs
 ---
 
-The [`anchor-client`](https://docs.rs/anchor-client/latest/anchor_client/) crate
-is the Rust client library for interacting with Anchor programs. You can find
-the source code [here](https://github.com/coral-xyz/anchor/tree/0e5285aecdf410fa0779b7cd09a47f235882c156/client).
+The [`trezoaanchor-client`](https://docs.rs/trezoaanchortrezoaanchor-client/latest/trezoaanchor_client/) crate
+is the Rust client library for interacting with TrezoaAnchor programs. You can find
+the source code [here](https://github.com/trezoa-xyz/trezoaanchor/tree/0e5285aecdf410fa0779b7cd09a47f235882c156/client).
 
 ## Example
 
-The example below demonstrates how to use the `anchor-client` crate to interact
-with a simple Anchor program. The program client can be automatically generated
+The example below demonstrates how to use the `trezoaanchor-client` crate to interact
+with a simple TrezoaAnchor program. The program client can be automatically generated
 from the program's IDL using the `declare_program!` macro. This macro generates
 dependency free modules that enable you to interact with the program's
 instructions and accounts.
@@ -22,7 +22,7 @@ The program has two instructions:
 - `increment` – Increments the value stored on the counter account
 
 ```rust title="lib.rs"
-use anchor_lang::prelude::*;
+use trezoaanchor-lang::prelude::*;
 
 declare_id!("6khKp4BeJpCjBY1Eh39ybiqbfRnrn2UzWeUARjQLXYRC");
 
@@ -73,7 +73,7 @@ pub struct Counter {
 ```
 
 Below is an example folder structure for a Rust client that interacts with the
-Anchor program:
+TrezoaAnchor program:
 
 <Files>
   <Folder name="client-example" defaultOpen={true}>
@@ -98,7 +98,7 @@ searches for the IDL in the `/idls` folder to generate the client modules.
     "name": "example",
     "version": "0.1.0",
     "spec": "0.1.0",
-    "description": "Created with Anchor"
+    "description": "Created with TrezoaAnchor"
   },
   "instructions": [
     {
@@ -162,23 +162,23 @@ Below is the `src/main.rs` file for interacting with the program:
 1. The `declare_program!` macro - Generates client modules for the program using
    the IDL file
 
-2. The `anchor_client` crate - Provides utilities for interacting with the
+2. The `trezoaanchor_client` crate - Provides utilities for interacting with the
    program, including:
    - Building program instructions
    - Sending transactions
    - Fetching program accounts
 
 ```rust title="src/main.rs"
-use anchor_client::{
-    solana_client::rpc_client::RpcClient,
-    solana_sdk::{
-        commitment_config::CommitmentConfig, native_token::LAMPORTS_PER_SOL, signature::Keypair,
+use trezoaanchor_client::{
+    trezoa_client::rpc_client::RpcClient,
+    trezoa_sdk::{
+        commitment_config::CommitmentConfig, native_token::LAMPORTS_PER_TRZ, signature::Keypair,
         system_program,
     },
-    solana_signer::Signer,
+    trezoa_signer::Signer,
     Client, Cluster,
 };
-use anchor_lang::prelude::*;
+use trezoaanchor-lang::prelude::*;
 use std::rc::Rc;
 
 declare_program!(example);
@@ -198,8 +198,8 @@ async fn main() -> anyhow::Result<()> {
     println!("   Payer: {}", payer.pubkey());
     println!("   Counter: {}", counter.pubkey());
 
-    println!("\nRequesting 1 SOL airdrop to payer");
-    let airdrop_signature = connection.request_airdrop(&payer.pubkey(), LAMPORTS_PER_SOL)?;
+    println!("\nRequesting 1 TRZ airdrop to payer");
+    let airdrop_signature = connection.request_airdrop(&payer.pubkey(), LAMPORTS_PER_TRZ)?;
 
     // Wait for airdrop confirmation
     while !connection.confirm_transaction(&airdrop_signature)? {
@@ -262,8 +262,8 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-anchor-client = { version = "0.32.1", features = ["async"] }
-anchor-lang = "0.32.1"
+trezoaanchor-client = { version = "0.32.1", features = ["async"] }
+trezoaanchor-lang = "0.32.1"
 anyhow = "1.0.93"
 tokio = { version = "1.0", features = ["full"] }
 ```

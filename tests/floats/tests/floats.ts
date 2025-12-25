@@ -1,15 +1,15 @@
-import * as anchor from "@coral-xyz/anchor";
-import { Program, getProvider } from "@coral-xyz/anchor";
-import { Keypair, SystemProgram } from "@solana/web3.js";
+import * as trezoaanchor from "@trezoa-xyz/trezoaanchor";
+import { Program, getProvider } from "@trezoa-xyz/trezoaanchor";
+import { Keypair, SystemProgram } from "@trezoa/web3.js";
 import { Floats } from "../target/types/floats";
 import { assert } from "chai";
 
 describe("floats", () => {
   // Configure the client to use the local cluster.
-  const provider = anchor.AnchorProvider.env();
-  anchor.setProvider(provider);
+  const provider = trezoaanchor.TrezoaAnchorProvider.env();
+  trezoaanchor.setProvider(provider);
 
-  const program = anchor.workspace.Floats as Program<Floats>;
+  const program = trezoaanchor.workspace.Floats as Program<Floats>;
 
   it("Creates an account with float data", async () => {
     const accountKeypair = Keypair.generate();

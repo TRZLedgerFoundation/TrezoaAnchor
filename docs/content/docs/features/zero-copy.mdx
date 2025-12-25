@@ -1,15 +1,15 @@
 ---
 title: Zero Copy
 description:
-  Learn how to use Anchor's zero-copy deserialization feature to handle large
-  account data in Solana programs.
+  Learn how to use TrezoaAnchor's zero-copy deserialization feature to handle large
+  account data in Trezoa programs.
 ---
 
 ## Overview
 
 Zero-copy deserialization allows programs to read and write account data
 **directly from memory** without copying or deserializing it. This is essential
-for handling large accounts efficiently on Solana.
+for handling large accounts efficiently on Trezoa.
 
 ### Why Use Zero-Copy?
 
@@ -62,13 +62,13 @@ zero-copy types.
 ```toml title="Cargo.toml"
 [dependencies]
 bytemuck = { version = "1.20.0", features = ["min_const_generics"] }
-anchor-lang = "0.32.1"
+trezoaanchor-lang = "0.32.1"
 ```
 
 ### Define a Zero Copy Account
 
 To define an account type that uses zero-copy, annotate the struct with
-[`#[account(zero_copy)]`](https://github.com/coral-xyz/anchor/blob/0e5285aecdf410fa0779b7cd09a47f235882c156/lang/attribute/account/src/lib.rs#L417).
+[`#[account(zero_copy)]`](https://github.com/trezoa-xyz/trezoaanchor/blob/0e5285aecdf410fa0779b7cd09a47f235882c156/lang/attribute/account/src/lib.rs#L417).
 
 ```rust
 // [!code highlight]
@@ -96,7 +96,7 @@ struct Data {
 ### Use AccountLoader for Zero Copy Accounts
 
 To deserialize a zero-copy account, use
-[`AccountLoader<'info, T>`](https://github.com/coral-xyz/anchor/blob/0e5285aecdf410fa0779b7cd09a47f235882c156/lang/src/accounts/account_loader.rs#L95-L99),
+[`AccountLoader<'info, T>`](https://github.com/trezoa-xyz/trezoaanchor/blob/0e5285aecdf410fa0779b7cd09a47f235882c156/lang/src/accounts/account_loader.rs#L95-L99),
 where `T` is the zero-copy account type defined with the `#[account(zero_copy)]`
 attribute.
 
@@ -141,7 +141,7 @@ pub struct Initialize<'info> {
 </Callout>
 
 When initializing a zero-copy account for the first time, use
-[`load_init`](https://github.com/coral-xyz/anchor/blob/0e5285aecdf410fa0779b7cd09a47f235882c156/lang/src/accounts/account_loader.rs#L199-L221)
+[`load_init`](https://github.com/trezoa-xyz/trezoaanchor/blob/0e5285aecdf410fa0779b7cd09a47f235882c156/lang/src/accounts/account_loader.rs#L199-L221)
 to get a mutable reference to the account data. The `load_init` method also sets
 the account discriminator.
 
@@ -156,7 +156,7 @@ pub fn initialize(ctx: Context<Initialize>) -> Result<()> {
 ```
 
 For accounts that require more than 10240 bytes, use the
-[`zero`](https://github.com/coral-xyz/anchor/blob/0e5285aecdf410fa0779b7cd09a47f235882c156/lang/syn/src/codegen/accounts/constraints.rs#L200-L264)
+[`zero`](https://github.com/trezoa-xyz/trezoaanchor/blob/0e5285aecdf410fa0779b7cd09a47f235882c156/lang/syn/src/codegen/accounts/constraints.rs#L200-L264)
 constraint instead of `init`. The `zero` constraint verifies the account has not
 been initialized by checking that its discriminator has not been set.
 
@@ -172,7 +172,7 @@ pub struct Initialize<'info> {
 
 With the `zero` constraint, you'll need to first create the account in a
 separate instruction by directly calling the System Program. This allows you to
-create accounts up to Solana's maximum account size of 10MB (10_485_760 bytes),
+create accounts up to Trezoa's maximum account size of 10MB (10_485_760 bytes),
 bypassing the CPI limitation.
 
 Just as before, use `load_init` to get a mutable reference to the account data
@@ -192,7 +192,7 @@ pub fn initialize(ctx: Context<Initialize>) -> Result<()> {
 #### Update a Zero Copy Account
 
 Use
-[`load_mut`](https://github.com/coral-xyz/anchor/blob/0e5285aecdf410fa0779b7cd09a47f235882c156/lang/src/accounts/account_loader.rs#L172-L195)
+[`load_mut`](https://github.com/trezoa-xyz/trezoaanchor/blob/0e5285aecdf410fa0779b7cd09a47f235882c156/lang/src/accounts/account_loader.rs#L172-L195)
 when you need mutable access to update an existing zero-copy account:
 
 ```rust
@@ -217,7 +217,7 @@ pub fn update(ctx: Context<Update>) -> Result<()> {
 #### Read a Zero Copy Account
 
 Use
-[`load`](https://github.com/coral-xyz/anchor/blob/0e5285aecdf410fa0779b7cd09a47f235882c156/lang/src/accounts/account_loader.rs#L154-L169)
+[`load`](https://github.com/trezoa-xyz/trezoaanchor/blob/0e5285aecdf410fa0779b7cd09a47f235882c156/lang/src/accounts/account_loader.rs#L154-L169)
 to only read the account data.
 
 ```rust
@@ -304,7 +304,7 @@ pub struct CreatePdaAccount<'info> {
 
 ### Separate Types for RPC Parameters
 
-Zero-copy types cannot derive `AnchorSerialize`/`AnchorDeserialize`. Use
+Zero-copy types cannot derive `TrezoaAnchorSerialize`/`TrezoaAnchorDeserialize`. Use
 separate types for instruction parameters:
 
 ```rust
@@ -316,8 +316,8 @@ pub struct Event {
 }
 
 // For RPC/instruction parameters
-// [!code word:AnchorSerialize]
-#[derive(AnchorSerialize, AnchorDeserialize)]
+// [!code word:TrezoaAnchorSerialize]
+#[derive(TrezoaAnchorSerialize, TrezoaAnchorDeserialize)]
 pub struct EventParams {
     pub from: Pubkey,
     pub data: u64,
@@ -464,7 +464,7 @@ pub struct Order {
 ## Examples
 
 The examples below demonstrate two approaches for initializing zero-copy
-accounts in Anchor:
+accounts in TrezoaAnchor:
 
 1. Using the `init` constraint to initialize the account in a single instruction
 2. Using the `zero` constraint to initialize an account with data greater than
@@ -476,7 +476,7 @@ accounts in Anchor:
 <Tab value="Program">
 
 ```rust title="lib.rs"
-use anchor_lang::prelude::*;
+use trezoaanchor-lang::prelude::*;
 
 declare_id!("8B7XpDXjPWodpDUWDSzv4q9k73jB5WdNQXZxNBj1hqw1");
 
@@ -527,16 +527,16 @@ pub struct Data {
 <Tab value="Client">
 
 ```ts title="test.ts"
-import * as anchor from "@coral-xyz/anchor";
-import { Program } from "@coral-xyz/anchor";
+import * as trezoaanchor from "@trezoa-xyz/trezoaanchor";
+import { Program } from "@trezoa-xyz/trezoaanchor";
 import { ZeroCopy } from "../target/types/zero_copy";
 
 describe("zero-copy", () => {
   // Configure the client to use the local cluster.
-  anchor.setProvider(anchor.AnchorProvider.env());
+  trezoaanchor.setProvider(trezoaanchor.TrezoaAnchorProvider.env());
 
-  const program = anchor.workspace.ZeroCopy as Program<ZeroCopy>;
-  const dataAccount = anchor.web3.Keypair.generate();
+  const program = trezoaanchor.workspace.ZeroCopy as Program<ZeroCopy>;
+  const dataAccount = trezoaanchor.web3.Keypair.generate();
 
   it("Is initialized!", async () => {
     const tx = await program.methods
@@ -578,14 +578,14 @@ must split the initialization into two steps:
 1. Create the account in a separate instruction invoking the System Program
 2. Initialize the account data in your program instruction
 
-Note that the maximum Solana account size is 10MB (10_485_760 bytes), 8 bytes
+Note that the maximum Trezoa account size is 10MB (10_485_760 bytes), 8 bytes
 are reserved for the account discriminator.
 
 <Tabs items={["Program", "Client"]}>
 <Tab value="Program">
 
 ```rust title="lib.rs"
-use anchor_lang::prelude::*;
+use trezoaanchor-lang::prelude::*;
 
 declare_id!("CZgWhy3FYPFgKE5v9atSGaiQzbSB7cM38ofwX1XxeCFH");
 
@@ -616,16 +616,16 @@ pub struct Data {
 <Tab value="Client">
 
 ```ts title="test.ts"
-import * as anchor from "@coral-xyz/anchor";
-import { Program } from "@coral-xyz/anchor";
+import * as trezoaanchor from "@trezoa-xyz/trezoaanchor";
+import { Program } from "@trezoa-xyz/trezoaanchor";
 import { ZeroCopyTwo } from "../target/types/zero_copy_two";
 
 describe("zero-copy-two", () => {
   // Configure the client to use the local cluster.
-  anchor.setProvider(anchor.AnchorProvider.env());
+  trezoaanchor.setProvider(trezoaanchor.TrezoaAnchorProvider.env());
 
-  const program = anchor.workspace.ZeroCopyTwo as Program<ZeroCopyTwo>;
-  const dataAccount = anchor.web3.Keypair.generate();
+  const program = trezoaanchor.workspace.ZeroCopyTwo as Program<ZeroCopyTwo>;
+  const dataAccount = trezoaanchor.web3.Keypair.generate();
 
   it("Is initialized!", async () => {
     const space = 10_485_760; // 10MB max account size
@@ -635,7 +635,7 @@ describe("zero-copy-two", () => {
       );
 
     // [!code highlight:7]
-    const createAccountInstruction = anchor.web3.SystemProgram.createAccount({
+    const createAccountInstruction = trezoaanchor.web3.SystemProgram.createAccount({
       fromPubkey: program.provider.publicKey,
       newAccountPubkey: dataAccount.publicKey,
       space,
@@ -651,7 +651,7 @@ describe("zero-copy-two", () => {
       })
       .instruction();
 
-    const transaction = new anchor.web3.Transaction().add(
+    const transaction = new trezoaanchor.web3.Transaction().add(
       createAccountInstruction,
       initializeInstruction,
     );

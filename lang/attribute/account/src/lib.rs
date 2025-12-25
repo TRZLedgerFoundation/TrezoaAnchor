@@ -1,6 +1,6 @@
 extern crate proc_macro;
 
-use anchor_syn::{codegen::program::common::gen_discriminator, Overrides};
+use trezoaanchor_syn::{codegen::program::common::gen_discriminator, Overrides};
 use quote::{quote, ToTokens};
 use syn::{
     parenthesized,
@@ -15,14 +15,14 @@ mod id;
 #[cfg(feature = "lazy-account")]
 mod lazy;
 
-/// An attribute for a data structure representing a Solana account.
+/// An attribute for a data structure representing a Trezoa account.
 ///
 /// `#[account]` generates trait implementations for the following traits:
 ///
 /// - [`AccountSerialize`](./trait.AccountSerialize.html)
 /// - [`AccountDeserialize`](./trait.AccountDeserialize.html)
-/// - [`AnchorSerialize`](./trait.AnchorSerialize.html)
-/// - [`AnchorDeserialize`](./trait.AnchorDeserialize.html)
+/// - [`TrezoaAnchorSerialize`](./trait.TrezoaAnchorSerialize.html)
+/// - [`TrezoaAnchorDeserialize`](./trait.TrezoaAnchorDeserialize.html)
 /// - [`Clone`](https://doc.rust-lang.org/std/clone/trait.Clone.html)
 /// - [`Discriminator`](./trait.Discriminator.html)
 /// - [`Owner`](./trait.Owner.html)
@@ -131,7 +131,7 @@ pub fn account(
         if namespace.is_empty() {
             quote! {
                 #[automatically_derived]
-                impl #impl_gen anchor_lang::Owner for #account_name #type_gen #where_clause {
+                impl #impl_gen trezoaanchor-lang::Owner for #account_name #type_gen #where_clause {
                     fn owner() -> Pubkey {
                         crate::ID
                     }
@@ -146,9 +146,9 @@ pub fn account(
         if unsafe_bytemuck {
             quote! {
                 #[automatically_derived]
-                unsafe impl #impl_gen anchor_lang::__private::bytemuck::Pod for #account_name #type_gen #where_clause {}
+                unsafe impl #impl_gen trezoaanchor-lang::__private::bytemuck::Pod for #account_name #type_gen #where_clause {}
                 #[automatically_derived]
-                unsafe impl #impl_gen anchor_lang::__private::bytemuck::Zeroable for #account_name #type_gen #where_clause {}
+                unsafe impl #impl_gen trezoaanchor-lang::__private::bytemuck::Zeroable for #account_name #type_gen #where_clause {}
             }
         } else {
             quote! {}
@@ -176,32 +176,32 @@ pub fn account(
                 #unsafe_bytemuck_impl
 
                 #[automatically_derived]
-                impl #impl_gen anchor_lang::ZeroCopy for #account_name #type_gen #where_clause {}
+                impl #impl_gen trezoaanchor-lang::ZeroCopy for #account_name #type_gen #where_clause {}
 
                 #[automatically_derived]
-                impl #impl_gen anchor_lang::Discriminator for #account_name #type_gen #where_clause {
+                impl #impl_gen trezoaanchor-lang::Discriminator for #account_name #type_gen #where_clause {
                     const DISCRIMINATOR: &'static [u8] = #discriminator;
                 }
 
                 // This trait is useful for clients deserializing accounts.
                 // It's expected on-chain programs deserialize via zero-copy.
                 #[automatically_derived]
-                impl #impl_gen anchor_lang::AccountDeserialize for #account_name #type_gen #where_clause {
-                    fn try_deserialize(buf: &mut &[u8]) -> anchor_lang::Result<Self> {
+                impl #impl_gen trezoaanchor-lang::AccountDeserialize for #account_name #type_gen #where_clause {
+                    fn try_deserialize(buf: &mut &[u8]) -> trezoaanchor-lang::Result<Self> {
                         if buf.len() < #disc.len() {
-                            return Err(anchor_lang::error::ErrorCode::AccountDiscriminatorNotFound.into());
+                            return Err(trezoaanchor-lang::error::ErrorCode::AccountDiscriminatorNotFound.into());
                         }
                         let given_disc = &buf[..#disc.len()];
                         if #disc != given_disc {
-                            return Err(anchor_lang::error!(anchor_lang::error::ErrorCode::AccountDiscriminatorMismatch).with_account_name(#account_name_str));
+                            return Err(trezoaanchor-lang::error!(trezoaanchor-lang::error::ErrorCode::AccountDiscriminatorMismatch).with_account_name(#account_name_str));
                         }
                         Self::try_deserialize_unchecked(buf)
                     }
 
-                    fn try_deserialize_unchecked(buf: &mut &[u8]) -> anchor_lang::Result<Self> {
+                    fn try_deserialize_unchecked(buf: &mut &[u8]) -> trezoaanchor-lang::Result<Self> {
                         let data: &[u8] = &buf[#disc.len()..];
                         // Re-interpret raw bytes into the POD data structure.
-                        let account = anchor_lang::__private::bytemuck::from_bytes(data);
+                        let account = trezoaanchor-lang::__private::bytemuck::from_bytes(data);
                         // Copy out the bytes into a new, owned data structure.
                         Ok(*account)
                     }
@@ -222,45 +222,45 @@ pub fn account(
                 proc_macro2::TokenStream::default()
             };
             quote! {
-                #[derive(AnchorSerialize, AnchorDeserialize, Clone)]
+                #[derive(TrezoaAnchorSerialize, TrezoaAnchorDeserialize, Clone)]
                 #account_strct
 
                 #[automatically_derived]
-                impl #impl_gen anchor_lang::AccountSerialize for #account_name #type_gen #where_clause {
-                    fn try_serialize<W: std::io::Write>(&self, writer: &mut W) -> anchor_lang::Result<()> {
+                impl #impl_gen trezoaanchor-lang::AccountSerialize for #account_name #type_gen #where_clause {
+                    fn try_serialize<W: std::io::Write>(&self, writer: &mut W) -> trezoaanchor-lang::Result<()> {
                         if writer.write_all(#disc).is_err() {
-                            return Err(anchor_lang::error::ErrorCode::AccountDidNotSerialize.into());
+                            return Err(trezoaanchor-lang::error::ErrorCode::AccountDidNotSerialize.into());
                         }
 
-                        if AnchorSerialize::serialize(self, writer).is_err() {
-                            return Err(anchor_lang::error::ErrorCode::AccountDidNotSerialize.into());
+                        if TrezoaAnchorSerialize::serialize(self, writer).is_err() {
+                            return Err(trezoaanchor-lang::error::ErrorCode::AccountDidNotSerialize.into());
                         }
                         Ok(())
                     }
                 }
 
                 #[automatically_derived]
-                impl #impl_gen anchor_lang::AccountDeserialize for #account_name #type_gen #where_clause {
-                    fn try_deserialize(buf: &mut &[u8]) -> anchor_lang::Result<Self> {
+                impl #impl_gen trezoaanchor-lang::AccountDeserialize for #account_name #type_gen #where_clause {
+                    fn try_deserialize(buf: &mut &[u8]) -> trezoaanchor-lang::Result<Self> {
                         if buf.len() < #disc.len() {
-                            return Err(anchor_lang::error::ErrorCode::AccountDiscriminatorNotFound.into());
+                            return Err(trezoaanchor-lang::error::ErrorCode::AccountDiscriminatorNotFound.into());
                         }
                         let given_disc = &buf[..#disc.len()];
                         if #disc != given_disc {
-                            return Err(anchor_lang::error!(anchor_lang::error::ErrorCode::AccountDiscriminatorMismatch).with_account_name(#account_name_str));
+                            return Err(trezoaanchor-lang::error!(trezoaanchor-lang::error::ErrorCode::AccountDiscriminatorMismatch).with_account_name(#account_name_str));
                         }
                         Self::try_deserialize_unchecked(buf)
                     }
 
-                    fn try_deserialize_unchecked(buf: &mut &[u8]) -> anchor_lang::Result<Self> {
+                    fn try_deserialize_unchecked(buf: &mut &[u8]) -> trezoaanchor-lang::Result<Self> {
                         let mut data: &[u8] = &buf[#disc.len()..];
-                        AnchorDeserialize::deserialize(&mut data)
-                            .map_err(|_| anchor_lang::error::ErrorCode::AccountDidNotDeserialize.into())
+                        TrezoaAnchorDeserialize::deserialize(&mut data)
+                            .map_err(|_| trezoaanchor-lang::error::ErrorCode::AccountDidNotDeserialize.into())
                     }
                 }
 
                 #[automatically_derived]
-                impl #impl_gen anchor_lang::Discriminator for #account_name #type_gen #where_clause {
+                impl #impl_gen trezoaanchor-lang::Discriminator for #account_name #type_gen #where_clause {
                     const DISCRIMINATOR: &'static [u8] = #discriminator;
                 }
 
@@ -363,7 +363,7 @@ pub fn derive_zero_copy_accessor(item: proc_macro::TokenStream) -> proc_macro::T
             field
                 .attrs
                 .iter()
-                .find(|attr| anchor_syn::parser::tts_to_string(&attr.path) == "accessor")
+                .find(|attr| trezoaanchor_syn::parser::tts_to_string(&attr.path) == "accessor")
                 .map(|attr| {
                     let mut tts = attr.tokens.clone().into_iter();
                     let g_stream = match tts.next().expect("Must have a token group") {
@@ -384,10 +384,10 @@ pub fn derive_zero_copy_accessor(item: proc_macro::TokenStream) -> proc_macro::T
 
                     quote! {
                         pub fn #get_field(&self) -> #accessor_ty {
-                            anchor_lang::__private::ZeroCopyAccessor::get(&self.#field_name)
+                            trezoaanchor-lang::__private::ZeroCopyAccessor::get(&self.#field_name)
                         }
                         pub fn #set_field(&mut self, input: &#accessor_ty) {
-                            self.#field_name = anchor_lang::__private::ZeroCopyAccessor::set(input);
+                            self.#field_name = trezoaanchor-lang::__private::ZeroCopyAccessor::set(input);
                         }
                     }
                 })
@@ -449,7 +449,7 @@ pub fn zero_copy(
     let attr = account_strct
         .attrs
         .iter()
-        .find(|attr| anchor_syn::parser::tts_to_string(&attr.path) == "repr");
+        .find(|attr| trezoaanchor_syn::parser::tts_to_string(&attr.path) == "repr");
 
     let repr = match attr {
         // Users might want to manually specify repr modifiers e.g. repr(C, packed)
@@ -477,8 +477,8 @@ pub fn zero_copy(
 
     // Once the Pod derive macro is expanded the compiler has to use the local crate's
     // bytemuck `::bytemuck::Pod` anyway, so we're no longer using the privately
-    // exported anchor bytemuck `__private::bytemuck`, so that there won't be any
-    // possible disparity between the anchor version and the local crate's version.
+    // exported trezoaanchor bytemuck `__private::bytemuck`, so that there won't be any
+    // possible disparity between the trezoaanchor version and the local crate's version.
     let pod = if has_pod_attr || is_unsafe {
         quote! {}
     } else {
@@ -491,7 +491,7 @@ pub fn zero_copy(
     };
 
     let ret = quote! {
-        #[derive(anchor_lang::__private::ZeroCopyAccessor, Copy, Clone)]
+        #[derive(trezoaanchor-lang::__private::ZeroCopyAccessor, Copy, Clone)]
         #repr
         #pod
         #zeroable
@@ -511,7 +511,7 @@ pub fn zero_copy(
             #ret
         })
         .unwrap();
-        let idl_build_impl = anchor_syn::idl::impl_idl_build_struct(&zc_struct);
+        let idl_build_impl = trezoaanchor_syn::idl::impl_idl_build_struct(&zc_struct);
         return proc_macro::TokenStream::from(quote! {
             #ret
             #idl_build_impl
@@ -531,7 +531,7 @@ pub fn pubkey(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
     proc_macro::TokenStream::from(quote! {#pk})
 }
 
-/// Defines the program's ID. This should be used at the root of all Anchor
+/// Defines the program's ID. This should be used at the root of all TrezoaAnchor
 /// based programs.
 #[proc_macro]
 pub fn declare_id(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
@@ -543,7 +543,7 @@ pub fn declare_id(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
 
     #[cfg(feature = "idl-build")]
     {
-        let idl_print = anchor_syn::idl::gen_idl_print_fn_address(address);
+        let idl_print = trezoaanchor_syn::idl::gen_idl_print_fn_address(address);
         return proc_macro::TokenStream::from(quote! {
             #ret
             #idl_print

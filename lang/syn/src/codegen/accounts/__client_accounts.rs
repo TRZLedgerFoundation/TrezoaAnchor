@@ -97,8 +97,8 @@ pub fn generate(
                     true => quote! {true},
                 };
                 let meta = match f.constraints.is_mutable() {
-                    false => quote! { anchor_lang::solana_program::instruction::AccountMeta::new_readonly },
-                    true => quote! { anchor_lang::solana_program::instruction::AccountMeta::new },
+                    false => quote! { trezoaanchor-lang::trezoa_program::instruction::AccountMeta::new_readonly },
+                    true => quote! { trezoaanchor-lang::trezoa_program::instruction::AccountMeta::new },
                 };
                 let name = &f.ident;
                 if f.is_optional {
@@ -106,7 +106,7 @@ pub fn generate(
                         if let Some(#name) = &self.#name {
                             account_metas.push(#meta(*#name, #is_signer));
                         } else {
-                            account_metas.push(anchor_lang::solana_program::instruction::AccountMeta::new_readonly(#program_id, false));
+                            account_metas.push(trezoaanchor-lang::trezoa_program::instruction::AccountMeta::new_readonly(#program_id, false));
                         }
                     }
                 } else {
@@ -153,7 +153,7 @@ pub fn generate(
     .unwrap();
 
     quote! {
-        /// An internal, Anchor generated module. This is used (as an
+        /// An internal, TrezoaAnchor generated module. This is used (as an
         /// implementation detail), to generate a struct for a given
         /// `#[derive(Accounts)]` implementation, where each field is a Pubkey,
         /// instead of an `AccountInfo`. This is useful for clients that want
@@ -164,18 +164,18 @@ pub fn generate(
         /// `accounts` module (also generated), which re-exports this.
         pub(crate) mod #account_mod_name {
             use super::*;
-            use anchor_lang::prelude::borsh;
+            use trezoaanchor-lang::prelude::borsh;
             #(#re_exports)*
 
             #struct_doc
-            #[derive(anchor_lang::AnchorSerialize)]
+            #[derive(trezoaanchor-lang::TrezoaAnchorSerialize)]
             pub struct #name {
                 #(#account_struct_fields),*
             }
 
             #[automatically_derived]
-            impl anchor_lang::ToAccountMetas for #name {
-                fn to_account_metas(&self, is_signer: Option<bool>) -> Vec<anchor_lang::solana_program::instruction::AccountMeta> {
+            impl trezoaanchor-lang::ToAccountMetas for #name {
+                fn to_account_metas(&self, is_signer: Option<bool>) -> Vec<trezoaanchor-lang::trezoa_program::instruction::AccountMeta> {
                     let mut account_metas = vec![];
 
                     #(#account_struct_metas)*

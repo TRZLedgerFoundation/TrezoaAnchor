@@ -1,7 +1,7 @@
 [package]
 name = "registry"
 version = "0.1.0"
-description = "Created with Anchor"
+description = "Created with TrezoaAnchor"
 edition = "2021"
 
 [lib]
@@ -14,6 +14,6 @@ cpi = ["no-entrypoint"]
 default = []
 
 [dependencies]
-anchor-lang = { path = "../../../../lang" }
-anchor-spl = { path = "../../../../spl" }
+trezoaanchor-lang = { path = "../../../../lang" }
+trezoaanchor-tpl = { path = "../../../../spl" }
 lockup = { path = "../lockup", features = ["cpi"] }

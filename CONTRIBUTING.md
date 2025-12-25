@@ -1,14 +1,14 @@
-# Contributing to Anchor
+# Contributing to TrezoaAnchor
 
-Thank you for your interest in contributing to Anchor! All contributions are welcome no
+Thank you for your interest in contributing to TrezoaAnchor! All contributions are welcome no
 matter how big or small. This includes (but is not limited to) filing issues,
 adding documentation, fixing bugs, creating examples, and implementing features.
 
 ## Finding issues to work on
 
 If you're looking to get started,
-check out [good first issues](https://github.com/coral-xyz/anchor/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22)
-or issues where [help is wanted](https://github.com/coral-xyz/anchor/issues?q=is%3Aissue+is%3Aopen+label%3A%22help+wanted%22).
+check out [good first issues](https://github.com/trezoa-xyz/trezoaanchor/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22)
+or issues where [help is wanted](https://github.com/trezoa-xyz/trezoaanchor/issues?q=is%3Aissue+is%3Aopen+label%3A%22help+wanted%22).
 PRs that only correct typos or make minor wording adjustments will be rejected. Fixing typos alongside other non-trivial engineering work is welcome.
 
 If you're considering larger changes or self motivated features, please file an issue

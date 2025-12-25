@@ -1,7 +1,7 @@
 [package]
 name = "zero-copy"
 version = "0.1.0"
-description = "Created with Anchor"
+description = "Created with TrezoaAnchor"
 edition = "2021"
 
 [lib]
@@ -14,12 +14,12 @@ no-idl = []
 cpi = ["no-entrypoint"]
 default = []
 test-sbf = []
-idl-build = ["anchor-lang/idl-build"]
+idl-build = ["trezoaanchor-lang/idl-build"]
 
 [dependencies]
-anchor-lang = { path = "../../../../lang" }
+trezoaanchor-lang = { path = "../../../../lang" }
 bytemuck = {version = "1.4.0", features = ["derive", "min_const_generics"]}
 
 [dev-dependencies]
-anchor-client = { path = "../../../../client", features = ["debug", "async"] }
-solana-program-test = "2"
+trezoaanchor-client = { path = "../../../../client", features = ["debug", "async"] }
+trezoa-program-test = "2"

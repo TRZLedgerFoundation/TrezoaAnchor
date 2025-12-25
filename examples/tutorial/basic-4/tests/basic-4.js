@@ -1,19 +1,19 @@
 const assert = require("assert");
-const anchor = require("@coral-xyz/anchor");
+const trezoaanchor = require("@trezoa-xyz/trezoaanchor");
 
 describe("basic-4", () => {
-  const provider = anchor.AnchorProvider.local();
+  const provider = trezoaanchor.TrezoaAnchorProvider.local();
 
   // Configure the client to use the local cluster.
-  anchor.setProvider(provider);
+  trezoaanchor.setProvider(provider);
 
-  const program = anchor.workspace.Basic4,
-    counterSeed = anchor.utils.bytes.utf8.encode("counter");
+  const program = trezoaanchor.workspace.Basic4,
+    counterSeed = trezoaanchor.utils.bytes.utf8.encode("counter");
 
   let counterPubkey;
 
   before(async () => {
-    [counterPubkey] = await anchor.web3.PublicKey.findProgramAddress(
+    [counterPubkey] = await trezoaanchor.web3.PublicKey.findProgramAddress(
       [counterSeed],
       program.programId
     );
@@ -26,14 +26,14 @@ describe("basic-4", () => {
       .accounts({
         counter: counterPubkey,
         authority: provider.wallet.publicKey,
-        systemProgram: anchor.web3.SystemProgram.programId,
+        systemProgram: trezoaanchor.web3.SystemProgram.programId,
       })
       .rpc();
 
     // Fetch the state struct from the network.
     const counterAccount = await program.account.counter.fetch(counterPubkey);
 
-    assert.ok(counterAccount.count.eq(new anchor.BN(0)));
+    assert.ok(counterAccount.count.eq(new trezoaanchor.BN(0)));
   });
 
   it("Executes a method on the program", async () => {
@@ -46,6 +46,6 @@ describe("basic-4", () => {
       .rpc();
 
     const counterAccount = await program.account.counter.fetch(counterPubkey);
-    assert.ok(counterAccount.count.eq(new anchor.BN(1)));
+    assert.ok(counterAccount.count.eq(new trezoaanchor.BN(1)));
   });
 });

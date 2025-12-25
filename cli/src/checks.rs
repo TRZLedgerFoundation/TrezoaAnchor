@@ -27,11 +27,11 @@ pub fn check_overflow(cargo_toml_path: impl AsRef<Path>) -> Result<bool> {
 
 /// Check whether there is a mismatch between the current CLI version and:
 ///
-/// - `anchor-lang` crate version
-/// - `@coral-xyz/anchor` package version
+/// - `trezoaanchor-lang` crate version
+/// - `@trezoa-xyz/trezoaanchor` package version
 ///
 /// This function logs warnings in the case of a mismatch.
-pub fn check_anchor_version(cfg: &WithPath<Config>) -> Result<()> {
+pub fn check_trezoaanchor_version(cfg: &WithPath<Config>) -> Result<()> {
     let cli_version = Version::parse(VERSION)?;
 
     // Check lang crate
@@ -41,18 +41,18 @@ pub fn check_anchor_version(cfg: &WithPath<Config>) -> Result<()> {
         .map(|path| path.join("Cargo.toml"))
         .map(cargo_toml::Manifest::from_path)
         .filter_map(|man| man.ok())
-        .filter_map(|man| man.dependencies.get("anchor-lang").map(|d| d.to_owned()))
+        .filter_map(|man| man.dependencies.get("trezoaanchor-lang").map(|d| d.to_owned()))
         .filter_map(|dep| Version::parse(dep.req()).ok())
         .find(|ver| ver != &cli_version); // Only log the warning once
 
     if let Some(ver) = mismatched_lang_version {
         eprintln!(
-            "WARNING: `anchor-lang` version({ver}) and the current CLI version({cli_version}) \
+            "WARNING: `trezoaanchor-lang` version({ver}) and the current CLI version({cli_version}) \
                  don't match.\n\n\t\
                  This can lead to unwanted behavior. To use the same CLI version, add:\n\n\t\
                  [toolchain]\n\t\
-                 anchor_version = \"{ver}\"\n\n\t\
-                 to Anchor.toml\n"
+                 trezoaanchor_version = \"{ver}\"\n\n\t\
+                 to TrezoaAnchor.toml\n"
         );
     }
 
@@ -64,7 +64,7 @@ pub fn check_anchor_version(cfg: &WithPath<Config>) -> Result<()> {
     };
     let mismatched_ts_version = package_json
         .get("dependencies")
-        .and_then(|deps| deps.get("@coral-xyz/anchor"))
+        .and_then(|deps| deps.get("@trezoa-xyz/trezoaanchor"))
         .and_then(|ver| ver.as_str())
         .and_then(|ver| VersionReq::parse(ver).ok())
         .filter(|ver| !ver.matches(&cli_version));
@@ -78,10 +78,10 @@ pub fn check_anchor_version(cfg: &WithPath<Config>) -> Result<()> {
         };
 
         eprintln!(
-            "WARNING: `@coral-xyz/anchor` version({ver}) and the current CLI version\
+            "WARNING: `@trezoa-xyz/trezoaanchor` version({ver}) and the current CLI version\
                 ({cli_version}) don't match.\n\n\t\
                 This can lead to unwanted behavior. To fix, upgrade the package by running:\n\n\t\
-                {update_cmd} @coral-xyz/anchor@{cli_version}\n"
+                {update_cmd} @trezoa-xyz/trezoaanchor@{cli_version}\n"
         );
     }
 
@@ -90,12 +90,12 @@ pub fn check_anchor_version(cfg: &WithPath<Config>) -> Result<()> {
 
 /// Check for potential dependency improvements.
 ///
-/// The main problem people will run into with Solana v2 is that the `solana-program` version
-/// specified in users' `Cargo.toml` might be incompatible with `anchor-lang`'s dependency.
-/// To fix this and similar problems, users should use the crates exported from `anchor-lang` or
-/// `anchor-spl` when possible.
+/// The main problem people will run into with Trezoa v2 is that the `trezoa-program` version
+/// specified in users' `Cargo.toml` might be incompatible with `trezoaanchor-lang`'s dependency.
+/// To fix this and similar problems, users should use the crates exported from `trezoaanchor-lang` or
+/// `trezoaanchor-tpl` when possible.
 pub fn check_deps(cfg: &WithPath<Config>) -> Result<()> {
-    // Check `solana-program`
+    // Check `trezoa-program`
     cfg.get_rust_program_list()?
         .into_iter()
         .map(|path| path.join("Cargo.toml"))
@@ -103,13 +103,13 @@ pub fn check_deps(cfg: &WithPath<Config>) -> Result<()> {
         .map(|man| man.map_err(|e| anyhow!("Failed to read manifest: {e}")))
         .collect::<Result<Vec<_>>>()?
         .into_iter()
-        .filter(|man| man.dependencies.contains_key("solana-program"))
+        .filter(|man| man.dependencies.contains_key("trezoa-program"))
         .for_each(|man| {
             eprintln!(
-                "WARNING: Adding `solana-program` as a separate dependency might cause conflicts.\n\
-                To solve, remove the `solana-program` dependency and use the exported crate from \
-                `anchor-lang`.\n\
-                `use solana_program` becomes `use anchor_lang::solana_program`.\n\
+                "WARNING: Adding `trezoa-program` as a separate dependency might cause conflicts.\n\
+                To solve, remove the `trezoa-program` dependency and use the exported crate from \
+                `trezoaanchor-lang`.\n\
+                `use trezoa_program` becomes `use trezoaanchor-lang::trezoa_program`.\n\
                 Program name: `{}`\n",
                 man.package().name()
             )
@@ -131,12 +131,12 @@ pub fn check_idl_build_feature() -> Result<()> {
         .iter()
         .any(|(feature, _)| feature == "idl-build");
     if !has_idl_build_feature {
-        let anchor_spl_idl_build = if manifest
+        let trezoaanchor_spl_idl_build = if manifest
             .dependencies
             .iter()
-            .any(|dep| dep.0 == "anchor-spl")
+            .any(|dep| dep.0 == "trezoaanchor-tpl")
         {
-            r#", "anchor-spl/idl-build""#
+            r#", "trezoaanchor-tpl/idl-build""#
         } else {
             ""
         };
@@ -145,7 +145,7 @@ pub fn check_idl_build_feature() -> Result<()> {
             r#"`idl-build` feature is missing. To solve, add
 
 [features]
-idl-build = ["anchor-lang/idl-build"{anchor_spl_idl_build}]
+idl-build = ["trezoaanchor-lang/idl-build"{trezoaanchor_spl_idl_build}]
 
 in `{manifest_path:?}`."#
         ));
@@ -167,20 +167,20 @@ in `{manifest_path:?}`."#
             )
         });
 
-    // Check `anchor-spl`'s `idl-build` feature
+    // Check `trezoaanchor-tpl`'s `idl-build` feature
     manifest
         .dependencies
-        .get("anchor-spl")
+        .get("trezoaanchor-tpl")
         .and_then(|_| manifest.features.get("idl-build"))
-        .map(|feature_list| !feature_list.contains(&"anchor-spl/idl-build".into()))
+        .map(|feature_list| !feature_list.contains(&"trezoaanchor-tpl/idl-build".into()))
         .unwrap_or_default()
         .then(|| {
             eprintln!(
-                "WARNING: `idl-build` feature of `anchor-spl` is not enabled. \
+                "WARNING: `idl-build` feature of `trezoaanchor-tpl` is not enabled. \
                 This is likely to result in cryptic compile errors.\n\n\t\
-                To solve, add `anchor-spl/idl-build` to the `idl-build` feature list:\n\n\t\
+                To solve, add `trezoaanchor-tpl/idl-build` to the `idl-build` feature list:\n\n\t\
                 [features]\n\t\
-                idl-build = [\"anchor-spl/idl-build\", ...]\n"
+                idl-build = [\"trezoaanchor-tpl/idl-build\", ...]\n"
             )
         });
 

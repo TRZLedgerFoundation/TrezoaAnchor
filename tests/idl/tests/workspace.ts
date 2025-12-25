@@ -1,29 +1,29 @@
-import * as anchor from "@coral-xyz/anchor";
+import * as trezoaanchor from "@trezoa-xyz/trezoaanchor";
 import { assert } from "chai";
 
 describe("Workspace", () => {
-  anchor.setProvider(anchor.AnchorProvider.env());
+  trezoaanchor.setProvider(trezoaanchor.TrezoaAnchorProvider.env());
 
   it("Can lazy load workspace programs", () => {
     assert.doesNotThrow(() => {
       // Program exists, should not throw
-      anchor.workspace.relationsDerivation;
+      trezoaanchor.workspace.relationsDerivation;
     });
 
     assert.throws(() => {
-      // IDL path in Anchor.toml doesn't exist but other tests still run
+      // IDL path in TrezoaAnchor.toml doesn't exist but other tests still run
       // successfully because workspace programs are getting loaded on-demand
-      anchor.workspace.nonExistent;
+      trezoaanchor.workspace.nonExistent;
     }, /non-existent\.json/);
   });
 
   it("Can get workspace programs by their name independent of casing", () => {
-    const camel = anchor.workspace.relationsDerivation;
-    const pascal = anchor.workspace.RelationsDerivation;
-    const kebab = anchor.workspace["relations-derivation"];
-    const snake = anchor.workspace["relations_derivation"];
+    const camel = trezoaanchor.workspace.relationsDerivation;
+    const pascal = trezoaanchor.workspace.RelationsDerivation;
+    const kebab = trezoaanchor.workspace["relations-derivation"];
+    const snake = trezoaanchor.workspace["relations_derivation"];
 
-    const compareProgramNames = (...programs: anchor.Program[]) => {
+    const compareProgramNames = (...programs: trezoaanchor.Program[]) => {
       return programs.every(
         (program) => program.rawIdl.metadata.name === "relations_derivation"
       );
@@ -34,10 +34,10 @@ describe("Workspace", () => {
 
   it("Can use numbers in program names", () => {
     assert.doesNotThrow(() => {
-      anchor.workspace.numbers123;
-      anchor.workspace.Numbers123;
-      anchor.workspace["numbers-123"];
-      anchor.workspace["numbers_123"];
+      trezoaanchor.workspace.numbers123;
+      trezoaanchor.workspace.Numbers123;
+      trezoaanchor.workspace["numbers-123"];
+      trezoaanchor.workspace["numbers_123"];
     });
   });
 });

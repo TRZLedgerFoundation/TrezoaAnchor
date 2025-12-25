@@ -1,19 +1,19 @@
 const assert = require("assert");
-const anchor = require("@coral-xyz/anchor");
-const { SystemProgram } = anchor.web3;
+const trezoaanchor = require("@trezoa-xyz/trezoaanchor");
+const { SystemProgram } = trezoaanchor.web3;
 
 describe("basic-3", () => {
-  const provider = anchor.AnchorProvider.local();
+  const provider = trezoaanchor.TrezoaAnchorProvider.local();
 
   // Configure the client to use the local cluster.
-  anchor.setProvider(provider);
+  trezoaanchor.setProvider(provider);
 
   it("Performs CPI from puppet master to puppet", async () => {
-    const puppetMaster = anchor.workspace.PuppetMaster;
-    const puppet = anchor.workspace.Puppet;
+    const puppetMaster = trezoaanchor.workspace.PuppetMaster;
+    const puppet = trezoaanchor.workspace.Puppet;
 
     // Initialize a new puppet account.
-    const newPuppetAccount = anchor.web3.Keypair.generate();
+    const newPuppetAccount = trezoaanchor.web3.Keypair.generate();
     const tx = await puppet.methods
       .initialize()
       .accounts({
@@ -26,7 +26,7 @@ describe("basic-3", () => {
 
     // Invoke the puppet master to perform a CPI to the puppet.
     await puppetMaster.methods
-      .pullStrings(new anchor.BN(111))
+      .pullStrings(new trezoaanchor.BN(111))
       .accounts({
         puppet: newPuppetAccount.publicKey,
         puppetProgram: puppet.programId,
@@ -35,6 +35,6 @@ describe("basic-3", () => {
 
     // Check the state updated.
     puppetAccount = await puppet.account.data.fetch(newPuppetAccount.publicKey);
-    assert.ok(puppetAccount.data.eq(new anchor.BN(111)));
+    assert.ok(puppetAccount.data.eq(new trezoaanchor.BN(111)));
   });
 });

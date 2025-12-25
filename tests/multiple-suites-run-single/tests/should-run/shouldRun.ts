@@ -1,13 +1,13 @@
-import * as anchor from "@coral-xyz/anchor";
-import { Program } from "@coral-xyz/anchor";
+import * as trezoaanchor from "@trezoa-xyz/trezoaanchor";
+import { Program } from "@trezoa-xyz/trezoaanchor";
 import { assert } from "chai";
 import { MultipleSuitesRunSingle } from "../../target/types/multiple_suites_run_single";
 
 describe("multiple-suites-run-single", () => {
   // Configure the client to use the local cluster.
-  anchor.setProvider(anchor.AnchorProvider.env());
+  trezoaanchor.setProvider(trezoaanchor.TrezoaAnchorProvider.env());
 
-  const program = anchor.workspace
+  const program = trezoaanchor.workspace
     .MultipleSuitesRunSingle as Program<MultipleSuitesRunSingle>;
 
   it("Is initialized!", async () => {

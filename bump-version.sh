@@ -35,19 +35,19 @@ allow_globs="installation.mdx quickstart/local.mdx references/verifiable-builds.
 git grep -l $old_version -- $allow_globs |
     xargs sed "${sedi[@]}" \
     -e "s/$old_version/$version/g"
-# Replace `solana_version` with the current version
-solana_version=$(solana --version | awk '{print $2;}')
-sed $sedi "s/solana_version.*\"/solana_version = \"$solana_version\"/g" references/anchor-toml.mdx
+# Replace `trezoa_version` with the current version
+trezoa_version=$(trezoa --version | awk '{print $2;}')
+sed $sedi "s/trezoa_version.*\"/trezoa_version = \"$trezoa_version\"/g" references/trezoaanchor-toml.mdx
 # Keep release notes and changelog the same
 git restore updates
 popd
 
 # Potential for collisions in `package.json` files, handle those separately
-# Replace only matching "version": "x.xx.x" and "@coral-xyz/anchor": "x.xx.x"
+# Replace only matching "version": "x.xx.x" and "@trezoa-xyz/trezoaanchor": "x.xx.x"
 git grep -l $old_version -- "**/package.json" | \
     xargs sed -E "${sedi[@]}" \
     -e "s/\"version\": \"$old_version\"/\"version\": \"$version\"/g" \
-    -e "s/@coral-xyz\/(.*)\": \"(.*)$old_version\"/@coral-xyz\/\1\": \"\2$version\"/g"
+    -e "s/@trezoa-xyz\/(.*)\": \"(.*)$old_version\"/@trezoa-xyz\/\1\": \"\2$version\"/g"
 
 # Insert version number into CHANGELOG
 sed "${sedi[@]}" -e \
@@ -60,7 +60,7 @@ pushd tests && yarn && popd
 pushd examples && yarn && pushd tutorial && yarn && popd && popd
 
 # Bump benchmark files
-pushd tests/bench && anchor run bump-version -- --anchor-version $version && popd
+pushd tests/bench && trezoaanchor run bump-version -- --trezoaanchor-version $version && popd
 
 echo $version > VERSION
 

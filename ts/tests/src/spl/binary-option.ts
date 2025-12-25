@@ -1,17 +1,17 @@
 import assert from "assert";
-import { splBinaryOptionProgram } from "@coral-xyz/spl-binary-option";
+import { splBinaryOptionProgram } from "@trezoa-xyz/spl-binary-option";
 import {
   Keypair,
   PublicKey,
   SystemProgram,
   SYSVAR_RENT_PUBKEY,
-} from "@solana/web3.js";
-import { splTokenProgram } from "@coral-xyz/spl-token";
-import { BN } from "@coral-xyz/anchor";
+} from "@trezoa/web3.js";
+import { tplTokenProgram } from "@trezoa-xyz/tpl-token";
+import { BN } from "@trezoa-xyz/trezoaanchor";
 
 import {
-  SPL_BINARY_OPTION_PROGRAM_ID,
-  SPL_TOKEN_PROGRAM_ID,
+  TPL_BINARY_OPTION_PROGRAM_ID,
+  TPL_TOKEN_PROGRAM_ID,
 } from "../constants";
 import {
   createAta,
@@ -26,11 +26,11 @@ export async function binaryOptionTests() {
   const provider = await getProvider();
   const program = splBinaryOptionProgram({
     provider,
-    programId: SPL_BINARY_OPTION_PROGRAM_ID,
+    programId: TPL_BINARY_OPTION_PROGRAM_ID,
   });
-  const tokenProgram = splTokenProgram({
+  const tokenProgram = tplTokenProgram({
     provider,
-    programId: SPL_TOKEN_PROGRAM_ID,
+    programId: TPL_TOKEN_PROGRAM_ID,
   });
   const kp = await loadKp();
 
@@ -66,10 +66,10 @@ export async function binaryOptionTests() {
         [
           longTokenMintPk.toBuffer(),
           shortTokenMintPk.toBuffer(),
-          SPL_TOKEN_PROGRAM_ID.toBuffer(),
-          SPL_BINARY_OPTION_PROGRAM_ID.toBuffer(),
+          TPL_TOKEN_PROGRAM_ID.toBuffer(),
+          TPL_BINARY_OPTION_PROGRAM_ID.toBuffer(),
         ],
-        SPL_BINARY_OPTION_PROGRAM_ID
+        TPL_BINARY_OPTION_PROGRAM_ID
       )
     )[0];
 

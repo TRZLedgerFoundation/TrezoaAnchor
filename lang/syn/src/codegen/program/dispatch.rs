@@ -34,13 +34,13 @@ pub fn generate(program: &Program) -> proc_macro2::TokenStream {
             __private::__events::__event_dispatch(
                 program_id,
                 accounts,
-                &data[anchor_lang::event::EVENT_IX_TAG_LE.len()..]
+                &data[trezoaanchor-lang::event::EVENT_IX_TAG_LE.len()..]
             )
         }
         #[cfg(not(feature = "event-cpi"))]
         quote! {
             // `event-cpi` feature is not enabled
-            Err(anchor_lang::error::ErrorCode::EventInstructionStub.into())
+            Err(trezoaanchor-lang::error::ErrorCode::EventInstructionStub.into())
         }
     };
 
@@ -56,7 +56,7 @@ pub fn generate(program: &Program) -> proc_macro2::TokenStream {
         })
         .unwrap_or_else(|| {
             quote! {
-                Err(anchor_lang::error::ErrorCode::InstructionFallbackNotFound.into())
+                Err(trezoaanchor-lang::error::ErrorCode::InstructionFallbackNotFound.into())
             }
         });
 
@@ -75,14 +75,14 @@ pub fn generate(program: &Program) -> proc_macro2::TokenStream {
             program_id: &Pubkey,
             accounts: &'info [AccountInfo<'info>],
             data: &[u8],
-        ) -> anchor_lang::Result<()> {
+        ) -> trezoaanchor-lang::Result<()> {
             #(#global_ixs)*
 
             // Legacy IDL instructions have been removed in favor of Program Metadata
             // No IDL instructions are injected into programs anymore
 
             // Dispatch Event CPI instruction
-            if data.starts_with(anchor_lang::event::EVENT_IX_TAG_LE) {
+            if data.starts_with(trezoaanchor-lang::event::EVENT_IX_TAG_LE) {
                 return #event_cpi_handler;
             }
 

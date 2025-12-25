@@ -1,4 +1,4 @@
-use anchor_lang::prelude::*;
+use trezoaanchor-lang::prelude::*;
 
 declare_id!("Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS");
 
@@ -16,12 +16,12 @@ fn serialize_dummy(val: u64) -> Vec<u8> {
 }
 
 // For interface_account.
-impl anchor_lang::CheckOwner for Dummy {
-    fn check_owner(owner: &Pubkey) -> anchor_lang::Result<()> {
+impl trezoaanchor-lang::CheckOwner for Dummy {
+    fn check_owner(owner: &Pubkey) -> trezoaanchor-lang::Result<()> {
         if owner == &<Dummy as Owner>::owner() {
             Ok(())
         } else {
-            Err(anchor_lang::error::ErrorCode::AccountOwnedByWrongProgram.into())
+            Err(trezoaanchor-lang::error::ErrorCode::AccountOwnedByWrongProgram.into())
         }
     }
 }
@@ -75,16 +75,16 @@ fn reload_owner_changed_fails() {
     }
 
     // reload() must now error with AccountOwnedByWrongProgram
-    let err: anchor_lang::error::Error = acc.reload().unwrap_err();
+    let err: trezoaanchor-lang::error::Error = acc.reload().unwrap_err();
     assert_eq!(
         err,
-        anchor_lang::error::ErrorCode::AccountOwnedByWrongProgram.into()
+        trezoaanchor-lang::error::ErrorCode::AccountOwnedByWrongProgram.into()
     );
 }
 
 #[test]
 fn interface_reload_owner_unchanged_updates_data() {
-    use anchor_lang::accounts::interface_account::InterfaceAccount;
+    use trezoaanchor-lang::accounts::interface_account::InterfaceAccount;
 
     let mut data: Vec<u8> = serialize_dummy(5);
     let mut lamports: u64 = 1;
@@ -129,10 +129,10 @@ fn reload_error_does_not_mutate_cached_state() {
         *owner_ptr = Pubkey::new_unique();
     }
 
-    let err: anchor_lang::error::Error = acc.reload().unwrap_err();
+    let err: trezoaanchor-lang::error::Error = acc.reload().unwrap_err();
     assert_eq!(
         err,
-        anchor_lang::error::ErrorCode::AccountOwnedByWrongProgram.into()
+        trezoaanchor-lang::error::ErrorCode::AccountOwnedByWrongProgram.into()
     );
 
     // Ensure inner value wasn't changed by a failing reload.

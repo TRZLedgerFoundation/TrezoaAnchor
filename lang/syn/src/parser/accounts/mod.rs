@@ -497,7 +497,7 @@ fn parse_program_account(path: &syn::Path) -> ParseResult<syn::TypePath> {
                     // Create a special marker for unit type that gets handled later
                     use syn::{Path, PathSegment, PathArguments};
                     let path_segment = PathSegment {
-                        ident: syn::Ident::new("__SolanaProgramUnitType", proc_macro2::Span::call_site()),
+                        ident: syn::Ident::new("__TrezoaProgramUnitType", proc_macro2::Span::call_site()),
                         arguments: PathArguments::None,
                     };
 

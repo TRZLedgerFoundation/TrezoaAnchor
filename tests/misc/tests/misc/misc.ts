@@ -1,5 +1,5 @@
-import * as anchor from "@coral-xyz/anchor";
-import { Program, AnchorError, Wallet } from "@coral-xyz/anchor";
+import * as trezoaanchor from "@trezoa-xyz/trezoaanchor";
+import { Program, TrezoaAnchorError, Wallet } from "@trezoa-xyz/trezoaanchor";
 import {
   PublicKey,
   Keypair,
@@ -8,40 +8,40 @@ import {
   VersionedTransaction,
   AddressLookupTableProgram,
   TransactionMessage,
-} from "@solana/web3.js";
+} from "@trezoa/web3.js";
 import {
   TOKEN_PROGRAM_ID,
   Token,
   ASSOCIATED_TOKEN_PROGRAM_ID,
   AccountLayout,
   MintLayout,
-} from "@solana/spl-token";
+} from "@trezoa/tpl-token";
 import { assert, expect } from "chai";
 
 import { Misc } from "../../target/types/misc";
 import { MiscOptional } from "../../target/types/misc_optional";
 
-const utf8 = anchor.utils.bytes.utf8;
+const utf8 = trezoaanchor.utils.bytes.utf8;
 const nativeAssert = require("assert");
 const miscIdl = require("../../target/idl/misc.json");
 
-const TOKEN_2022_PROGRAM_ID = new anchor.web3.PublicKey(
+const TOKEN_2022_PROGRAM_ID = new trezoaanchor.web3.PublicKey(
   "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb"
 );
 
 const miscTest = (
-  program: anchor.Program<Misc> | anchor.Program<MiscOptional>
+  program: trezoaanchor.Program<Misc> | trezoaanchor.Program<MiscOptional>
 ) => {
   return () => {
     // Configure the client to use the local cluster.
-    const provider = anchor.AnchorProvider.env();
+    const provider = trezoaanchor.TrezoaAnchorProvider.env();
     const wallet = provider.wallet as Wallet;
-    anchor.setProvider(provider);
+    trezoaanchor.setProvider(provider);
 
     describe("Data Account", () => {
-      const data = anchor.web3.Keypair.generate();
-      const udata = new anchor.BN(1);
-      const idata = new anchor.BN(2);
+      const data = trezoaanchor.web3.Keypair.generate();
+      const udata = new trezoaanchor.BN(1);
+      const idata = new trezoaanchor.BN(2);
 
       it("Can initialize data account", async () => {
         await program.methods
@@ -114,12 +114,12 @@ const miscTest = (
         assert.isNotNull(openAccount);
         const openAccountBalance = openAccount.lamports;
         // double balance to calculate closed balance correctly
-        const transferIx = anchor.web3.SystemProgram.transfer({
+        const transferIx = trezoaanchor.web3.SystemProgram.transfer({
           fromPubkey: provider.wallet.publicKey,
           toPubkey: data.publicKey,
           lamports: openAccountBalance,
         });
-        const transferTransaction = new anchor.web3.Transaction().add(
+        const transferTransaction = new trezoaanchor.web3.Transaction().add(
           transferIx
         );
         await provider.sendAndConfirm(transferTransaction);
@@ -151,9 +151,9 @@ const miscTest = (
       });
 
       it("Can close an account twice", async () => {
-        const data = anchor.web3.Keypair.generate();
+        const data = trezoaanchor.web3.Keypair.generate();
         await program.methods
-          .initialize(new anchor.BN(10), new anchor.BN(10))
+          .initialize(new trezoaanchor.BN(10), new trezoaanchor.BN(10))
           .accounts({ data: data.publicKey })
           .preInstructions([await program.account.data.createInstruction(data)])
           .signers([data])
@@ -165,12 +165,12 @@ const miscTest = (
 
         const openAccountBalance = openAccount.lamports;
         // double balance to calculate closed balance correctly
-        const transferIx = anchor.web3.SystemProgram.transfer({
+        const transferIx = trezoaanchor.web3.SystemProgram.transfer({
           fromPubkey: provider.wallet.publicKey,
           toPubkey: data.publicKey,
           lamports: openAccountBalance,
         });
-        const transferTransaction = new anchor.web3.Transaction().add(
+        const transferTransaction = new trezoaanchor.web3.Transaction().add(
           transferIx
         );
         await provider.sendAndConfirm(transferTransaction);
@@ -201,9 +201,9 @@ const miscTest = (
       });
 
       it("Can close a mut account manually", async () => {
-        const data = anchor.web3.Keypair.generate();
+        const data = trezoaanchor.web3.Keypair.generate();
         await program.methods
-          .initialize(new anchor.BN(10), new anchor.BN(10))
+          .initialize(new trezoaanchor.BN(10), new trezoaanchor.BN(10))
           .accounts({ data: data.publicKey })
           .preInstructions([await program.account.data.createInstruction(data)])
           .signers([data])
@@ -215,12 +215,12 @@ const miscTest = (
         assert.isNotNull(openAccount);
         const openAccountBalance = openAccount.lamports;
         // double balance to calculate closed balance correctly
-        const transferIx = anchor.web3.SystemProgram.transfer({
+        const transferIx = trezoaanchor.web3.SystemProgram.transfer({
           fromPubkey: provider.wallet.publicKey,
           toPubkey: data.publicKey,
           lamports: openAccountBalance,
         });
-        const transferTransaction = new anchor.web3.Transaction().add(
+        const transferTransaction = new trezoaanchor.web3.Transaction().add(
           transferIx
         );
         await provider.sendAndConfirm(transferTransaction);
@@ -396,11 +396,11 @@ const miscTest = (
       );
     });
 
-    it("Can embed programs into genesis from the Anchor.toml", async () => {
-      const pid = new anchor.web3.PublicKey(
+    it("Can embed programs into genesis from the TrezoaAnchor.toml", async () => {
+      const pid = new trezoaanchor.web3.PublicKey(
         "FtMNMKp9DZHKWUyVAsj3Q5QV8ow4P3fUPP7ZrWEQJzKr"
       );
-      let accInfo = await anchor.getProvider().connection.getAccountInfo(pid);
+      let accInfo = await trezoaanchor.getProvider().connection.getAccountInfo(pid);
       assert.isTrue(accInfo.executable);
     });
 
@@ -460,14 +460,14 @@ const miscTest = (
       // b"my-seed"
       const seed = Buffer.from([109, 121, 45, 115, 101, 101, 100]);
       const [myPda, nonce] = await PublicKey.findProgramAddress(
-        [seed, anchor.web3.SYSVAR_RENT_PUBKEY.toBuffer()],
+        [seed, trezoaanchor.web3.SYSVAR_RENT_PUBKEY.toBuffer()],
         program.programId
       );
 
       await program.rpc.testInstructionConstraint(nonce, {
         accounts: {
           myPda,
-          myAccount: anchor.web3.SYSVAR_RENT_PUBKEY,
+          myAccount: trezoaanchor.web3.SYSVAR_RENT_PUBKEY,
         },
       });
     });
@@ -475,11 +475,11 @@ const miscTest = (
     it("Can create a PDA account with instruction data", async () => {
       const seed = Buffer.from([1, 2, 3, 4]);
       const domain = "my-domain";
-      const foo = anchor.web3.SYSVAR_RENT_PUBKEY;
+      const foo = trezoaanchor.web3.SYSVAR_RENT_PUBKEY;
       const [myPda, nonce] = await PublicKey.findProgramAddress(
         [
-          Buffer.from(anchor.utils.bytes.utf8.encode("my-seed")),
-          Buffer.from(anchor.utils.bytes.utf8.encode(domain)),
+          Buffer.from(trezoaanchor.utils.bytes.utf8.encode("my-seed")),
+          Buffer.from(trezoaanchor.utils.bytes.utf8.encode(domain)),
           foo.toBuffer(),
           seed,
         ],
@@ -491,7 +491,7 @@ const miscTest = (
           myPda,
           myPayer: provider.wallet.publicKey,
           foo,
-          systemProgram: anchor.web3.SystemProgram.programId,
+          systemProgram: trezoaanchor.web3.SystemProgram.programId,
         },
       });
 
@@ -501,14 +501,14 @@ const miscTest = (
 
     it("Can create a zero copy PDA account", async () => {
       const [myPda, nonce] = await PublicKey.findProgramAddress(
-        [Buffer.from(anchor.utils.bytes.utf8.encode("my-seed"))],
+        [Buffer.from(trezoaanchor.utils.bytes.utf8.encode("my-seed"))],
         program.programId
       );
       await program.rpc.testPdaInitZeroCopy({
         accounts: {
           myPda,
           myPayer: provider.wallet.publicKey,
-          systemProgram: anchor.web3.SystemProgram.programId,
+          systemProgram: trezoaanchor.web3.SystemProgram.programId,
         },
       });
 
@@ -519,7 +519,7 @@ const miscTest = (
 
     it("Can write to a zero copy PDA account", async () => {
       const [myPda, bump] = await PublicKey.findProgramAddress(
-        [Buffer.from(anchor.utils.bytes.utf8.encode("my-seed"))],
+        [Buffer.from(trezoaanchor.utils.bytes.utf8.encode("my-seed"))],
         program.programId
       );
       await program.rpc.testPdaMutZeroCopy({
@@ -536,11 +536,11 @@ const miscTest = (
 
     it("Can create a token account from seeds pda", async () => {
       const [mint, mint_bump] = await PublicKey.findProgramAddress(
-        [Buffer.from(anchor.utils.bytes.utf8.encode("my-mint-seed"))],
+        [Buffer.from(trezoaanchor.utils.bytes.utf8.encode("my-mint-seed"))],
         program.programId
       );
       const [myPda, token_bump] = await PublicKey.findProgramAddress(
-        [Buffer.from(anchor.utils.bytes.utf8.encode("my-token-seed"))],
+        [Buffer.from(trezoaanchor.utils.bytes.utf8.encode("my-token-seed"))],
         program.programId
       );
       await program.rpc.testTokenSeedsInit({
@@ -548,7 +548,7 @@ const miscTest = (
           myPda,
           mint,
           authority: provider.wallet.publicKey,
-          systemProgram: anchor.web3.SystemProgram.programId,
+          systemProgram: trezoaanchor.web3.SystemProgram.programId,
           tokenProgram: TOKEN_PROGRAM_ID,
         },
       });
@@ -571,7 +571,7 @@ const miscTest = (
     it("Can execute a fallback function", async () => {
       await nativeAssert.rejects(
         async () => {
-          await anchor.utils.rpc.invoke(program.programId);
+          await trezoaanchor.utils.rpc.invoke(program.programId);
         },
         (err) => {
           assert.isTrue(err.toString().includes("custom program error: 0x4d2"));
@@ -581,12 +581,12 @@ const miscTest = (
     });
 
     it("Can init a random account", async () => {
-      const data = anchor.web3.Keypair.generate();
+      const data = trezoaanchor.web3.Keypair.generate();
       await program.rpc.testInit({
         accounts: {
           data: data.publicKey,
           payer: provider.wallet.publicKey,
-          systemProgram: anchor.web3.SystemProgram.programId,
+          systemProgram: trezoaanchor.web3.SystemProgram.programId,
         },
         signers: [data],
       });
@@ -596,16 +596,16 @@ const miscTest = (
     });
 
     it("Can init a random account prefunded", async () => {
-      const data = anchor.web3.Keypair.generate();
+      const data = trezoaanchor.web3.Keypair.generate();
       await program.rpc.testInit({
         accounts: {
           data: data.publicKey,
           payer: provider.wallet.publicKey,
-          systemProgram: anchor.web3.SystemProgram.programId,
+          systemProgram: trezoaanchor.web3.SystemProgram.programId,
         },
         signers: [data],
         instructions: [
-          anchor.web3.SystemProgram.transfer({
+          trezoaanchor.web3.SystemProgram.transfer({
             fromPubkey: provider.wallet.publicKey,
             toPubkey: data.publicKey,
             lamports: 4039280,
@@ -623,7 +623,7 @@ const miscTest = (
           accounts: {
             data: provider.wallet.publicKey,
             payer: provider.wallet.publicKey,
-            systemProgram: anchor.web3.SystemProgram.programId,
+            systemProgram: trezoaanchor.web3.SystemProgram.programId,
           },
         });
         assert.fail("Transaction should fail");
@@ -634,12 +634,12 @@ const miscTest = (
     });
 
     it("Can init a random zero copy account", async () => {
-      const data = anchor.web3.Keypair.generate();
+      const data = trezoaanchor.web3.Keypair.generate();
       await program.rpc.testInitZeroCopy({
         accounts: {
           data: data.publicKey,
           payer: provider.wallet.publicKey,
-          systemProgram: anchor.web3.SystemProgram.programId,
+          systemProgram: trezoaanchor.web3.SystemProgram.programId,
         },
         signers: [data],
       });
@@ -651,12 +651,12 @@ const miscTest = (
     let mint = undefined;
 
     it("Can create a random mint account", async () => {
-      mint = anchor.web3.Keypair.generate();
+      mint = trezoaanchor.web3.Keypair.generate();
       await program.rpc.testInitMint({
         accounts: {
           mint: mint.publicKey,
           payer: provider.wallet.publicKey,
-          systemProgram: anchor.web3.SystemProgram.programId,
+          systemProgram: trezoaanchor.web3.SystemProgram.programId,
           tokenProgram: TOKEN_PROGRAM_ID,
         },
         signers: [mint],
@@ -678,17 +678,17 @@ const miscTest = (
     });
 
     it("Can create a random mint account prefunded", async () => {
-      mint = anchor.web3.Keypair.generate();
+      mint = trezoaanchor.web3.Keypair.generate();
       await program.rpc.testInitMint({
         accounts: {
           mint: mint.publicKey,
           payer: provider.wallet.publicKey,
-          systemProgram: anchor.web3.SystemProgram.programId,
+          systemProgram: trezoaanchor.web3.SystemProgram.programId,
           tokenProgram: TOKEN_PROGRAM_ID,
         },
         signers: [mint],
         instructions: [
-          anchor.web3.SystemProgram.transfer({
+          trezoaanchor.web3.SystemProgram.transfer({
             fromPubkey: provider.wallet.publicKey,
             toPubkey: mint.publicKey,
             lamports: 4039280,
@@ -709,13 +709,13 @@ const miscTest = (
     });
 
     it("Can create a random token account", async () => {
-      const token = anchor.web3.Keypair.generate();
+      const token = trezoaanchor.web3.Keypair.generate();
       await program.rpc.testInitToken({
         accounts: {
           token: token.publicKey,
           mint: mint.publicKey,
           payer: provider.wallet.publicKey,
-          systemProgram: anchor.web3.SystemProgram.programId,
+          systemProgram: trezoaanchor.web3.SystemProgram.programId,
           tokenProgram: TOKEN_PROGRAM_ID,
         },
         signers: [token],
@@ -736,18 +736,18 @@ const miscTest = (
     });
 
     it("Can create a random token with prefunding", async () => {
-      const token = anchor.web3.Keypair.generate();
+      const token = trezoaanchor.web3.Keypair.generate();
       await program.rpc.testInitToken({
         accounts: {
           token: token.publicKey,
           mint: mint.publicKey,
           payer: provider.wallet.publicKey,
-          systemProgram: anchor.web3.SystemProgram.programId,
+          systemProgram: trezoaanchor.web3.SystemProgram.programId,
           tokenProgram: TOKEN_PROGRAM_ID,
         },
         signers: [token],
         instructions: [
-          anchor.web3.SystemProgram.transfer({
+          trezoaanchor.web3.SystemProgram.transfer({
             fromPubkey: provider.wallet.publicKey,
             toPubkey: token.publicKey,
             lamports: 4039280,
@@ -770,18 +770,18 @@ const miscTest = (
     });
 
     it("Can create a random token with prefunding under the rent exemption", async () => {
-      const token = anchor.web3.Keypair.generate();
+      const token = trezoaanchor.web3.Keypair.generate();
       await program.rpc.testInitToken({
         accounts: {
           token: token.publicKey,
           mint: mint.publicKey,
           payer: provider.wallet.publicKey,
-          systemProgram: anchor.web3.SystemProgram.programId,
+          systemProgram: trezoaanchor.web3.SystemProgram.programId,
           tokenProgram: TOKEN_PROGRAM_ID,
         },
         signers: [token],
         instructions: [
-          anchor.web3.SystemProgram.transfer({
+          trezoaanchor.web3.SystemProgram.transfer({
             fromPubkey: provider.wallet.publicKey,
             toPubkey: token.publicKey,
             lamports: 1,
@@ -804,8 +804,8 @@ const miscTest = (
     });
 
     it("Can initialize multiple accounts via a composite payer", async () => {
-      const data1 = anchor.web3.Keypair.generate();
-      const data2 = anchor.web3.Keypair.generate();
+      const data1 = trezoaanchor.web3.Keypair.generate();
+      const data2 = trezoaanchor.web3.Keypair.generate();
 
       const tx = await program.methods
         .testCompositePayer()
@@ -813,10 +813,10 @@ const miscTest = (
           composite: {
             data: data1.publicKey,
             payer: provider.wallet.publicKey,
-            systemProgram: anchor.web3.SystemProgram.programId,
+            systemProgram: trezoaanchor.web3.SystemProgram.programId,
           },
           data: data2.publicKey,
-          systemProgram: anchor.web3.SystemProgram.programId,
+          systemProgram: trezoaanchor.web3.SystemProgram.programId,
         })
         .signers([data1, data2])
         .rpc();
@@ -830,12 +830,12 @@ const miscTest = (
     });
 
     it("Can create a random mint account with token program", async () => {
-      const newMint = anchor.web3.Keypair.generate();
+      const newMint = trezoaanchor.web3.Keypair.generate();
       await program.rpc.testInitMintWithTokenProgram({
         accounts: {
           mint: newMint.publicKey,
           payer: provider.wallet.publicKey,
-          systemProgram: anchor.web3.SystemProgram.programId,
+          systemProgram: trezoaanchor.web3.SystemProgram.programId,
           mintTokenProgram: TOKEN_2022_PROGRAM_ID,
         },
         signers: [newMint],
@@ -860,13 +860,13 @@ const miscTest = (
     });
 
     it("Can create a random token account with token program", async () => {
-      const token = anchor.web3.Keypair.generate();
+      const token = trezoaanchor.web3.Keypair.generate();
       await program.rpc.testInitTokenWithTokenProgram({
         accounts: {
           token: token.publicKey,
           mint: mint.publicKey,
           payer: provider.wallet.publicKey,
-          systemProgram: anchor.web3.SystemProgram.programId,
+          systemProgram: trezoaanchor.web3.SystemProgram.programId,
           tokenTokenProgram: TOKEN_PROGRAM_ID,
         },
         signers: [token],
@@ -877,7 +877,7 @@ const miscTest = (
       );
       const ataAccount = AccountLayout.decode(rawAccount.data);
       assert.strictEqual(ataAccount.state, 1);
-      assert.strictEqual(new anchor.BN(ataAccount.amount).toNumber(), 0);
+      assert.strictEqual(new trezoaanchor.BN(ataAccount.amount).toNumber(), 0);
       assert.strictEqual(
         new PublicKey(ataAccount.owner).toString(),
         provider.wallet.publicKey.toString()
@@ -914,7 +914,7 @@ const miscTest = (
             token: associatedToken,
             mint: localClient.publicKey,
             payer: provider.wallet.publicKey,
-            systemProgram: anchor.web3.SystemProgram.programId,
+            systemProgram: trezoaanchor.web3.SystemProgram.programId,
             tokenProgram: TOKEN_PROGRAM_ID,
             associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
           },
@@ -930,12 +930,12 @@ const miscTest = (
       });
 
       it("Can create an associated token account with token program", async () => {
-        const newMint = anchor.web3.Keypair.generate();
+        const newMint = trezoaanchor.web3.Keypair.generate();
         await program.rpc.testInitMintWithTokenProgram({
           accounts: {
             mint: newMint.publicKey,
             payer: provider.wallet.publicKey,
-            systemProgram: anchor.web3.SystemProgram.programId,
+            systemProgram: trezoaanchor.web3.SystemProgram.programId,
             mintTokenProgram: TOKEN_2022_PROGRAM_ID,
           },
           signers: [newMint],
@@ -953,7 +953,7 @@ const miscTest = (
             token: associatedToken,
             mint: newMint.publicKey,
             payer: provider.wallet.publicKey,
-            systemProgram: anchor.web3.SystemProgram.programId,
+            systemProgram: trezoaanchor.web3.SystemProgram.programId,
             associatedTokenTokenProgram: TOKEN_2022_PROGRAM_ID,
             associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
           },
@@ -964,7 +964,7 @@ const miscTest = (
         );
         const ataAccount = AccountLayout.decode(rawAta.data);
         assert.strictEqual(ataAccount.state, 1);
-        assert.strictEqual(new anchor.BN(ataAccount.amount).toNumber(), 0);
+        assert.strictEqual(new trezoaanchor.BN(ataAccount.amount).toNumber(), 0);
         assert.strictEqual(
           new PublicKey(ataAccount.owner).toString(),
           provider.wallet.publicKey.toString()
@@ -980,12 +980,12 @@ const miscTest = (
       });
 
       it("Can use fetchNullable() on accounts with only a balance", async () => {
-        const account = anchor.web3.Keypair.generate();
+        const account = trezoaanchor.web3.Keypair.generate();
 
-        // Airdrop 1 SOL to the account.
+        // Airdrop 1 TRZ to the account.
         const signature = await program.provider.connection.requestAirdrop(
           account.publicKey,
-          anchor.web3.LAMPORTS_PER_SOL
+          trezoaanchor.web3.LAMPORTS_PER_TRZ
         );
         await program.provider.connection.confirmTransaction(signature);
 
@@ -1046,7 +1046,7 @@ const miscTest = (
 
         await localClient.setAuthority(
           associatedToken,
-          anchor.web3.Keypair.generate().publicKey,
+          trezoaanchor.web3.Keypair.generate().publicKey,
           "AccountOwner",
           wallet.payer,
           []
@@ -1071,12 +1071,12 @@ const miscTest = (
       });
 
       it("associated_token constraints (no init) - Can make with associated_token::token_program", async () => {
-        const mint = anchor.web3.Keypair.generate();
+        const mint = trezoaanchor.web3.Keypair.generate();
         await program.rpc.testInitMintWithTokenProgram({
           accounts: {
             mint: mint.publicKey,
             payer: provider.wallet.publicKey,
-            systemProgram: anchor.web3.SystemProgram.programId,
+            systemProgram: trezoaanchor.web3.SystemProgram.programId,
             mintTokenProgram: TOKEN_2022_PROGRAM_ID,
           },
           signers: [mint],
@@ -1094,7 +1094,7 @@ const miscTest = (
             token: associatedToken,
             mint: mint.publicKey,
             payer: provider.wallet.publicKey,
-            systemProgram: anchor.web3.SystemProgram.programId,
+            systemProgram: trezoaanchor.web3.SystemProgram.programId,
             associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
             associatedTokenTokenProgram: TOKEN_2022_PROGRAM_ID,
           },
@@ -1119,12 +1119,12 @@ const miscTest = (
       });
 
       it("associated_token constraints (no init) - throws if associated_token::token_program mismatch", async () => {
-        const mint = anchor.web3.Keypair.generate();
+        const mint = trezoaanchor.web3.Keypair.generate();
         await program.rpc.testInitMint({
           accounts: {
             mint: mint.publicKey,
             payer: provider.wallet.publicKey,
-            systemProgram: anchor.web3.SystemProgram.programId,
+            systemProgram: trezoaanchor.web3.SystemProgram.programId,
             tokenProgram: TOKEN_PROGRAM_ID,
           },
           signers: [mint],
@@ -1142,7 +1142,7 @@ const miscTest = (
             token: associatedToken,
             mint: mint.publicKey,
             payer: provider.wallet.publicKey,
-            systemProgram: anchor.web3.SystemProgram.programId,
+            systemProgram: trezoaanchor.web3.SystemProgram.programId,
             tokenProgram: TOKEN_PROGRAM_ID,
             associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
           },
@@ -1160,8 +1160,8 @@ const miscTest = (
           });
           assert.isTrue(false);
         } catch (_err) {
-          assert.isTrue(_err instanceof AnchorError);
-          const err: AnchorError = _err;
+          assert.isTrue(_err instanceof TrezoaAnchorError);
+          const err: TrezoaAnchorError = _err;
           assert.strictEqual(err.error.errorCode.number, 2023);
           assert.strictEqual(
             err.error.errorCode.code,
@@ -1173,28 +1173,28 @@ const miscTest = (
 
     it("Can fetch all accounts of a given type", async () => {
       // Initialize the accounts.
-      const data1 = anchor.web3.Keypair.generate();
-      const data2 = anchor.web3.Keypair.generate();
-      const data3 = anchor.web3.Keypair.generate();
-      const data4 = anchor.web3.Keypair.generate();
+      const data1 = trezoaanchor.web3.Keypair.generate();
+      const data2 = trezoaanchor.web3.Keypair.generate();
+      const data3 = trezoaanchor.web3.Keypair.generate();
+      const data4 = trezoaanchor.web3.Keypair.generate();
       // Initialize filterable data.
-      const filterable1 = anchor.web3.Keypair.generate().publicKey;
-      const filterable2 = anchor.web3.Keypair.generate().publicKey;
+      const filterable1 = trezoaanchor.web3.Keypair.generate().publicKey;
+      const filterable2 = trezoaanchor.web3.Keypair.generate().publicKey;
       // Set up a secondary wallet and program.
-      const anotherProvider = new anchor.AnchorProvider(
+      const anotherProvider = new trezoaanchor.TrezoaAnchorProvider(
         program.provider.connection,
-        new anchor.Wallet(anchor.web3.Keypair.generate()),
+        new trezoaanchor.Wallet(trezoaanchor.web3.Keypair.generate()),
         { commitment: program.provider.connection.commitment }
       );
 
-      const anotherProgram = new anchor.Program(
+      const anotherProgram = new trezoaanchor.Program(
         { ...miscIdl, address: program.programId },
         anotherProvider
       );
       // Request airdrop for secondary wallet.
       const signature = await program.provider.connection.requestAirdrop(
         anotherProvider.wallet.publicKey,
-        anchor.web3.LAMPORTS_PER_SOL
+        trezoaanchor.web3.LAMPORTS_PER_TRZ
       );
       await program.provider.connection.confirmTransaction(signature);
       // Create all the accounts.
@@ -1203,7 +1203,7 @@ const miscTest = (
           accounts: {
             data: data1.publicKey,
             authority: provider.wallet.publicKey,
-            systemProgram: anchor.web3.SystemProgram.programId,
+            systemProgram: trezoaanchor.web3.SystemProgram.programId,
           },
           signers: [data1],
         }),
@@ -1211,7 +1211,7 @@ const miscTest = (
           accounts: {
             data: data2.publicKey,
             authority: provider.wallet.publicKey,
-            systemProgram: anchor.web3.SystemProgram.programId,
+            systemProgram: trezoaanchor.web3.SystemProgram.programId,
           },
           signers: [data2],
         }),
@@ -1219,7 +1219,7 @@ const miscTest = (
           accounts: {
             data: data3.publicKey,
             authority: provider.wallet.publicKey,
-            systemProgram: anchor.web3.SystemProgram.programId,
+            systemProgram: trezoaanchor.web3.SystemProgram.programId,
           },
           signers: [data3],
         }),
@@ -1227,7 +1227,7 @@ const miscTest = (
           accounts: {
             data: data4.publicKey,
             authority: anotherProvider.wallet.publicKey,
-            systemProgram: anchor.web3.SystemProgram.programId,
+            systemProgram: trezoaanchor.web3.SystemProgram.programId,
           },
           signers: [data4],
         }),
@@ -1280,7 +1280,7 @@ const miscTest = (
         accounts: {
           pda: pda,
           authority: provider.wallet.publicKey,
-          systemProgram: anchor.web3.SystemProgram.programId,
+          systemProgram: trezoaanchor.web3.SystemProgram.programId,
         },
       });
       await program.rpc.testEmptySeedsConstraint({
@@ -1290,7 +1290,7 @@ const miscTest = (
       });
 
       const [pda2] = await PublicKey.findProgramAddress(
-        [anchor.utils.bytes.utf8.encode("non-empty")],
+        [trezoaanchor.utils.bytes.utf8.encode("non-empty")],
         program.programId
       );
       await nativeAssert.rejects(
@@ -1306,13 +1306,13 @@ const miscTest = (
       );
     });
 
-    const ifNeededAcc = anchor.web3.Keypair.generate();
+    const ifNeededAcc = trezoaanchor.web3.Keypair.generate();
 
     it("Can init if needed a new account", async () => {
       await program.rpc.testInitIfNeeded(1, {
         accounts: {
           data: ifNeededAcc.publicKey,
-          systemProgram: anchor.web3.SystemProgram.programId,
+          systemProgram: trezoaanchor.web3.SystemProgram.programId,
           payer: provider.wallet.publicKey,
         },
         signers: [ifNeededAcc],
@@ -1327,7 +1327,7 @@ const miscTest = (
       await program.rpc.testInitIfNeeded(3, {
         accounts: {
           data: ifNeededAcc.publicKey,
-          systemProgram: anchor.web3.SystemProgram.programId,
+          systemProgram: trezoaanchor.web3.SystemProgram.programId,
           payer: provider.wallet.publicKey,
         },
         signers: [ifNeededAcc],
@@ -1339,7 +1339,7 @@ const miscTest = (
     });
 
     it("Can use const for array size", async () => {
-      const data = anchor.web3.Keypair.generate();
+      const data = trezoaanchor.web3.Keypair.generate();
       const tx = await program.rpc.testConstArraySize(99, {
         accounts: {
           data: data.publicKey,
@@ -1356,7 +1356,7 @@ const miscTest = (
     });
 
     it("Can use const for instruction data size", async () => {
-      const data = anchor.web3.Keypair.generate();
+      const data = trezoaanchor.web3.Keypair.generate();
       const dataArray = [99, ...new Array(9).fill(0)];
       const tx = await program.rpc.testConstIxDataSize(dataArray, {
         accounts: {
@@ -1374,13 +1374,13 @@ const miscTest = (
     });
 
     it("init_if_needed creates mint account if not exists", async () => {
-      const newMint = anchor.web3.Keypair.generate();
+      const newMint = trezoaanchor.web3.Keypair.generate();
 
       await program.rpc.testInitMintIfNeeded(6, {
         accounts: {
           mint: newMint.publicKey,
           payer: provider.wallet.publicKey,
-          systemProgram: anchor.web3.SystemProgram.programId,
+          systemProgram: trezoaanchor.web3.SystemProgram.programId,
           tokenProgram: TOKEN_PROGRAM_ID,
           mintAuthority: provider.wallet.publicKey,
           freezeAuthority: provider.wallet.publicKey,
@@ -1416,13 +1416,13 @@ const miscTest = (
     });
 
     it("init_if_needed creates mint account if not exists with token program", async () => {
-      const newMint = anchor.web3.Keypair.generate();
+      const newMint = trezoaanchor.web3.Keypair.generate();
 
       await program.rpc.testInitMintIfNeededWithTokenProgram({
         accounts: {
           mint: newMint.publicKey,
           payer: provider.wallet.publicKey,
-          systemProgram: anchor.web3.SystemProgram.programId,
+          systemProgram: trezoaanchor.web3.SystemProgram.programId,
           mintTokenProgram: TOKEN_PROGRAM_ID,
           mintAuthority: provider.wallet.publicKey,
           freezeAuthority: provider.wallet.publicKey,
@@ -1458,24 +1458,24 @@ const miscTest = (
     });
 
     it("init_if_needed creates token account if not exists", async () => {
-      const newMint = anchor.web3.Keypair.generate();
+      const newMint = trezoaanchor.web3.Keypair.generate();
       await program.rpc.testInitMint({
         accounts: {
           mint: newMint.publicKey,
           payer: provider.wallet.publicKey,
-          systemProgram: anchor.web3.SystemProgram.programId,
+          systemProgram: trezoaanchor.web3.SystemProgram.programId,
           tokenProgram: TOKEN_PROGRAM_ID,
         },
         signers: [newMint],
       });
 
-      const newToken = anchor.web3.Keypair.generate();
+      const newToken = trezoaanchor.web3.Keypair.generate();
       await program.rpc.testInitTokenIfNeeded({
         accounts: {
           token: newToken.publicKey,
           mint: newMint.publicKey,
           payer: provider.wallet.publicKey,
-          systemProgram: anchor.web3.SystemProgram.programId,
+          systemProgram: trezoaanchor.web3.SystemProgram.programId,
           tokenProgram: TOKEN_PROGRAM_ID,
           authority: provider.wallet.publicKey,
         },
@@ -1507,24 +1507,24 @@ const miscTest = (
     });
 
     it("init_if_needed creates token account if not exists with token program", async () => {
-      const newMint = anchor.web3.Keypair.generate();
+      const newMint = trezoaanchor.web3.Keypair.generate();
       await program.rpc.testInitMint({
         accounts: {
           mint: newMint.publicKey,
           payer: provider.wallet.publicKey,
-          systemProgram: anchor.web3.SystemProgram.programId,
+          systemProgram: trezoaanchor.web3.SystemProgram.programId,
           tokenProgram: TOKEN_PROGRAM_ID,
         },
         signers: [newMint],
       });
 
-      const newToken = anchor.web3.Keypair.generate();
+      const newToken = trezoaanchor.web3.Keypair.generate();
       await program.rpc.testInitTokenIfNeededWithTokenProgram({
         accounts: {
           token: newToken.publicKey,
           mint: newMint.publicKey,
           payer: provider.wallet.publicKey,
-          systemProgram: anchor.web3.SystemProgram.programId,
+          systemProgram: trezoaanchor.web3.SystemProgram.programId,
           tokenTokenProgram: TOKEN_PROGRAM_ID,
           authority: provider.wallet.publicKey,
         },
@@ -1535,7 +1535,7 @@ const miscTest = (
         newToken.publicKey
       );
       const ataAccount = AccountLayout.decode(rawAccount.data);
-      assert.strictEqual(new anchor.BN(ataAccount.amount).toNumber(), 0);
+      assert.strictEqual(new trezoaanchor.BN(ataAccount.amount).toNumber(), 0);
       assert.strictEqual(
         new PublicKey(ataAccount.mint).toString(),
         newMint.publicKey.toString()
@@ -1552,12 +1552,12 @@ const miscTest = (
     });
 
     it("init_if_needed creates associated token account if not exists", async () => {
-      const newMint = anchor.web3.Keypair.generate();
+      const newMint = trezoaanchor.web3.Keypair.generate();
       await program.rpc.testInitMint({
         accounts: {
           mint: newMint.publicKey,
           payer: provider.wallet.publicKey,
-          systemProgram: anchor.web3.SystemProgram.programId,
+          systemProgram: trezoaanchor.web3.SystemProgram.programId,
           tokenProgram: TOKEN_PROGRAM_ID,
         },
         signers: [newMint],
@@ -1575,7 +1575,7 @@ const miscTest = (
           token: associatedToken,
           mint: newMint.publicKey,
           payer: provider.wallet.publicKey,
-          systemProgram: anchor.web3.SystemProgram.programId,
+          systemProgram: trezoaanchor.web3.SystemProgram.programId,
           associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
           tokenProgram: TOKEN_PROGRAM_ID,
           authority: provider.wallet.publicKey,
@@ -1608,12 +1608,12 @@ const miscTest = (
     });
 
     it("init_if_needed creates associated token account if not exists with token program", async () => {
-      const newMint = anchor.web3.Keypair.generate();
+      const newMint = trezoaanchor.web3.Keypair.generate();
       await program.rpc.testInitMintWithTokenProgram({
         accounts: {
           mint: newMint.publicKey,
           payer: provider.wallet.publicKey,
-          systemProgram: anchor.web3.SystemProgram.programId,
+          systemProgram: trezoaanchor.web3.SystemProgram.programId,
           mintTokenProgram: TOKEN_2022_PROGRAM_ID,
         },
         signers: [newMint],
@@ -1631,7 +1631,7 @@ const miscTest = (
           token: associatedToken,
           mint: newMint.publicKey,
           payer: provider.wallet.publicKey,
-          systemProgram: anchor.web3.SystemProgram.programId,
+          systemProgram: trezoaanchor.web3.SystemProgram.programId,
           associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
           associatedTokenTokenProgram: TOKEN_2022_PROGRAM_ID,
           authority: provider.wallet.publicKey,
@@ -1642,7 +1642,7 @@ const miscTest = (
         associatedToken
       );
       const ataAccount = AccountLayout.decode(rawAccount.data);
-      assert.strictEqual(new anchor.BN(ataAccount.amount).toNumber(), 0);
+      assert.strictEqual(new trezoaanchor.BN(ataAccount.amount).toNumber(), 0);
       assert.strictEqual(
         new PublicKey(ataAccount.mint).toString(),
         newMint.publicKey.toString()
@@ -1658,14 +1658,14 @@ const miscTest = (
     });
 
     it("init_if_needed throws if account exists but is not owned by the expected program", async () => {
-      const newAcc = await anchor.web3.PublicKey.findProgramAddress(
+      const newAcc = await trezoaanchor.web3.PublicKey.findProgramAddress(
         [utf8.encode("hello")],
         program.programId
       );
       await program.rpc.testInitIfNeededChecksOwner({
         accounts: {
           data: newAcc[0],
-          systemProgram: anchor.web3.SystemProgram.programId,
+          systemProgram: trezoaanchor.web3.SystemProgram.programId,
           payer: provider.wallet.publicKey,
           owner: program.programId,
         },
@@ -1675,28 +1675,28 @@ const miscTest = (
         await program.rpc.testInitIfNeededChecksOwner({
           accounts: {
             data: newAcc[0],
-            systemProgram: anchor.web3.SystemProgram.programId,
+            systemProgram: trezoaanchor.web3.SystemProgram.programId,
             payer: provider.wallet.publicKey,
-            owner: anchor.web3.Keypair.generate().publicKey,
+            owner: trezoaanchor.web3.Keypair.generate().publicKey,
           },
         });
         expect(false).to.be.true;
       } catch (_err) {
-        assert.isTrue(_err instanceof AnchorError);
-        const err: AnchorError = _err;
+        assert.isTrue(_err instanceof TrezoaAnchorError);
+        const err: TrezoaAnchorError = _err;
         assert.strictEqual(err.error.errorCode.number, 2004);
       }
     });
 
     it("init_if_needed throws if pda account exists but does not have the expected seeds", async () => {
-      const newAcc = await anchor.web3.PublicKey.findProgramAddress(
+      const newAcc = await trezoaanchor.web3.PublicKey.findProgramAddress(
         [utf8.encode("nothello")],
         program.programId
       );
       await program.rpc.testInitIfNeededChecksSeeds("nothello", {
         accounts: {
           data: newAcc[0],
-          systemProgram: anchor.web3.SystemProgram.programId,
+          systemProgram: trezoaanchor.web3.SystemProgram.programId,
           payer: provider.wallet.publicKey,
         },
       });
@@ -1705,7 +1705,7 @@ const miscTest = (
       // we need this so we know that the following tx failed
       // not because it couldn't create this pda
       // but because the two pdas were different
-      anchor.web3.PublicKey.createProgramAddress(
+      trezoaanchor.web3.PublicKey.createProgramAddress(
         [utf8.encode("hello")],
         program.programId
       );
@@ -1714,25 +1714,25 @@ const miscTest = (
         await program.rpc.testInitIfNeededChecksSeeds("hello", {
           accounts: {
             data: newAcc[0],
-            systemProgram: anchor.web3.SystemProgram.programId,
+            systemProgram: trezoaanchor.web3.SystemProgram.programId,
             payer: provider.wallet.publicKey,
           },
         });
         expect(false).to.be.true;
       } catch (_err) {
-        assert.isTrue(_err instanceof AnchorError);
-        const err: AnchorError = _err;
+        assert.isTrue(_err instanceof TrezoaAnchorError);
+        const err: TrezoaAnchorError = _err;
         assert.strictEqual(err.error.errorCode.number, 2006);
       }
     });
 
     it("init_if_needed throws if account exists but is not the expected space", async () => {
-      const newAcc = anchor.web3.Keypair.generate();
+      const newAcc = trezoaanchor.web3.Keypair.generate();
       const _irrelevantForTest = 3;
       await program.rpc.initWithSpace(_irrelevantForTest, {
         accounts: {
           data: newAcc.publicKey,
-          systemProgram: anchor.web3.SystemProgram.programId,
+          systemProgram: trezoaanchor.web3.SystemProgram.programId,
           payer: provider.wallet.publicKey,
         },
         signers: [newAcc],
@@ -1742,26 +1742,26 @@ const miscTest = (
         await program.rpc.testInitIfNeeded(_irrelevantForTest, {
           accounts: {
             data: newAcc.publicKey,
-            systemProgram: anchor.web3.SystemProgram.programId,
+            systemProgram: trezoaanchor.web3.SystemProgram.programId,
             payer: provider.wallet.publicKey,
           },
           signers: [newAcc],
         });
         expect(false).to.be.true;
       } catch (_err) {
-        assert.isTrue(_err instanceof AnchorError);
-        const err: AnchorError = _err;
+        assert.isTrue(_err instanceof TrezoaAnchorError);
+        const err: TrezoaAnchorError = _err;
         assert.strictEqual(err.error.errorCode.number, 2019);
       }
     });
 
     it("init_if_needed throws if mint exists but has the wrong mint authority", async () => {
-      const mint = anchor.web3.Keypair.generate();
+      const mint = trezoaanchor.web3.Keypair.generate();
       await program.rpc.testInitMint({
         accounts: {
           mint: mint.publicKey,
           payer: provider.wallet.publicKey,
-          systemProgram: anchor.web3.SystemProgram.programId,
+          systemProgram: trezoaanchor.web3.SystemProgram.programId,
           tokenProgram: TOKEN_PROGRAM_ID,
         },
         signers: [mint],
@@ -1772,28 +1772,28 @@ const miscTest = (
           accounts: {
             mint: mint.publicKey,
             payer: provider.wallet.publicKey,
-            systemProgram: anchor.web3.SystemProgram.programId,
+            systemProgram: trezoaanchor.web3.SystemProgram.programId,
             tokenProgram: TOKEN_PROGRAM_ID,
-            mintAuthority: anchor.web3.Keypair.generate().publicKey,
+            mintAuthority: trezoaanchor.web3.Keypair.generate().publicKey,
             freezeAuthority: provider.wallet.publicKey,
           },
           signers: [mint],
         });
         expect(false).to.be.true;
       } catch (_err) {
-        assert.isTrue(_err instanceof AnchorError);
-        const err: AnchorError = _err;
+        assert.isTrue(_err instanceof TrezoaAnchorError);
+        const err: TrezoaAnchorError = _err;
         assert.strictEqual(err.error.errorCode.number, 2016);
       }
     });
 
     it("init_if_needed throws if mint exists but has the wrong freeze authority", async () => {
-      const mint = anchor.web3.Keypair.generate();
+      const mint = trezoaanchor.web3.Keypair.generate();
       await program.rpc.testInitMint({
         accounts: {
           mint: mint.publicKey,
           payer: provider.wallet.publicKey,
-          systemProgram: anchor.web3.SystemProgram.programId,
+          systemProgram: trezoaanchor.web3.SystemProgram.programId,
           tokenProgram: TOKEN_PROGRAM_ID,
         },
         signers: [mint],
@@ -1804,28 +1804,28 @@ const miscTest = (
           accounts: {
             mint: mint.publicKey,
             payer: provider.wallet.publicKey,
-            systemProgram: anchor.web3.SystemProgram.programId,
+            systemProgram: trezoaanchor.web3.SystemProgram.programId,
             tokenProgram: TOKEN_PROGRAM_ID,
             mintAuthority: provider.wallet.publicKey,
-            freezeAuthority: anchor.web3.Keypair.generate().publicKey,
+            freezeAuthority: trezoaanchor.web3.Keypair.generate().publicKey,
           },
           signers: [mint],
         });
         expect(false).to.be.true;
       } catch (_err) {
-        assert.isTrue(_err instanceof AnchorError);
-        const err: AnchorError = _err;
+        assert.isTrue(_err instanceof TrezoaAnchorError);
+        const err: TrezoaAnchorError = _err;
         assert.strictEqual(err.error.errorCode.number, 2017);
       }
     });
 
     it("init_if_needed throws if mint exists but has the wrong decimals", async () => {
-      const mint = anchor.web3.Keypair.generate();
+      const mint = trezoaanchor.web3.Keypair.generate();
       await program.rpc.testInitMint({
         accounts: {
           mint: mint.publicKey,
           payer: provider.wallet.publicKey,
-          systemProgram: anchor.web3.SystemProgram.programId,
+          systemProgram: trezoaanchor.web3.SystemProgram.programId,
           tokenProgram: TOKEN_PROGRAM_ID,
         },
         signers: [mint],
@@ -1836,7 +1836,7 @@ const miscTest = (
           accounts: {
             mint: mint.publicKey,
             payer: provider.wallet.publicKey,
-            systemProgram: anchor.web3.SystemProgram.programId,
+            systemProgram: trezoaanchor.web3.SystemProgram.programId,
             tokenProgram: TOKEN_PROGRAM_ID,
             mintAuthority: provider.wallet.publicKey,
             freezeAuthority: provider.wallet.publicKey,
@@ -1845,19 +1845,19 @@ const miscTest = (
         });
         expect(false).to.be.true;
       } catch (_err) {
-        assert.isTrue(_err instanceof AnchorError);
-        const err: AnchorError = _err;
+        assert.isTrue(_err instanceof TrezoaAnchorError);
+        const err: TrezoaAnchorError = _err;
         assert.strictEqual(err.error.errorCode.number, 2018);
       }
     });
 
     it("init_if_needed pass if mint exists with token program", async () => {
-      const newMint = anchor.web3.Keypair.generate();
+      const newMint = trezoaanchor.web3.Keypair.generate();
       await program.rpc.testInitMint({
         accounts: {
           mint: newMint.publicKey,
           payer: provider.wallet.publicKey,
-          systemProgram: anchor.web3.SystemProgram.programId,
+          systemProgram: trezoaanchor.web3.SystemProgram.programId,
           tokenProgram: TOKEN_PROGRAM_ID,
         },
         signers: [newMint],
@@ -1867,7 +1867,7 @@ const miscTest = (
         accounts: {
           mint: newMint.publicKey,
           payer: provider.wallet.publicKey,
-          systemProgram: anchor.web3.SystemProgram.programId,
+          systemProgram: trezoaanchor.web3.SystemProgram.programId,
           mintTokenProgram: TOKEN_PROGRAM_ID,
           mintAuthority: provider.wallet.publicKey,
           freezeAuthority: provider.wallet.publicKey,
@@ -1877,12 +1877,12 @@ const miscTest = (
     });
 
     it("init_if_needed throws if mint exists but has the wrong token program", async () => {
-      const newMint = anchor.web3.Keypair.generate();
+      const newMint = trezoaanchor.web3.Keypair.generate();
       await program.rpc.testInitMint({
         accounts: {
           mint: newMint.publicKey,
           payer: provider.wallet.publicKey,
-          systemProgram: anchor.web3.SystemProgram.programId,
+          systemProgram: trezoaanchor.web3.SystemProgram.programId,
           tokenProgram: TOKEN_PROGRAM_ID,
         },
         signers: [newMint],
@@ -1894,7 +1894,7 @@ const miscTest = (
           accounts: {
             mint: newMint.publicKey,
             payer: provider.wallet.publicKey,
-            systemProgram: anchor.web3.SystemProgram.programId,
+            systemProgram: trezoaanchor.web3.SystemProgram.programId,
             mintTokenProgram: fakeTokenProgram.publicKey,
             mintAuthority: provider.wallet.publicKey,
             freezeAuthority: provider.wallet.publicKey,
@@ -1903,8 +1903,8 @@ const miscTest = (
         });
         expect(false).to.be.true;
       } catch (_err) {
-        assert.isTrue(_err instanceof AnchorError);
-        const err: AnchorError = _err;
+        assert.isTrue(_err instanceof TrezoaAnchorError);
+        const err: TrezoaAnchorError = _err;
         assert.strictEqual(err.error.errorCode.number, 2022);
         assert.strictEqual(
           err.error.errorCode.code,
@@ -1914,24 +1914,24 @@ const miscTest = (
     });
 
     it("init_if_needed throws if token exists but has the wrong owner", async () => {
-      const mint = anchor.web3.Keypair.generate();
+      const mint = trezoaanchor.web3.Keypair.generate();
       await program.rpc.testInitMint({
         accounts: {
           mint: mint.publicKey,
           payer: provider.wallet.publicKey,
-          systemProgram: anchor.web3.SystemProgram.programId,
+          systemProgram: trezoaanchor.web3.SystemProgram.programId,
           tokenProgram: TOKEN_PROGRAM_ID,
         },
         signers: [mint],
       });
 
-      const token = anchor.web3.Keypair.generate();
+      const token = trezoaanchor.web3.Keypair.generate();
       await program.rpc.testInitToken({
         accounts: {
           token: token.publicKey,
           mint: mint.publicKey,
           payer: provider.wallet.publicKey,
-          systemProgram: anchor.web3.SystemProgram.programId,
+          systemProgram: trezoaanchor.web3.SystemProgram.programId,
           tokenProgram: TOKEN_PROGRAM_ID,
         },
         signers: [token],
@@ -1943,50 +1943,50 @@ const miscTest = (
             token: token.publicKey,
             mint: mint.publicKey,
             payer: provider.wallet.publicKey,
-            systemProgram: anchor.web3.SystemProgram.programId,
+            systemProgram: trezoaanchor.web3.SystemProgram.programId,
             tokenProgram: TOKEN_PROGRAM_ID,
-            authority: anchor.web3.Keypair.generate().publicKey,
+            authority: trezoaanchor.web3.Keypair.generate().publicKey,
           },
           signers: [token],
         });
         expect(false).to.be.true;
       } catch (_err) {
-        assert.isTrue(_err instanceof AnchorError);
-        const err: AnchorError = _err;
+        assert.isTrue(_err instanceof TrezoaAnchorError);
+        const err: TrezoaAnchorError = _err;
         assert.strictEqual(err.error.errorCode.number, 2015);
       }
     });
 
     it("init_if_needed throws if token exists but has the wrong mint", async () => {
-      const mint = anchor.web3.Keypair.generate();
+      const mint = trezoaanchor.web3.Keypair.generate();
       await program.rpc.testInitMint({
         accounts: {
           mint: mint.publicKey,
           payer: provider.wallet.publicKey,
-          systemProgram: anchor.web3.SystemProgram.programId,
+          systemProgram: trezoaanchor.web3.SystemProgram.programId,
           tokenProgram: TOKEN_PROGRAM_ID,
         },
         signers: [mint],
       });
 
-      const mint2 = anchor.web3.Keypair.generate();
+      const mint2 = trezoaanchor.web3.Keypair.generate();
       await program.rpc.testInitMint({
         accounts: {
           mint: mint2.publicKey,
           payer: provider.wallet.publicKey,
-          systemProgram: anchor.web3.SystemProgram.programId,
+          systemProgram: trezoaanchor.web3.SystemProgram.programId,
           tokenProgram: TOKEN_PROGRAM_ID,
         },
         signers: [mint2],
       });
 
-      const token = anchor.web3.Keypair.generate();
+      const token = trezoaanchor.web3.Keypair.generate();
       await program.rpc.testInitToken({
         accounts: {
           token: token.publicKey,
           mint: mint.publicKey,
           payer: provider.wallet.publicKey,
-          systemProgram: anchor.web3.SystemProgram.programId,
+          systemProgram: trezoaanchor.web3.SystemProgram.programId,
           tokenProgram: TOKEN_PROGRAM_ID,
         },
         signers: [token],
@@ -1998,7 +1998,7 @@ const miscTest = (
             token: token.publicKey,
             mint: mint2.publicKey,
             payer: provider.wallet.publicKey,
-            systemProgram: anchor.web3.SystemProgram.programId,
+            systemProgram: trezoaanchor.web3.SystemProgram.programId,
             tokenProgram: TOKEN_PROGRAM_ID,
             authority: provider.wallet.publicKey,
           },
@@ -2006,31 +2006,31 @@ const miscTest = (
         });
         expect(false).to.be.true;
       } catch (_err) {
-        assert.isTrue(_err instanceof AnchorError);
-        const err: AnchorError = _err;
+        assert.isTrue(_err instanceof TrezoaAnchorError);
+        const err: TrezoaAnchorError = _err;
         assert.strictEqual(err.error.errorCode.number, 2014);
       }
     });
 
     it("init_if_needed pass if token exists with token program", async () => {
-      const mint = anchor.web3.Keypair.generate();
+      const mint = trezoaanchor.web3.Keypair.generate();
       await program.rpc.testInitMint({
         accounts: {
           mint: mint.publicKey,
           payer: provider.wallet.publicKey,
-          systemProgram: anchor.web3.SystemProgram.programId,
+          systemProgram: trezoaanchor.web3.SystemProgram.programId,
           tokenProgram: TOKEN_PROGRAM_ID,
         },
         signers: [mint],
       });
 
-      const token = anchor.web3.Keypair.generate();
+      const token = trezoaanchor.web3.Keypair.generate();
       await program.rpc.testInitToken({
         accounts: {
           token: token.publicKey,
           mint: mint.publicKey,
           payer: provider.wallet.publicKey,
-          systemProgram: anchor.web3.SystemProgram.programId,
+          systemProgram: trezoaanchor.web3.SystemProgram.programId,
           tokenProgram: TOKEN_PROGRAM_ID,
         },
         signers: [token],
@@ -2041,7 +2041,7 @@ const miscTest = (
           token: token.publicKey,
           mint: mint.publicKey,
           payer: provider.wallet.publicKey,
-          systemProgram: anchor.web3.SystemProgram.programId,
+          systemProgram: trezoaanchor.web3.SystemProgram.programId,
           tokenTokenProgram: TOKEN_PROGRAM_ID,
           authority: provider.wallet.publicKey,
         },
@@ -2050,24 +2050,24 @@ const miscTest = (
     });
 
     it("init_if_needed throws if token exists but has the wrong token program", async () => {
-      const mint = anchor.web3.Keypair.generate();
+      const mint = trezoaanchor.web3.Keypair.generate();
       await program.rpc.testInitMint({
         accounts: {
           mint: mint.publicKey,
           payer: provider.wallet.publicKey,
-          systemProgram: anchor.web3.SystemProgram.programId,
+          systemProgram: trezoaanchor.web3.SystemProgram.programId,
           tokenProgram: TOKEN_PROGRAM_ID,
         },
         signers: [mint],
       });
 
-      const token = anchor.web3.Keypair.generate();
+      const token = trezoaanchor.web3.Keypair.generate();
       await program.rpc.testInitToken({
         accounts: {
           token: token.publicKey,
           mint: mint.publicKey,
           payer: provider.wallet.publicKey,
-          systemProgram: anchor.web3.SystemProgram.programId,
+          systemProgram: trezoaanchor.web3.SystemProgram.programId,
           tokenProgram: TOKEN_PROGRAM_ID,
         },
         signers: [token],
@@ -2080,7 +2080,7 @@ const miscTest = (
             token: token.publicKey,
             mint: mint.publicKey,
             payer: provider.wallet.publicKey,
-            systemProgram: anchor.web3.SystemProgram.programId,
+            systemProgram: trezoaanchor.web3.SystemProgram.programId,
             tokenTokenProgram: fakeTokenProgram.publicKey,
             authority: provider.wallet.publicKey,
           },
@@ -2088,8 +2088,8 @@ const miscTest = (
         });
         expect(false).to.be.true;
       } catch (_err) {
-        assert.isTrue(_err instanceof AnchorError);
-        const err: AnchorError = _err;
+        assert.isTrue(_err instanceof TrezoaAnchorError);
+        const err: TrezoaAnchorError = _err;
         assert.strictEqual(err.error.errorCode.number, 2021);
         assert.strictEqual(
           err.error.errorCode.code,
@@ -2122,7 +2122,7 @@ const miscTest = (
           token: associatedToken,
           mint: mint.publicKey,
           payer: provider.wallet.publicKey,
-          systemProgram: anchor.web3.SystemProgram.programId,
+          systemProgram: trezoaanchor.web3.SystemProgram.programId,
           tokenProgram: TOKEN_PROGRAM_ID,
           associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
         },
@@ -2134,38 +2134,38 @@ const miscTest = (
             token: associatedToken,
             mint: mint.publicKey,
             payer: provider.wallet.publicKey,
-            systemProgram: anchor.web3.SystemProgram.programId,
+            systemProgram: trezoaanchor.web3.SystemProgram.programId,
             tokenProgram: TOKEN_PROGRAM_ID,
             associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
-            authority: anchor.web3.Keypair.generate().publicKey,
+            authority: trezoaanchor.web3.Keypair.generate().publicKey,
           },
         });
         expect(false).to.be.true;
       } catch (_err) {
-        assert.isTrue(_err instanceof AnchorError);
-        const err: AnchorError = _err;
+        assert.isTrue(_err instanceof TrezoaAnchorError);
+        const err: TrezoaAnchorError = _err;
         assert.strictEqual(err.error.errorCode.number, 2015);
       }
     });
 
     it("init_if_needed throws if associated token exists but has the wrong mint", async () => {
-      const mint = anchor.web3.Keypair.generate();
+      const mint = trezoaanchor.web3.Keypair.generate();
       await program.rpc.testInitMint({
         accounts: {
           mint: mint.publicKey,
           payer: provider.wallet.publicKey,
-          systemProgram: anchor.web3.SystemProgram.programId,
+          systemProgram: trezoaanchor.web3.SystemProgram.programId,
           tokenProgram: TOKEN_PROGRAM_ID,
         },
         signers: [mint],
       });
 
-      const mint2 = anchor.web3.Keypair.generate();
+      const mint2 = trezoaanchor.web3.Keypair.generate();
       await program.rpc.testInitMint({
         accounts: {
           mint: mint2.publicKey,
           payer: provider.wallet.publicKey,
-          systemProgram: anchor.web3.SystemProgram.programId,
+          systemProgram: trezoaanchor.web3.SystemProgram.programId,
           tokenProgram: TOKEN_PROGRAM_ID,
         },
         signers: [mint2],
@@ -2183,7 +2183,7 @@ const miscTest = (
           token: associatedToken,
           mint: mint.publicKey,
           payer: provider.wallet.publicKey,
-          systemProgram: anchor.web3.SystemProgram.programId,
+          systemProgram: trezoaanchor.web3.SystemProgram.programId,
           tokenProgram: TOKEN_PROGRAM_ID,
           associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
         },
@@ -2195,7 +2195,7 @@ const miscTest = (
             token: associatedToken,
             mint: mint2.publicKey,
             payer: provider.wallet.publicKey,
-            systemProgram: anchor.web3.SystemProgram.programId,
+            systemProgram: trezoaanchor.web3.SystemProgram.programId,
             tokenProgram: TOKEN_PROGRAM_ID,
             associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
             authority: provider.wallet.publicKey,
@@ -2203,19 +2203,19 @@ const miscTest = (
         });
         expect(false).to.be.true;
       } catch (_err) {
-        assert.isTrue(_err instanceof AnchorError);
-        const err: AnchorError = _err;
+        assert.isTrue(_err instanceof TrezoaAnchorError);
+        const err: TrezoaAnchorError = _err;
         assert.strictEqual(err.error.errorCode.number, 2014);
       }
     });
 
     it("init_if_needed throws if token exists with correct owner and mint but is not the ATA", async () => {
-      const mint = anchor.web3.Keypair.generate();
+      const mint = trezoaanchor.web3.Keypair.generate();
       await program.rpc.testInitMint({
         accounts: {
           mint: mint.publicKey,
           payer: provider.wallet.publicKey,
-          systemProgram: anchor.web3.SystemProgram.programId,
+          systemProgram: trezoaanchor.web3.SystemProgram.programId,
           tokenProgram: TOKEN_PROGRAM_ID,
         },
         signers: [mint],
@@ -2234,19 +2234,19 @@ const miscTest = (
           mint: mint.publicKey,
           payer: provider.wallet.publicKey,
 
-          systemProgram: anchor.web3.SystemProgram.programId,
+          systemProgram: trezoaanchor.web3.SystemProgram.programId,
           tokenProgram: TOKEN_PROGRAM_ID,
           associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
         },
       });
 
-      const token = anchor.web3.Keypair.generate();
+      const token = trezoaanchor.web3.Keypair.generate();
       await program.rpc.testInitToken({
         accounts: {
           token: token.publicKey,
           mint: mint.publicKey,
           payer: provider.wallet.publicKey,
-          systemProgram: anchor.web3.SystemProgram.programId,
+          systemProgram: trezoaanchor.web3.SystemProgram.programId,
           tokenProgram: TOKEN_PROGRAM_ID,
         },
         signers: [token],
@@ -2259,7 +2259,7 @@ const miscTest = (
             mint: mint.publicKey,
             payer: provider.wallet.publicKey,
 
-            systemProgram: anchor.web3.SystemProgram.programId,
+            systemProgram: trezoaanchor.web3.SystemProgram.programId,
             tokenProgram: TOKEN_PROGRAM_ID,
             associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
             authority: provider.wallet.publicKey,
@@ -2267,19 +2267,19 @@ const miscTest = (
         });
         expect(false).to.be.true;
       } catch (_err) {
-        assert.isTrue(_err instanceof AnchorError);
-        const err: AnchorError = _err;
+        assert.isTrue(_err instanceof TrezoaAnchorError);
+        const err: TrezoaAnchorError = _err;
         assert.strictEqual(err.error.errorCode.number, 3014);
       }
     });
 
     it("init_if_needed pass if associated token exists", async () => {
-      const mint = anchor.web3.Keypair.generate();
+      const mint = trezoaanchor.web3.Keypair.generate();
       await program.rpc.testInitMint({
         accounts: {
           mint: mint.publicKey,
           payer: provider.wallet.publicKey,
-          systemProgram: anchor.web3.SystemProgram.programId,
+          systemProgram: trezoaanchor.web3.SystemProgram.programId,
           tokenProgram: TOKEN_PROGRAM_ID,
         },
         signers: [mint],
@@ -2297,7 +2297,7 @@ const miscTest = (
           token: associatedToken,
           mint: mint.publicKey,
           payer: provider.wallet.publicKey,
-          systemProgram: anchor.web3.SystemProgram.programId,
+          systemProgram: trezoaanchor.web3.SystemProgram.programId,
           tokenProgram: TOKEN_PROGRAM_ID,
           associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
         },
@@ -2308,7 +2308,7 @@ const miscTest = (
           token: associatedToken,
           mint: mint.publicKey,
           payer: provider.wallet.publicKey,
-          systemProgram: anchor.web3.SystemProgram.programId,
+          systemProgram: trezoaanchor.web3.SystemProgram.programId,
           tokenProgram: TOKEN_PROGRAM_ID,
           associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
           authority: provider.wallet.publicKey,
@@ -2317,12 +2317,12 @@ const miscTest = (
     });
 
     it("init_if_needed pass if associated token exists with token program", async () => {
-      const mint = anchor.web3.Keypair.generate();
+      const mint = trezoaanchor.web3.Keypair.generate();
       await program.rpc.testInitMintWithTokenProgram({
         accounts: {
           mint: mint.publicKey,
           payer: provider.wallet.publicKey,
-          systemProgram: anchor.web3.SystemProgram.programId,
+          systemProgram: trezoaanchor.web3.SystemProgram.programId,
           mintTokenProgram: TOKEN_2022_PROGRAM_ID,
         },
         signers: [mint],
@@ -2340,7 +2340,7 @@ const miscTest = (
           token: associatedToken,
           mint: mint.publicKey,
           payer: provider.wallet.publicKey,
-          systemProgram: anchor.web3.SystemProgram.programId,
+          systemProgram: trezoaanchor.web3.SystemProgram.programId,
           associatedTokenTokenProgram: TOKEN_2022_PROGRAM_ID,
           associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
         },
@@ -2351,7 +2351,7 @@ const miscTest = (
           token: associatedToken,
           mint: mint.publicKey,
           payer: provider.wallet.publicKey,
-          systemProgram: anchor.web3.SystemProgram.programId,
+          systemProgram: trezoaanchor.web3.SystemProgram.programId,
           associatedTokenTokenProgram: TOKEN_2022_PROGRAM_ID,
           associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
           authority: provider.wallet.publicKey,
@@ -2360,12 +2360,12 @@ const miscTest = (
     });
 
     it("init_if_needed throws if associated token exists but has the wrong token program", async () => {
-      const mint = anchor.web3.Keypair.generate();
+      const mint = trezoaanchor.web3.Keypair.generate();
       await program.rpc.testInitMint({
         accounts: {
           mint: mint.publicKey,
           payer: provider.wallet.publicKey,
-          systemProgram: anchor.web3.SystemProgram.programId,
+          systemProgram: trezoaanchor.web3.SystemProgram.programId,
           tokenProgram: TOKEN_PROGRAM_ID,
         },
         signers: [mint],
@@ -2383,7 +2383,7 @@ const miscTest = (
           token: associatedToken,
           mint: mint.publicKey,
           payer: provider.wallet.publicKey,
-          systemProgram: anchor.web3.SystemProgram.programId,
+          systemProgram: trezoaanchor.web3.SystemProgram.programId,
           tokenProgram: TOKEN_PROGRAM_ID,
           associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
         },
@@ -2396,7 +2396,7 @@ const miscTest = (
             token: associatedToken,
             mint: mint.publicKey,
             payer: provider.wallet.publicKey,
-            systemProgram: anchor.web3.SystemProgram.programId,
+            systemProgram: trezoaanchor.web3.SystemProgram.programId,
             associatedTokenTokenProgram: fakeTokenProgram.publicKey,
             associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
             authority: provider.wallet.publicKey,
@@ -2404,8 +2404,8 @@ const miscTest = (
         });
         expect(false).to.be.true;
       } catch (_err) {
-        assert.isTrue(_err instanceof AnchorError);
-        const err: AnchorError = _err;
+        assert.isTrue(_err instanceof TrezoaAnchorError);
+        const err: TrezoaAnchorError = _err;
         assert.strictEqual(err.error.errorCode.number, 2023);
         assert.strictEqual(
           err.error.errorCode.code,
@@ -2416,7 +2416,7 @@ const miscTest = (
 
     it("Can use multidimensional array", async () => {
       const array2d = new Array(10).fill(new Array(10).fill(99));
-      const data = anchor.web3.Keypair.generate();
+      const data = trezoaanchor.web3.Keypair.generate();
       await program.rpc.testMultidimensionalArray(array2d, {
         accounts: {
           data: data.publicKey,
@@ -2436,7 +2436,7 @@ const miscTest = (
 
     it("Can use multidimensional array with const sizes", async () => {
       const array2d = new Array(10).fill(new Array(11).fill(22));
-      const data = anchor.web3.Keypair.generate();
+      const data = trezoaanchor.web3.Keypair.generate();
       await program.rpc.testMultidimensionalArrayConstSizes(array2d, {
         accounts: {
           data: data.publicKey,
@@ -2456,7 +2456,7 @@ const miscTest = (
     });
 
     it("Can initialize 5 associated token accounts in one instruction", async () => {
-      const mint = anchor.web3.Keypair.generate();
+      const mint = trezoaanchor.web3.Keypair.generate();
       await program.methods
         .testInitManyAssociatedTokenAccounts()
         .accounts({ mint: mint.publicKey, user: provider.wallet.publicKey })
@@ -2467,18 +2467,18 @@ const miscTest = (
     describe("Can validate PDAs derived from other program ids", () => {
       it("With bumps using create_program_address", async () => {
         const [firstPDA, firstBump] =
-          await anchor.web3.PublicKey.findProgramAddress(
-            [anchor.utils.bytes.utf8.encode("seed")],
+          await trezoaanchor.web3.PublicKey.findProgramAddress(
+            [trezoaanchor.utils.bytes.utf8.encode("seed")],
             ASSOCIATED_TOKEN_PROGRAM_ID
           );
         const [secondPDA, secondBump] =
-          await anchor.web3.PublicKey.findProgramAddress(
-            [anchor.utils.bytes.utf8.encode("seed")],
+          await trezoaanchor.web3.PublicKey.findProgramAddress(
+            [trezoaanchor.utils.bytes.utf8.encode("seed")],
             program.programId
           );
 
         // correct bump but wrong address
-        const wrongAddress = anchor.web3.Keypair.generate().publicKey;
+        const wrongAddress = trezoaanchor.web3.Keypair.generate().publicKey;
         try {
           await program.rpc.testProgramIdConstraint(firstBump, secondBump, {
             accounts: {
@@ -2488,8 +2488,8 @@ const miscTest = (
           });
           expect(false).to.be.true;
         } catch (_err) {
-          assert.isTrue(_err instanceof AnchorError);
-          const err: AnchorError = _err;
+          assert.isTrue(_err instanceof TrezoaAnchorError);
+          const err: TrezoaAnchorError = _err;
           assert.strictEqual(err.error.errorCode.number, 2006);
         }
 
@@ -2503,8 +2503,8 @@ const miscTest = (
           });
           expect(false).to.be.true;
         } catch (_err) {
-          assert.isTrue(_err instanceof AnchorError);
-          const err: AnchorError = _err;
+          assert.isTrue(_err instanceof TrezoaAnchorError);
+          const err: TrezoaAnchorError = _err;
           assert.strictEqual(err.error.errorCode.number, 2006);
         }
 
@@ -2519,20 +2519,20 @@ const miscTest = (
 
       it("With bumps using find_program_address", async () => {
         const firstPDA = (
-          await anchor.web3.PublicKey.findProgramAddress(
-            [anchor.utils.bytes.utf8.encode("seed")],
+          await trezoaanchor.web3.PublicKey.findProgramAddress(
+            [trezoaanchor.utils.bytes.utf8.encode("seed")],
             ASSOCIATED_TOKEN_PROGRAM_ID
           )
         )[0];
         const secondPDA = (
-          await anchor.web3.PublicKey.findProgramAddress(
-            [anchor.utils.bytes.utf8.encode("seed")],
+          await trezoaanchor.web3.PublicKey.findProgramAddress(
+            [trezoaanchor.utils.bytes.utf8.encode("seed")],
             program.programId
           )
         )[0];
 
         // random wrong address
-        const wrongAddress = anchor.web3.Keypair.generate().publicKey;
+        const wrongAddress = trezoaanchor.web3.Keypair.generate().publicKey;
         try {
           await program.rpc.testProgramIdConstraintFindPda({
             accounts: {
@@ -2542,8 +2542,8 @@ const miscTest = (
           });
           expect(false).to.be.true;
         } catch (_err) {
-          assert.isTrue(_err instanceof AnchorError);
-          const err: AnchorError = _err;
+          assert.isTrue(_err instanceof TrezoaAnchorError);
+          const err: TrezoaAnchorError = _err;
           assert.strictEqual(err.error.errorCode.number, 2006);
         }
 
@@ -2557,8 +2557,8 @@ const miscTest = (
           });
           expect(false).to.be.true;
         } catch (_err) {
-          assert.isTrue(_err instanceof AnchorError);
-          const err: AnchorError = _err;
+          assert.isTrue(_err instanceof TrezoaAnchorError);
+          const err: TrezoaAnchorError = _err;
           assert.strictEqual(err.error.errorCode.number, 2006);
         }
 
@@ -2574,24 +2574,24 @@ const miscTest = (
 
     describe("Token Constraint Test", () => {
       it("Token Constraint Test(no init) - Can make token::mint and token::authority", async () => {
-        const mint = anchor.web3.Keypair.generate();
+        const mint = trezoaanchor.web3.Keypair.generate();
         await program.rpc.testInitMint({
           accounts: {
             mint: mint.publicKey,
             payer: provider.wallet.publicKey,
-            systemProgram: anchor.web3.SystemProgram.programId,
+            systemProgram: trezoaanchor.web3.SystemProgram.programId,
             tokenProgram: TOKEN_PROGRAM_ID,
           },
           signers: [mint],
         });
 
-        const token = anchor.web3.Keypair.generate();
+        const token = trezoaanchor.web3.Keypair.generate();
         await program.rpc.testInitToken({
           accounts: {
             token: token.publicKey,
             mint: mint.publicKey,
             payer: provider.wallet.publicKey,
-            systemProgram: anchor.web3.SystemProgram.programId,
+            systemProgram: trezoaanchor.web3.SystemProgram.programId,
             tokenProgram: TOKEN_PROGRAM_ID,
           },
           signers: [token],
@@ -2615,24 +2615,24 @@ const miscTest = (
       });
 
       it("Token Constraint Test(no init) - Can make only token::authority", async () => {
-        const mint = anchor.web3.Keypair.generate();
+        const mint = trezoaanchor.web3.Keypair.generate();
         await program.rpc.testInitMint({
           accounts: {
             mint: mint.publicKey,
             payer: provider.wallet.publicKey,
-            systemProgram: anchor.web3.SystemProgram.programId,
+            systemProgram: trezoaanchor.web3.SystemProgram.programId,
             tokenProgram: TOKEN_PROGRAM_ID,
           },
           signers: [mint],
         });
 
-        const token = anchor.web3.Keypair.generate();
+        const token = trezoaanchor.web3.Keypair.generate();
         await program.rpc.testInitToken({
           accounts: {
             token: token.publicKey,
             mint: mint.publicKey,
             payer: provider.wallet.publicKey,
-            systemProgram: anchor.web3.SystemProgram.programId,
+            systemProgram: trezoaanchor.web3.SystemProgram.programId,
             tokenProgram: TOKEN_PROGRAM_ID,
           },
           signers: [token],
@@ -2655,24 +2655,24 @@ const miscTest = (
       });
 
       it("Token Constraint Test(no init) - Can make only token::mint", async () => {
-        const mint = anchor.web3.Keypair.generate();
+        const mint = trezoaanchor.web3.Keypair.generate();
         await program.rpc.testInitMint({
           accounts: {
             mint: mint.publicKey,
             payer: provider.wallet.publicKey,
-            systemProgram: anchor.web3.SystemProgram.programId,
+            systemProgram: trezoaanchor.web3.SystemProgram.programId,
             tokenProgram: TOKEN_PROGRAM_ID,
           },
           signers: [mint],
         });
 
-        const token = anchor.web3.Keypair.generate();
+        const token = trezoaanchor.web3.Keypair.generate();
         await program.rpc.testInitToken({
           accounts: {
             token: token.publicKey,
             mint: mint.publicKey,
             payer: provider.wallet.publicKey,
-            systemProgram: anchor.web3.SystemProgram.programId,
+            systemProgram: trezoaanchor.web3.SystemProgram.programId,
             tokenProgram: TOKEN_PROGRAM_ID,
           },
           signers: [token],
@@ -2694,24 +2694,24 @@ const miscTest = (
       });
 
       it("Token Constraint Test(no init) - Can make only token::token_program", async () => {
-        const mint = anchor.web3.Keypair.generate();
+        const mint = trezoaanchor.web3.Keypair.generate();
         await program.rpc.testInitMint({
           accounts: {
             mint: mint.publicKey,
             payer: provider.wallet.publicKey,
-            systemProgram: anchor.web3.SystemProgram.programId,
+            systemProgram: trezoaanchor.web3.SystemProgram.programId,
             tokenProgram: TOKEN_PROGRAM_ID,
           },
           signers: [mint],
         });
 
-        const token = anchor.web3.Keypair.generate();
+        const token = trezoaanchor.web3.Keypair.generate();
         await program.rpc.testInitToken({
           accounts: {
             token: token.publicKey,
             mint: mint.publicKey,
             payer: provider.wallet.publicKey,
-            systemProgram: anchor.web3.SystemProgram.programId,
+            systemProgram: trezoaanchor.web3.SystemProgram.programId,
             tokenProgram: TOKEN_PROGRAM_ID,
           },
           signers: [token],
@@ -2733,35 +2733,35 @@ const miscTest = (
       });
 
       it("Token Constraint Test(no init) - throws if token::mint mismatch", async () => {
-        const mint = anchor.web3.Keypair.generate();
+        const mint = trezoaanchor.web3.Keypair.generate();
         await program.rpc.testInitMint({
           accounts: {
             mint: mint.publicKey,
             payer: provider.wallet.publicKey,
-            systemProgram: anchor.web3.SystemProgram.programId,
+            systemProgram: trezoaanchor.web3.SystemProgram.programId,
             tokenProgram: TOKEN_PROGRAM_ID,
           },
           signers: [mint],
         });
 
-        const mint1 = anchor.web3.Keypair.generate();
+        const mint1 = trezoaanchor.web3.Keypair.generate();
         await program.rpc.testInitMint({
           accounts: {
             mint: mint1.publicKey,
             payer: provider.wallet.publicKey,
-            systemProgram: anchor.web3.SystemProgram.programId,
+            systemProgram: trezoaanchor.web3.SystemProgram.programId,
             tokenProgram: TOKEN_PROGRAM_ID,
           },
           signers: [mint1],
         });
 
-        const token = anchor.web3.Keypair.generate();
+        const token = trezoaanchor.web3.Keypair.generate();
         await program.rpc.testInitToken({
           accounts: {
             token: token.publicKey,
             mint: mint.publicKey,
             payer: provider.wallet.publicKey,
-            systemProgram: anchor.web3.SystemProgram.programId,
+            systemProgram: trezoaanchor.web3.SystemProgram.programId,
             tokenProgram: TOKEN_PROGRAM_ID,
           },
           signers: [token],
@@ -2776,31 +2776,31 @@ const miscTest = (
           });
           assert.isTrue(false);
         } catch (_err) {
-          assert.isTrue(_err instanceof AnchorError);
-          const err: AnchorError = _err;
+          assert.isTrue(_err instanceof TrezoaAnchorError);
+          const err: TrezoaAnchorError = _err;
           assert.strictEqual(err.error.errorCode.number, 2014);
           assert.strictEqual(err.error.errorCode.code, "ConstraintTokenMint");
         }
       });
 
       it("Token Constraint Test(no init) - throws if token::authority mismatch", async () => {
-        const mint = anchor.web3.Keypair.generate();
+        const mint = trezoaanchor.web3.Keypair.generate();
         await program.rpc.testInitMint({
           accounts: {
             mint: mint.publicKey,
             payer: provider.wallet.publicKey,
-            systemProgram: anchor.web3.SystemProgram.programId,
+            systemProgram: trezoaanchor.web3.SystemProgram.programId,
             tokenProgram: TOKEN_PROGRAM_ID,
           },
           signers: [mint],
         });
-        const token = anchor.web3.Keypair.generate();
+        const token = trezoaanchor.web3.Keypair.generate();
         await program.rpc.testInitToken({
           accounts: {
             token: token.publicKey,
             mint: mint.publicKey,
             payer: provider.wallet.publicKey,
-            systemProgram: anchor.web3.SystemProgram.programId,
+            systemProgram: trezoaanchor.web3.SystemProgram.programId,
             tokenProgram: TOKEN_PROGRAM_ID,
           },
           signers: [token],
@@ -2816,41 +2816,41 @@ const miscTest = (
           });
           assert.isTrue(false);
         } catch (_err) {
-          assert.isTrue(_err instanceof AnchorError);
-          const err: AnchorError = _err;
+          assert.isTrue(_err instanceof TrezoaAnchorError);
+          const err: TrezoaAnchorError = _err;
           assert.strictEqual(err.error.errorCode.number, 2015);
           assert.strictEqual(err.error.errorCode.code, "ConstraintTokenOwner");
         }
       });
 
       it("Token Constraint Test(no init) - throws if both token::authority, token::mint mismatch", async () => {
-        const mint = anchor.web3.Keypair.generate();
+        const mint = trezoaanchor.web3.Keypair.generate();
         await program.rpc.testInitMint({
           accounts: {
             mint: mint.publicKey,
             payer: provider.wallet.publicKey,
-            systemProgram: anchor.web3.SystemProgram.programId,
+            systemProgram: trezoaanchor.web3.SystemProgram.programId,
             tokenProgram: TOKEN_PROGRAM_ID,
           },
           signers: [mint],
         });
-        const mint1 = anchor.web3.Keypair.generate();
+        const mint1 = trezoaanchor.web3.Keypair.generate();
         await program.rpc.testInitMint({
           accounts: {
             mint: mint1.publicKey,
             payer: provider.wallet.publicKey,
-            systemProgram: anchor.web3.SystemProgram.programId,
+            systemProgram: trezoaanchor.web3.SystemProgram.programId,
             tokenProgram: TOKEN_PROGRAM_ID,
           },
           signers: [mint1],
         });
-        const token = anchor.web3.Keypair.generate();
+        const token = trezoaanchor.web3.Keypair.generate();
         await program.rpc.testInitToken({
           accounts: {
             token: token.publicKey,
             mint: mint.publicKey,
             payer: provider.wallet.publicKey,
-            systemProgram: anchor.web3.SystemProgram.programId,
+            systemProgram: trezoaanchor.web3.SystemProgram.programId,
             tokenProgram: TOKEN_PROGRAM_ID,
           },
           signers: [token],
@@ -2866,31 +2866,31 @@ const miscTest = (
           });
           assert.isTrue(false);
         } catch (_err) {
-          assert.isTrue(_err instanceof AnchorError);
-          const err: AnchorError = _err;
+          assert.isTrue(_err instanceof TrezoaAnchorError);
+          const err: TrezoaAnchorError = _err;
           assert.strictEqual(err.error.errorCode.number, 2015);
           assert.strictEqual(err.error.errorCode.code, "ConstraintTokenOwner");
         }
       });
 
       it("Token Constraint Test(no init) - throws if token::token_program mismatch", async () => {
-        const mint = anchor.web3.Keypair.generate();
+        const mint = trezoaanchor.web3.Keypair.generate();
         await program.rpc.testInitMint({
           accounts: {
             mint: mint.publicKey,
             payer: provider.wallet.publicKey,
-            systemProgram: anchor.web3.SystemProgram.programId,
+            systemProgram: trezoaanchor.web3.SystemProgram.programId,
             tokenProgram: TOKEN_PROGRAM_ID,
           },
           signers: [mint],
         });
-        const token = anchor.web3.Keypair.generate();
+        const token = trezoaanchor.web3.Keypair.generate();
         await program.rpc.testInitToken({
           accounts: {
             token: token.publicKey,
             mint: mint.publicKey,
             payer: provider.wallet.publicKey,
-            systemProgram: anchor.web3.SystemProgram.programId,
+            systemProgram: trezoaanchor.web3.SystemProgram.programId,
             tokenProgram: TOKEN_PROGRAM_ID,
           },
           signers: [token],
@@ -2905,8 +2905,8 @@ const miscTest = (
           });
           assert.isTrue(false);
         } catch (_err) {
-          assert.isTrue(_err instanceof AnchorError);
-          const err: AnchorError = _err;
+          assert.isTrue(_err instanceof TrezoaAnchorError);
+          const err: TrezoaAnchorError = _err;
           assert.strictEqual(err.error.errorCode.number, 2021);
           assert.strictEqual(
             err.error.errorCode.code,
@@ -2916,12 +2916,12 @@ const miscTest = (
       });
 
       it("Mint Constraint Test(no init) - mint::decimals, mint::authority, mint::freeze_authority", async () => {
-        const mint = anchor.web3.Keypair.generate();
+        const mint = trezoaanchor.web3.Keypair.generate();
         await program.rpc.testInitMint({
           accounts: {
             mint: mint.publicKey,
             payer: provider.wallet.publicKey,
-            systemProgram: anchor.web3.SystemProgram.programId,
+            systemProgram: trezoaanchor.web3.SystemProgram.programId,
             tokenProgram: TOKEN_PROGRAM_ID,
           },
           signers: [mint],
@@ -2950,12 +2950,12 @@ const miscTest = (
       });
 
       it("Mint Constraint Test(no init) - throws if mint::decimals mismatch", async () => {
-        const mint = anchor.web3.Keypair.generate();
+        const mint = trezoaanchor.web3.Keypair.generate();
         await program.rpc.testInitMint({
           accounts: {
             mint: mint.publicKey,
             payer: provider.wallet.publicKey,
-            systemProgram: anchor.web3.SystemProgram.programId,
+            systemProgram: trezoaanchor.web3.SystemProgram.programId,
             tokenProgram: TOKEN_PROGRAM_ID,
           },
           signers: [mint],
@@ -2971,8 +2971,8 @@ const miscTest = (
           });
           assert.isTrue(false);
         } catch (_err) {
-          assert.isTrue(_err instanceof AnchorError);
-          const err: AnchorError = _err;
+          assert.isTrue(_err instanceof TrezoaAnchorError);
+          const err: TrezoaAnchorError = _err;
           assert.strictEqual(err.error.errorCode.number, 2018);
           assert.strictEqual(
             err.error.errorCode.code,
@@ -2982,12 +2982,12 @@ const miscTest = (
       });
 
       it("Mint Constraint Test(no init) - throws if mint::mint_authority mismatch", async () => {
-        const mint = anchor.web3.Keypair.generate();
+        const mint = trezoaanchor.web3.Keypair.generate();
         await program.rpc.testInitMint({
           accounts: {
             mint: mint.publicKey,
             payer: provider.wallet.publicKey,
-            systemProgram: anchor.web3.SystemProgram.programId,
+            systemProgram: trezoaanchor.web3.SystemProgram.programId,
             tokenProgram: TOKEN_PROGRAM_ID,
           },
           signers: [mint],
@@ -3004,8 +3004,8 @@ const miscTest = (
           });
           assert.isTrue(false);
         } catch (_err) {
-          assert.isTrue(_err instanceof AnchorError);
-          const err: AnchorError = _err;
+          assert.isTrue(_err instanceof TrezoaAnchorError);
+          const err: TrezoaAnchorError = _err;
           assert.strictEqual(err.error.errorCode.number, 2016);
           assert.strictEqual(
             err.error.errorCode.code,
@@ -3015,12 +3015,12 @@ const miscTest = (
       });
 
       it("Mint Constraint Test(no init) - throws if mint::freeze_authority mismatch", async () => {
-        const mint = anchor.web3.Keypair.generate();
+        const mint = trezoaanchor.web3.Keypair.generate();
         await program.rpc.testInitMint({
           accounts: {
             mint: mint.publicKey,
             payer: provider.wallet.publicKey,
-            systemProgram: anchor.web3.SystemProgram.programId,
+            systemProgram: trezoaanchor.web3.SystemProgram.programId,
             tokenProgram: TOKEN_PROGRAM_ID,
           },
           signers: [mint],
@@ -3037,8 +3037,8 @@ const miscTest = (
           });
           assert.isTrue(false);
         } catch (_err) {
-          assert.isTrue(_err instanceof AnchorError);
-          const err: AnchorError = _err;
+          assert.isTrue(_err instanceof TrezoaAnchorError);
+          const err: TrezoaAnchorError = _err;
           assert.strictEqual(err.error.errorCode.number, 2017);
           assert.strictEqual(
             err.error.errorCode.code,
@@ -3048,12 +3048,12 @@ const miscTest = (
       });
 
       it("Mint Constraint Test(no init) - throws if mint::token_program mismatch", async () => {
-        const mint = anchor.web3.Keypair.generate();
+        const mint = trezoaanchor.web3.Keypair.generate();
         await program.rpc.testInitMint({
           accounts: {
             mint: mint.publicKey,
             payer: provider.wallet.publicKey,
-            systemProgram: anchor.web3.SystemProgram.programId,
+            systemProgram: trezoaanchor.web3.SystemProgram.programId,
             tokenProgram: TOKEN_PROGRAM_ID,
           },
           signers: [mint],
@@ -3069,8 +3069,8 @@ const miscTest = (
           });
           assert.isTrue(false);
         } catch (_err) {
-          assert.isTrue(_err instanceof AnchorError);
-          const err: AnchorError = _err;
+          assert.isTrue(_err instanceof TrezoaAnchorError);
+          const err: TrezoaAnchorError = _err;
           assert.strictEqual(err.error.errorCode.number, 2022);
           assert.strictEqual(
             err.error.errorCode.code,
@@ -3080,12 +3080,12 @@ const miscTest = (
       });
 
       it("Mint Constraint Test(no init) - can write only mint::decimals", async () => {
-        const mint = anchor.web3.Keypair.generate();
+        const mint = trezoaanchor.web3.Keypair.generate();
         await program.rpc.testInitMint({
           accounts: {
             mint: mint.publicKey,
             payer: provider.wallet.publicKey,
-            systemProgram: anchor.web3.SystemProgram.programId,
+            systemProgram: trezoaanchor.web3.SystemProgram.programId,
             tokenProgram: TOKEN_PROGRAM_ID,
           },
           signers: [mint],
@@ -3107,12 +3107,12 @@ const miscTest = (
       });
 
       it("Mint Constraint Test(no init) - can write only mint::authority and mint::freeze_authority", async () => {
-        const mint = anchor.web3.Keypair.generate();
+        const mint = trezoaanchor.web3.Keypair.generate();
         await program.rpc.testInitMint({
           accounts: {
             mint: mint.publicKey,
             payer: provider.wallet.publicKey,
-            systemProgram: anchor.web3.SystemProgram.programId,
+            systemProgram: trezoaanchor.web3.SystemProgram.programId,
             tokenProgram: TOKEN_PROGRAM_ID,
           },
           signers: [mint],
@@ -3141,12 +3141,12 @@ const miscTest = (
       });
 
       it("Mint Constraint Test(no init) - can write only mint::authority", async () => {
-        const mint = anchor.web3.Keypair.generate();
+        const mint = trezoaanchor.web3.Keypair.generate();
         await program.rpc.testInitMint({
           accounts: {
             mint: mint.publicKey,
             payer: provider.wallet.publicKey,
-            systemProgram: anchor.web3.SystemProgram.programId,
+            systemProgram: trezoaanchor.web3.SystemProgram.programId,
             tokenProgram: TOKEN_PROGRAM_ID,
           },
           signers: [mint],
@@ -3171,12 +3171,12 @@ const miscTest = (
       });
 
       it("Mint Constraint Test(no init) - can write only mint::decimals and mint::freeze_authority", async () => {
-        const mint = anchor.web3.Keypair.generate();
+        const mint = trezoaanchor.web3.Keypair.generate();
         await program.rpc.testInitMint({
           accounts: {
             mint: mint.publicKey,
             payer: provider.wallet.publicKey,
-            systemProgram: anchor.web3.SystemProgram.programId,
+            systemProgram: trezoaanchor.web3.SystemProgram.programId,
             tokenProgram: TOKEN_PROGRAM_ID,
           },
           signers: [mint],
@@ -3202,12 +3202,12 @@ const miscTest = (
       });
 
       it("Mint Constraint Test(no init) - can write only mint::token_program", async () => {
-        const mint = anchor.web3.Keypair.generate();
+        const mint = trezoaanchor.web3.Keypair.generate();
         await program.rpc.testInitMint({
           accounts: {
             mint: mint.publicKey,
             payer: provider.wallet.publicKey,
-            systemProgram: anchor.web3.SystemProgram.programId,
+            systemProgram: trezoaanchor.web3.SystemProgram.programId,
             tokenProgram: TOKEN_PROGRAM_ID,
           },
           signers: [mint],
@@ -3247,8 +3247,8 @@ const miscTest = (
 
     describe("`zero` constraint unique account checks", () => {
       it("Works with different accounts (multiple `zero`)", async () => {
-        const oneKp = anchor.web3.Keypair.generate();
-        const twoKp = anchor.web3.Keypair.generate();
+        const oneKp = trezoaanchor.web3.Keypair.generate();
+        const twoKp = trezoaanchor.web3.Keypair.generate();
         await program.methods
           .testMultipleZeroConstraint()
           .preInstructions(
@@ -3263,7 +3263,7 @@ const miscTest = (
       });
 
       it("Throws with the same account (multiple `zero`)", async () => {
-        const kp = anchor.web3.Keypair.generate();
+        const kp = trezoaanchor.web3.Keypair.generate();
         try {
           await program.methods
             .testMultipleZeroConstraint()
@@ -3273,18 +3273,18 @@ const miscTest = (
             .rpc();
           assert.fail("Transaction did not fail!");
         } catch (e) {
-          assert(e instanceof AnchorError);
-          const err: AnchorError = e;
+          assert(e instanceof TrezoaAnchorError);
+          const err: TrezoaAnchorError = e;
           assert.strictEqual(
             err.error.errorCode.number,
-            anchor.LangErrorCode.ConstraintZero
+            trezoaanchor.LangErrorCode.ConstraintZero
           );
         }
       });
 
       it("Works with different accounts (`init` and `zero`)", async () => {
-        const initKp = anchor.web3.Keypair.generate();
-        const zeroKp = anchor.web3.Keypair.generate();
+        const initKp = trezoaanchor.web3.Keypair.generate();
+        const zeroKp = trezoaanchor.web3.Keypair.generate();
         await program.methods
           .testInitAndZero()
           .preInstructions([
@@ -3296,7 +3296,7 @@ const miscTest = (
       });
 
       it("Throws with the same account (`init` and `zero`)", async () => {
-        const kp = anchor.web3.Keypair.generate();
+        const kp = trezoaanchor.web3.Keypair.generate();
         try {
           await program.methods
             .testInitAndZero()
@@ -3305,11 +3305,11 @@ const miscTest = (
             .rpc();
           assert.fail("Transaction did not fail!");
         } catch (e) {
-          assert(e instanceof AnchorError);
-          const err: AnchorError = e;
+          assert(e instanceof TrezoaAnchorError);
+          const err: TrezoaAnchorError = e;
           assert.strictEqual(
             err.error.errorCode.number,
-            anchor.LangErrorCode.ConstraintZero
+            trezoaanchor.LangErrorCode.ConstraintZero
           );
         }
       });
@@ -3319,9 +3319,9 @@ const miscTest = (
 
 export default miscTest;
 
-describe("misc", miscTest(anchor.workspace.Misc as Program<Misc>));
+describe("misc", miscTest(trezoaanchor.workspace.Misc as Program<Misc>));
 
 describe(
   "misc-optional",
-  miscTest(anchor.workspace.MiscOptional as Program<MiscOptional>)
+  miscTest(trezoaanchor.workspace.MiscOptional as Program<MiscOptional>)
 );

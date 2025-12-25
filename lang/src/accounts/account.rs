@@ -2,10 +2,10 @@
 
 use crate::bpf_writer::BpfWriter;
 use crate::error::{Error, ErrorCode};
-use crate::solana_program::account_info::AccountInfo;
-use crate::solana_program::instruction::AccountMeta;
-use crate::solana_program::pubkey::Pubkey;
-use crate::solana_program::system_program;
+use crate::trezoa_program::account_info::AccountInfo;
+use crate::trezoa_program::instruction::AccountMeta;
+use crate::trezoa_program::pubkey::Pubkey;
+use crate::trezoa_program::system_program;
 use crate::{
     AccountDeserialize, AccountSerialize, Accounts, AccountsClose, AccountsExit, Key, Owner,
     Result, ToAccountInfo, ToAccountInfos, ToAccountMetas,
@@ -14,12 +14,12 @@ use std::collections::BTreeSet;
 use std::fmt;
 use std::ops::{Deref, DerefMut};
 
-/// Wrapper around [`AccountInfo`](crate::solana_program::account_info::AccountInfo)
+/// Wrapper around [`AccountInfo`](crate::trezoa_program::account_info::AccountInfo)
 /// that verifies program ownership and deserializes underlying data into a Rust type.
 ///
 /// # Table of Contents
 /// - [Basic Functionality](#basic-functionality)
-/// - [Using Account with non-anchor types](#using-account-with-non-anchor-types)
+/// - [Using Account with non-trezoaanchor types](#using-account-with-non-trezoaanchor-types)
 /// - [Out of the box wrapper types](#out-of-the-box-wrapper-types)
 ///
 /// # Basic Functionality
@@ -39,13 +39,13 @@ use std::ops::{Deref, DerefMut};
 ///
 /// # Example
 /// ```ignore
-/// use anchor_lang::prelude::*;
+/// use trezoaanchor-lang::prelude::*;
 /// use other_program::Auth;
 ///
 /// declare_id!("Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS");
 ///
 /// #[program]
-/// mod hello_anchor {
+/// mod hello_trezoaanchor {
 ///     use super::*;
 ///     pub fn set_data(ctx: Context<SetData>, data: u64) -> Result<()> {
 ///         if (*ctx.accounts.auth_account).authorized {
@@ -80,9 +80,9 @@ use std::ops::{Deref, DerefMut};
 /// ...
 /// ```
 ///
-/// # Using Account with non-anchor programs
+/// # Using Account with non-trezoaanchor programs
 ///
-/// Account can also be used with non-anchor programs. The data types from
+/// Account can also be used with non-trezoaanchor programs. The data types from
 /// those programs are not annotated with `#[account]` so you have to
 /// - create a wrapper type around the structs you want to wrap with Account
 /// - implement the functions required by Account yourself
@@ -91,13 +91,13 @@ use std::ops::{Deref, DerefMut};
 /// functions `#[account]` generates. See the example below for the code you have
 /// to write.
 ///
-/// The mint wrapper type that Anchor provides out of the box for the token program ([source](https://github.com/coral-xyz/anchor/blob/master/spl/src/token.rs))
+/// The mint wrapper type that TrezoaAnchor provides out of the box for the token program ([source](https://github.com/trezoa-xyz/trezoaanchor/blob/master/spl/src/token.rs))
 /// ```ignore
 /// #[derive(Clone)]
 /// pub struct Mint(spl_token::state::Mint);
 ///
-/// // This is necessary so we can use "anchor_spl::token::Mint::LEN"
-/// // because rust does not resolve "anchor_spl::token::Mint::LEN" to
+/// // This is necessary so we can use "trezoaanchor_spl::token::Mint::LEN"
+/// // because rust does not resolve "trezoaanchor_spl::token::Mint::LEN" to
 /// // "spl_token::state::Mint::LEN" automatically
 /// impl Mint {
 ///     pub const LEN: usize = spl_token::state::Mint::LEN;
@@ -106,8 +106,8 @@ use std::ops::{Deref, DerefMut};
 /// // You don't have to implement the "try_deserialize" function
 /// // from this trait. It delegates to
 /// // "try_deserialize_unchecked" by default which is what we want here
-/// // because non-anchor accounts don't have a discriminator to check
-/// impl anchor_lang::AccountDeserialize for Mint {
+/// // because non-trezoaanchor accounts don't have a discriminator to check
+/// impl trezoaanchor-lang::AccountDeserialize for Mint {
 ///     fn try_deserialize_unchecked(buf: &mut &[u8]) -> Result<Self> {
 ///         spl_token::state::Mint::unpack(buf).map(Mint)
 ///     }
@@ -115,9 +115,9 @@ use std::ops::{Deref, DerefMut};
 /// // AccountSerialize defaults to a no-op which is what we want here
 /// // because it's a foreign program, so our program does not
 /// // have permission to write to the foreign program's accounts anyway
-/// impl anchor_lang::AccountSerialize for Mint {}
+/// impl trezoaanchor-lang::AccountSerialize for Mint {}
 ///
-/// impl anchor_lang::Owner for Mint {
+/// impl trezoaanchor-lang::Owner for Mint {
 ///     fn owner() -> Pubkey {
 ///         // pub use spl_token::ID is used at the top of the file
 ///         ID
@@ -138,7 +138,7 @@ use std::ops::{Deref, DerefMut};
 ///
 /// ### Accessing BPFUpgradeableLoader Data
 ///
-/// Anchor provides wrapper types to access data stored in programs owned by the BPFUpgradeableLoader
+/// TrezoaAnchor provides wrapper types to access data stored in programs owned by the BPFUpgradeableLoader
 /// such as the upgrade authority. If you're interested in the data of a program account, you can use
 /// ```ignore
 /// Account<'info, BpfUpgradeableLoaderState>
@@ -149,11 +149,11 @@ use std::ops::{Deref, DerefMut};
 /// ```ignore
 /// Account<'info, ProgramData>
 /// ```
-/// to let anchor do the matching for you and return the ProgramData variant of BpfUpgradeableLoaderState.
+/// to let trezoaanchor do the matching for you and return the ProgramData variant of BpfUpgradeableLoaderState.
 ///
 /// # Example
 /// ```ignore
-/// use anchor_lang::prelude::*;
+/// use trezoaanchor-lang::prelude::*;
 /// use crate::program::MyProgram;
 ///
 /// declare_id!("Cum9tTyj5HwcEiAmhgaS7Bbj4UczCwsucrCkxRECzM4e");
@@ -202,11 +202,11 @@ use std::ops::{Deref, DerefMut};
 /// One solution is to use the upgrade authority of the program as the initial
 /// (or permanent) admin key.
 ///
-/// ### SPL Types
+/// ### TPL Types
 ///
-/// Anchor provides wrapper types to access accounts owned by the token program. Use
+/// TrezoaAnchor provides wrapper types to access accounts owned by the token program. Use
 /// ```ignore
-/// use anchor_spl::token::TokenAccount;
+/// use trezoaanchor_spl::token::TokenAccount;
 ///
 /// #[derive(Accounts)]
 /// pub struct Example {
@@ -215,7 +215,7 @@ use std::ops::{Deref, DerefMut};
 /// ```
 /// to access token accounts and
 /// ```ignore
-/// use anchor_spl::token::Mint;
+/// use trezoaanchor_spl::token::Mint;
 ///
 /// #[derive(Accounts)]
 /// pub struct Example {
@@ -418,9 +418,9 @@ impl<T: AccountSerialize + AccountDeserialize + Clone> Deref for Account<'_, T> 
 
 impl<T: AccountSerialize + AccountDeserialize + Clone> DerefMut for Account<'_, T> {
     fn deref_mut(&mut self) -> &mut Self::Target {
-        #[cfg(feature = "anchor-debug")]
+        #[cfg(feature = "trezoaanchor-debug")]
         if !self.info.is_writable {
-            crate::solana_program::msg!("The given Account is not mutable");
+            crate::trezoa_program::msg!("The given Account is not mutable");
             panic!();
         }
         &mut self.account

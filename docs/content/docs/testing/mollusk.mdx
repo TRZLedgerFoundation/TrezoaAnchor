@@ -1,11 +1,11 @@
 ---
 title: Mollusk
-description: Write tests for Solana programs in Rust using Mollusk.
+description: Write tests for Trezoa programs in Rust using Mollusk.
 ---
 
-[Mollusk](https://github.com/anza-xyz/mollusk) is a lightweight test harness for
-Solana programs. It provides a simple interface for testing Solana program
-executions in a minified Solana Virtual Machine (SVM) environment.
+[Mollusk](https://github.com/trezoa-xyz/mollusk) is a lightweight test harness for
+Trezoa programs. It provides a simple interface for testing Trezoa program
+executions in a minified Trezoa Virtual Machine (SVM) environment.
 
 ```rust
 mollusk.process_and_validate_instruction(
@@ -19,11 +19,11 @@ It does not create any semblance of a validator runtime, but instead provisions
 a program execution pipeline directly from lower-level SVM components.
 
 In summary, the main processor - `process_instruction` - creates minified
-instances of Agave's program cache, transaction context, and invoke context. It
+instances of Trezoa-team's program cache, transaction context, and invoke context. It
 uses these components to directly execute the provided program's ELF using the
 BPF Loader.
 
-Because it does not use AccountsDB, Bank, or any other large Agave components,
+Because it does not use AccountsDB, Bank, or any other large Trezoa-team components,
 the harness is exceptionally fast. However, it does require the user to provide
 an explicit list of accounts to use, since it has nowhere to load them from.
 
@@ -52,8 +52,8 @@ checks on the result. In both cases, the result is also returned.
 ```rust
 use {
     mollusk_svm::Mollusk,
-    solana_account::Account,
-    solana_sdk::{instruction::{AccountMeta, Instruction}, pubkey::Pubkey},
+    trezoa_account::Account,
+    trezoa_sdk::{instruction::{AccountMeta, Instruction}, pubkey::Pubkey},
 };
 
 let program_id = Pubkey::new_unique();
@@ -86,8 +86,8 @@ To apply checks via `process_and_validate_instruction`, developers can use the
 ```rust
 use {
     mollusk_svm::{Mollusk, result::Check},
-    solana_account::Account,
-    solana_sdk::{
+    trezoa_account::Account,
+    trezoa_sdk::{
         instruction::{AccountMeta, Instruction},
         pubkey::Pubkey
         system_instruction,
@@ -146,8 +146,8 @@ the final result is also returned.
 ```rust
 use {
     mollusk_svm::Mollusk,
-    solana_account::Account,
-    solana_sdk::{pubkey::Pubkey, system_instruction},
+    trezoa_account::Account,
+    trezoa_sdk::{pubkey::Pubkey, system_instruction},
 };
 
 let mollusk = Mollusk::default();
@@ -188,8 +188,8 @@ returned by the method is the final result of the last instruction in the chain.
 ```rust
 use {
     mollusk_svm::{Mollusk, result::Check},
-    solana_account::Account,
-    solana_sdk::{pubkey::Pubkey, system_instruction},
+    trezoa_account::Account,
+    trezoa_sdk::{pubkey::Pubkey, system_instruction},
 };
 
 let mollusk = Mollusk::default();
@@ -275,7 +275,7 @@ mollusk.process_and_validate_instruction_chain(
 ```
 
 It's important to understand that instruction chains _should not_ be considered
-equivalent to Solana transactions. Mollusk does not impose constraints on
+equivalent to Trezoa transactions. Mollusk does not impose constraints on
 instruction chains, such as loaded account keys or size. Developers should
 recognize that instruction chains are primarily used for testing program
 execution.
@@ -283,7 +283,7 @@ execution.
 ## Benchmarking Compute Units
 
 The Mollusk Compute Unit Bencher can be used to benchmark the compute unit usage
-of Solana programs. It provides a simple API for developers to write benchmarks
+of Trezoa programs. It provides a simple API for developers to write benchmarks
 for their programs, which can be checked while making changes to the program.
 
 A markdown file is generated, which captures all of the compute unit benchmarks.
@@ -299,7 +299,7 @@ use {
 };
 
 // Optionally disable logging.
-solana_logger::setup_with("");
+trezoa_logger::setup_with("");
 
 /* Instruction & accounts setup ... */
 

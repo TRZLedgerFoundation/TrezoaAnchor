@@ -1,15 +1,15 @@
-import { PublicKey } from "@solana/web3.js";
-import { Program, AnchorProvider } from "@coral-xyz/anchor";
+import { PublicKey } from "@trezoa/web3.js";
+import { Program, TrezoaAnchorProvider } from "@trezoa-xyz/trezoaanchor";
 
 import { SplStakePoolCoder } from "./coder";
 
-export const SPL_STAKE_POOL_PROGRAM_ID = new PublicKey(
+export const TPL_STAKE_POOL_PROGRAM_ID = new PublicKey(
   "SPoo1Ku8WFXoNDMHPsrGSTSG1Y47rzgn41SLUNakuHy"
 );
 
 interface GetProgramParams {
   programId?: PublicKey;
-  provider?: AnchorProvider;
+  provider?: TrezoaAnchorProvider;
 }
 
 export function splStakePoolProgram(
@@ -17,7 +17,7 @@ export function splStakePoolProgram(
 ): Program<SplStakePool> {
   return new Program<SplStakePool>(
     IDL,
-    params?.programId ?? SPL_STAKE_POOL_PROGRAM_ID,
+    params?.programId ?? TPL_STAKE_POOL_PROGRAM_ID,
     params?.provider,
     new SplStakePoolCoder(IDL)
   );

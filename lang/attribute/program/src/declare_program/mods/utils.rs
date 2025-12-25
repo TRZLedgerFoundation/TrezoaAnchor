@@ -1,4 +1,4 @@
-use anchor_lang_idl::types::{Idl, IdlInstructionAccountItem, IdlInstructionAccounts};
+use trezoaanchor-lang_idl::types::{Idl, IdlInstructionAccountItem, IdlInstructionAccounts};
 use heck::CamelCase;
 use quote::{format_ident, quote};
 
@@ -11,7 +11,7 @@ pub fn gen_utils_mod(idl: &Idl) -> proc_macro2::TokenStream {
 
     quote! {
         /// Program utilities.
-        #[cfg(not(target_os = "solana"))]
+        #[cfg(not(target_os = "trezoa"))]
         pub mod utils {
             use super::*;
 
@@ -58,7 +58,7 @@ fn gen_account(idl: &Idl) -> proc_macro2::TokenStream {
         }
 
         impl TryFrom<&[u8]> for Account {
-            type Error = anchor_lang::error::Error;
+            type Error = trezoaanchor-lang::error::Error;
 
             fn try_from(value: &[u8]) -> Result<Self> {
                 #(#if_statements)*
@@ -104,7 +104,7 @@ fn gen_event(idl: &Idl) -> proc_macro2::TokenStream {
         }
 
         impl TryFrom<&[u8]> for Event {
-            type Error = anchor_lang::error::Error;
+            type Error = trezoaanchor-lang::error::Error;
 
             fn try_from(value: &[u8]) -> Result<Self> {
                 #(#if_statements)*
@@ -182,21 +182,21 @@ fn gen_instruction(idl: &Idl) -> proc_macro2::TokenStream {
             .collect::<Vec<_>>()
     };
 
-    let solana_instruction = quote!(anchor_lang::solana_program::instruction::Instruction);
+    let trezoa_instruction = quote!(trezoaanchor-lang::trezoa_program::instruction::Instruction);
     let program_id = get_canonical_program_id();
 
     quote! {
         /// An enum that includes all instructions of the declared program.
         ///
-        /// See [`Self::try_from_solana_instruction`] to create an instance from
-        /// [`anchor_lang::solana_program::instruction::Instruction`].
+        /// See [`Self::try_from_trezoa_instruction`] to create an instance from
+        /// [`trezoaanchor-lang::trezoa_program::instruction::Instruction`].
         pub enum Instruction {
             #(#variants,)*
         }
 
         impl Instruction {
             /// Try to create an instruction based on the given
-            /// [`anchor_lang::solana_program::instruction::Instruction`].
+            /// [`trezoaanchor-lang::trezoa_program::instruction::Instruction`].
             ///
             /// This method checks:
             ///
@@ -210,15 +210,15 @@ fn gen_instruction(idl: &Idl) -> proc_macro2::TokenStream {
             /// - There are more accounts than expected
             /// - The account addresses match the ones that could be derived using the resolution
             ///   fields such as `address` and `pda`
-            pub fn try_from_solana_instruction(ix: &#solana_instruction) -> Result<Self> {
+            pub fn try_from_trezoa_instruction(ix: &#trezoa_instruction) -> Result<Self> {
                 Self::try_from(ix)
             }
         }
 
-        impl TryFrom<&#solana_instruction> for Instruction {
-            type Error = anchor_lang::error::Error;
+        impl TryFrom<&#trezoa_instruction> for Instruction {
+            type Error = trezoaanchor-lang::error::Error;
 
-            fn try_from(ix: &#solana_instruction) -> Result<Self> {
+            fn try_from(ix: &#trezoa_instruction) -> Result<Self> {
                 if ix.program_id != #program_id {
                     return Err(ProgramError::IncorrectProgramId.into())
                 }

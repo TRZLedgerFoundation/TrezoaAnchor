@@ -1,12 +1,12 @@
-import * as anchor from "@coral-xyz/anchor";
-import { BN, Program, web3 } from "@coral-xyz/anchor";
+import * as trezoaanchor from "@trezoa-xyz/trezoaanchor";
+import { BN, Program, web3 } from "@trezoa-xyz/trezoaanchor";
 import { assert } from "chai";
 import { createPriceFeed, setFeedPrice, getFeedData } from "./oracleUtils";
 
 describe("pyth-oracle", () => {
-  const provider = anchor.AnchorProvider.env();
-  anchor.setProvider(provider);
-  const program = anchor.workspace.Pyth as Program;
+  const provider = trezoaanchor.TrezoaAnchorProvider.env();
+  trezoaanchor.setProvider(provider);
+  const program = trezoaanchor.workspace.Pyth as Program;
 
   it("initialize", async () => {
     const price = 50000;

@@ -1,17 +1,17 @@
-import * as anchor from "@coral-xyz/anchor";
-import { AnchorError, Program } from "@coral-xyz/anchor";
+import * as trezoaanchor from "@trezoa-xyz/trezoaanchor";
+import { TrezoaAnchorError, Program } from "@trezoa-xyz/trezoaanchor";
 import { InitIfNeeded } from "../../target/types/init_if_needed";
-import { SystemProgram, LAMPORTS_PER_SOL } from "@solana/web3.js";
+import { SystemProgram, LAMPORTS_PER_TRZ } from "@trezoa/web3.js";
 import { expect } from "chai";
 
 describe("init-if-needed", () => {
-  const provider = anchor.AnchorProvider.env();
-  anchor.setProvider(provider);
+  const provider = trezoaanchor.TrezoaAnchorProvider.env();
+  trezoaanchor.setProvider(provider);
 
-  const program = anchor.workspace.InitIfNeeded as Program<InitIfNeeded>;
+  const program = trezoaanchor.workspace.InitIfNeeded as Program<InitIfNeeded>;
 
   it("init_if_needed should reject a CLOSED discriminator if init is NOT NEEDED", async () => {
-    const account = anchor.web3.Keypair.generate();
+    const account = trezoaanchor.web3.Keypair.generate();
 
     await program.methods
       .initialize(1)
@@ -44,21 +44,21 @@ describe("init-if-needed", () => {
           SystemProgram.transfer({
             fromPubkey: provider.wallet.publicKey,
             toPubkey: account.publicKey,
-            lamports: 1 * LAMPORTS_PER_SOL,
+            lamports: 1 * LAMPORTS_PER_TRZ,
           }),
         ])
         .rpc();
     } catch (_err) {
-      expect(_err).to.be.instanceOf(AnchorError);
-      const err: AnchorError = _err;
+      expect(_err).to.be.instanceOf(TrezoaAnchorError);
+      const err: TrezoaAnchorError = _err;
       expect(err.error.errorCode.code).to.equal("AccountDiscriminatorMismatch");
     }
   });
 
   it("init_if_needed should reject a discriminator of a different account if init is NOT NEEDED", async () => {
-    const account = anchor.web3.Keypair.generate();
+    const account = trezoaanchor.web3.Keypair.generate();
     console.log("account: ", account.publicKey.toBase58());
-    const otherAccount = anchor.web3.Keypair.generate();
+    const otherAccount = trezoaanchor.web3.Keypair.generate();
     console.log("otherAccount: ", otherAccount.publicKey.toBase58());
 
     await program.methods
@@ -94,8 +94,8 @@ describe("init-if-needed", () => {
         .signers([otherAccount])
         .rpc();
     } catch (_err) {
-      expect(_err).to.be.instanceOf(AnchorError);
-      const err: AnchorError = _err;
+      expect(_err).to.be.instanceOf(TrezoaAnchorError);
+      const err: TrezoaAnchorError = _err;
       expect(err.error.errorCode.code).to.equal("AccountDiscriminatorMismatch");
     }
   });

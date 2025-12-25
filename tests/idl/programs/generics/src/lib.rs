@@ -1,4 +1,4 @@
-use anchor_lang::prelude::*;
+use trezoaanchor-lang::prelude::*;
 
 declare_id!("Generics111111111111111111111111111111111111");
 
@@ -29,11 +29,11 @@ pub struct GenericAccount {
     pub data: GenericType<u32, u64, 10>,
 }
 
-#[derive(AnchorSerialize, AnchorDeserialize, Clone)]
+#[derive(TrezoaAnchorSerialize, TrezoaAnchorDeserialize, Clone)]
 pub struct GenericType<T, U, const N: usize>
 where
-    T: AnchorSerialize + AnchorDeserialize,
-    U: AnchorSerialize + AnchorDeserialize,
+    T: TrezoaAnchorSerialize + TrezoaAnchorDeserialize,
+    U: TrezoaAnchorSerialize + TrezoaAnchorDeserialize,
 {
     pub gen1: T,
     pub gen2: U,
@@ -49,24 +49,24 @@ where
     pub enm2: GenericEnum<GenericNested<T, u64>, u32, 30>,
 }
 
-#[derive(AnchorSerialize, AnchorDeserialize, Clone, Copy, Default)]
+#[derive(TrezoaAnchorSerialize, TrezoaAnchorDeserialize, Clone, Copy, Default)]
 pub struct GenericNested<V, Z>
 where
-    V: AnchorSerialize + AnchorDeserialize,
-    Z: AnchorSerialize + AnchorDeserialize,
+    V: TrezoaAnchorSerialize + TrezoaAnchorDeserialize,
+    Z: TrezoaAnchorSerialize + TrezoaAnchorDeserialize,
 {
     pub gen1: V,
     pub gen2: Z,
 }
 
-#[derive(AnchorSerialize, AnchorDeserialize, Clone)]
+#[derive(TrezoaAnchorSerialize, TrezoaAnchorDeserialize, Clone)]
 pub struct WrappedU8Array<const N: usize>(u8);
 
-#[derive(AnchorSerialize, AnchorDeserialize, Clone)]
+#[derive(TrezoaAnchorSerialize, TrezoaAnchorDeserialize, Clone)]
 pub enum GenericEnum<T, U, const N: usize>
 where
-    T: AnchorSerialize + AnchorDeserialize,
-    U: AnchorSerialize + AnchorDeserialize,
+    T: TrezoaAnchorSerialize + TrezoaAnchorDeserialize,
+    U: TrezoaAnchorSerialize + TrezoaAnchorDeserialize,
 {
     Unnamed(T, U),
     Named { gen1: T, gen2: U },

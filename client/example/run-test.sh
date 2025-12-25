@@ -10,9 +10,9 @@
 # ./run.sh
 #
 # Run this script from within the `example/` directory in which it is located.
-# The anchor cli must be installed.
+# The trezoaanchor cli must be installed.
 #
-# cargo install --git https://github.com/coral-xyz/anchor anchor-cli --locked
+# cargo install --git https://github.com/trezoa-xyz/trezoaanchor trezoaanchor-cli --locked
 #
 ################################################################################
 
@@ -28,15 +28,15 @@ main() {
     local events_pid="2dhGsWUzy5YKUsjZdLHLmkNpUDAXkNa9MYWsPc4Ziqzy"
     local optional_pid="FNqz6pqLAwvMSds2FYjR4nKV3moVpPNtvkfGFrqLKrgG"
 
-    cd ../../tests/composite && anchor build --skip-lint --ignore-keys && cd -
+    cd ../../tests/composite && trezoaanchor build --skip-lint --ignore-keys && cd -
     [ $? -ne 0 ] && exit 1
-    cd ../../examples/tutorial/basic-2 && anchor build --skip-lint --ignore-keys && cd -
+    cd ../../examples/tutorial/basic-2 && trezoaanchor build --skip-lint --ignore-keys && cd -
     [ $? -ne 0 ] && exit 1
-    cd ../../examples/tutorial/basic-4 && anchor build --skip-lint --ignore-keys && cd -
+    cd ../../examples/tutorial/basic-4 && trezoaanchor build --skip-lint --ignore-keys && cd -
     [ $? -ne 0 ] && exit 1
-    cd ../../tests/events && anchor build --skip-lint --ignore-keys && cd -
+    cd ../../tests/events && trezoaanchor build --skip-lint --ignore-keys && cd -
     [ $? -ne 0 ] && exit 1
-    cd ../../tests/optional && anchor build --skip-lint --ignore-keys && cd -
+    cd ../../tests/optional && trezoaanchor build --skip-lint --ignore-keys && cd -
     [ $? -ne 0 ] && exit 1
 
     #

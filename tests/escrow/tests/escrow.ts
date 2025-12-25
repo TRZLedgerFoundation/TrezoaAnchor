@@ -1,17 +1,17 @@
-import * as anchor from "@coral-xyz/anchor";
-import { Program, BN, IdlAccounts } from "@coral-xyz/anchor";
-import { PublicKey, Keypair, SystemProgram } from "@solana/web3.js";
-import { TOKEN_PROGRAM_ID, Token } from "@solana/spl-token";
+import * as trezoaanchor from "@trezoa-xyz/trezoaanchor";
+import { Program, BN, IdlAccounts } from "@trezoa-xyz/trezoaanchor";
+import { PublicKey, Keypair, SystemProgram } from "@trezoa/web3.js";
+import { TOKEN_PROGRAM_ID, Token } from "@trezoa/tpl-token";
 import { assert } from "chai";
 import { Escrow } from "../target/types/escrow";
 
 type EscrowAccount = IdlAccounts<Escrow>["escrowAccount"];
 
 describe("escrow", () => {
-  const provider = anchor.AnchorProvider.env();
-  anchor.setProvider(provider);
+  const provider = trezoaanchor.TrezoaAnchorProvider.env();
+  trezoaanchor.setProvider(provider);
 
-  const TOKEN_2022_PROGRAM_ID = new anchor.web3.PublicKey(
+  const TOKEN_2022_PROGRAM_ID = new trezoaanchor.web3.PublicKey(
     "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb"
   );
   const TEST_PROGRAM_IDS = [
@@ -19,7 +19,7 @@ describe("escrow", () => {
     [TOKEN_2022_PROGRAM_ID, TOKEN_2022_PROGRAM_ID],
     [TOKEN_PROGRAM_ID, TOKEN_2022_PROGRAM_ID],
   ];
-  const program = anchor.workspace.Escrow as Program<Escrow>;
+  const program = trezoaanchor.workspace.Escrow as Program<Escrow>;
 
   let mintA: Token = null;
   let mintB: Token = null;
@@ -134,7 +134,7 @@ describe("escrow", () => {
 
         // Get the PDA that is assigned authority to token account.
         const [_pda, _nonce] = await PublicKey.findProgramAddress(
-          [Buffer.from(anchor.utils.bytes.utf8.encode("escrow"))],
+          [Buffer.from(trezoaanchor.utils.bytes.utf8.encode("escrow"))],
           program.programId
         );
 

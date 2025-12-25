@@ -30,5 +30,5 @@ cd deps/serum-dex/dex/ && cargo build-bpf && cd ../../../
 Run the test
 
 ```
-anchor test
+trezoaanchor test
 ```

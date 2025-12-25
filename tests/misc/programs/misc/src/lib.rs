@@ -2,7 +2,7 @@
 //! It's not too instructive/coherent by itself, so please see other examples.
 
 use account::*;
-use anchor_lang::prelude::*;
+use trezoaanchor-lang::prelude::*;
 use context::*;
 use event::*;
 
@@ -392,7 +392,7 @@ pub mod misc {
         Ok(())
     }
 
-    /// Compilation test for https://github.com/coral-xyz/anchor/issues/3074
+    /// Compilation test for https://github.com/trezoa-xyz/trezoaanchor/issues/3074
     pub fn test_boxed_owner_constraint(_ctx: Context<TestBoxedOwnerConstraint>) -> Result<()> {
         Ok(())
     }

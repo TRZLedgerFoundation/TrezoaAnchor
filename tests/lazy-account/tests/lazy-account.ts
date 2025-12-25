@@ -1,11 +1,11 @@
-import * as anchor from "@coral-xyz/anchor";
+import * as trezoaanchor from "@trezoa-xyz/trezoaanchor";
 import assert from "assert";
 
 import type { LazyAccount } from "../target/types/lazy_account";
 
 describe("lazy-account", () => {
-  anchor.setProvider(anchor.AnchorProvider.env());
-  const program: anchor.Program<LazyAccount> = anchor.workspace.lazyAccount;
+  trezoaanchor.setProvider(trezoaanchor.TrezoaAnchorProvider.env());
+  const program: trezoaanchor.Program<LazyAccount> = trezoaanchor.workspace.lazyAccount;
 
   it("Can init", async () => {
     const { pubkeys, signature } = await program.methods.init().rpcAndKeys();
@@ -22,7 +22,7 @@ describe("lazy-account", () => {
   });
 
   it("Can write", async () => {
-    const newAuthority = anchor.web3.PublicKey.default;
+    const newAuthority = trezoaanchor.web3.PublicKey.default;
     const { pubkeys, signature } = await program.methods
       .write(newAuthority)
       .rpcAndKeys();

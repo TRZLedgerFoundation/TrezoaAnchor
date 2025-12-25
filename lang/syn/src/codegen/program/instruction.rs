@@ -39,13 +39,13 @@ pub fn generate(program: &Program) -> proc_macro2::TokenStream {
 
                 quote! {
                     #(#ix_cfgs)*
-                    impl anchor_lang::Discriminator for #ix_name_camel {
+                    impl trezoaanchor-lang::Discriminator for #ix_name_camel {
                         const DISCRIMINATOR: &'static [u8] = #discriminator;
                     }
                     #(#ix_cfgs)*
-                    impl anchor_lang::InstructionData for #ix_name_camel {}
+                    impl trezoaanchor-lang::InstructionData for #ix_name_camel {}
                     #(#ix_cfgs)*
-                    impl anchor_lang::Owner for #ix_name_camel {
+                    impl trezoaanchor-lang::Owner for #ix_name_camel {
                         fn owner() -> Pubkey {
                             ID
                         }
@@ -57,7 +57,7 @@ pub fn generate(program: &Program) -> proc_macro2::TokenStream {
                 quote! {
                     #(#ix_cfgs)*
                     /// Instruction.
-                    #[derive(AnchorSerialize, AnchorDeserialize)]
+                    #[derive(TrezoaAnchorSerialize, TrezoaAnchorDeserialize)]
                     pub struct #ix_name_camel;
 
                     #impls
@@ -66,7 +66,7 @@ pub fn generate(program: &Program) -> proc_macro2::TokenStream {
                 quote! {
                     #(#ix_cfgs)*
                     /// Instruction.
-                    #[derive(AnchorSerialize, AnchorDeserialize)]
+                    #[derive(TrezoaAnchorSerialize, TrezoaAnchorDeserialize)]
                     pub struct #ix_name_camel {
                         #(#raw_args),*
                     }
@@ -78,11 +78,11 @@ pub fn generate(program: &Program) -> proc_macro2::TokenStream {
         .collect();
 
     quote! {
-        /// An Anchor generated module containing the program's set of
+        /// An TrezoaAnchor generated module containing the program's set of
         /// instructions, where each method handler in the `#[program]` mod is
         /// associated with a struct defining the input arguments to the
         /// method. These should be used directly, when one wants to serialize
-        /// Anchor instruction data, for example, when specifying
+        /// TrezoaAnchor instruction data, for example, when specifying
         /// instructions on a client.
         pub mod instruction {
             use super::*;

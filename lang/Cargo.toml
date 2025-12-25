@@ -1,62 +1,62 @@
 [package]
-name = "anchor-lang"
+name = "trezoaanchor-lang"
 version = "0.32.1"
-authors = ["Anchor Maintainers <accounts@200ms.io>"]
-repository = "https://github.com/coral-xyz/anchor"
+authors = ["TrezoaAnchor Maintainers <accounts@200ms.io>"]
+repository = "https://github.com/trezoa-xyz/trezoaanchor"
 edition = "2021"
 license = "Apache-2.0"
-description = "Solana Sealevel eDSL"
+description = "Trezoa Sealevel eDSL"
 
 [package.metadata.docs.rs]
 all-features = true
 rustdoc-args = ["--cfg", "docsrs"]
 
 [features]
-allow-missing-optionals = ["anchor-derive-accounts/allow-missing-optionals"]
-anchor-debug = [
-    "anchor-attribute-access-control/anchor-debug",
-    "anchor-attribute-account/anchor-debug",
-    "anchor-attribute-constant/anchor-debug",
-    "anchor-attribute-error/anchor-debug",
-    "anchor-attribute-event/anchor-debug",
-    "anchor-attribute-program/anchor-debug",
-    "anchor-derive-accounts/anchor-debug",
+allow-missing-optionals = ["trezoaanchor-derive-accounts/allow-missing-optionals"]
+trezoaanchor-debug = [
+    "trezoaanchor-attribute-access-control/trezoaanchor-debug",
+    "trezoaanchor-attribute-account/trezoaanchor-debug",
+    "trezoaanchor-attribute-constant/trezoaanchor-debug",
+    "trezoaanchor-attribute-error/trezoaanchor-debug",
+    "trezoaanchor-attribute-event/trezoaanchor-debug",
+    "trezoaanchor-attribute-program/trezoaanchor-debug",
+    "trezoaanchor-derive-accounts/trezoaanchor-debug",
 ]
 derive = []
 event-cpi = [
-    "anchor-attribute-event/event-cpi",
-    "anchor-attribute-account/event-cpi",
+    "trezoaanchor-attribute-event/event-cpi",
+    "trezoaanchor-attribute-account/event-cpi",
 ]
 idl-build = [
-    "anchor-attribute-account/idl-build",
-    "anchor-attribute-constant/idl-build",
-    "anchor-attribute-event/idl-build",
-    "anchor-attribute-error/idl-build",
-    "anchor-attribute-program/idl-build",
-    "anchor-derive-accounts/idl-build",
-    "anchor-derive-serde/idl-build",
-    "anchor-lang-idl/build",
+    "trezoaanchor-attribute-account/idl-build",
+    "trezoaanchor-attribute-constant/idl-build",
+    "trezoaanchor-attribute-event/idl-build",
+    "trezoaanchor-attribute-error/idl-build",
+    "trezoaanchor-attribute-program/idl-build",
+    "trezoaanchor-derive-accounts/idl-build",
+    "trezoaanchor-derive-serde/idl-build",
+    "trezoaanchor-lang-idl/build",
 ]
-init-if-needed = ["anchor-derive-accounts/init-if-needed"]
-interface-instructions = ["anchor-attribute-program/interface-instructions"]
+init-if-needed = ["trezoaanchor-derive-accounts/init-if-needed"]
+interface-instructions = ["trezoaanchor-attribute-program/interface-instructions"]
 lazy-account = [
-    "anchor-attribute-account/lazy-account",
-    "anchor-derive-serde/lazy-account",
+    "trezoaanchor-attribute-account/lazy-account",
+    "trezoaanchor-derive-serde/lazy-account",
 ]
 
 [dependencies]
-anchor-attribute-access-control = { path = "./attribute/access-control", version = "0.32.1" }
-anchor-attribute-account = { path = "./attribute/account", version = "0.32.1" }
-anchor-attribute-constant = { path = "./attribute/constant", version = "0.32.1" }
-anchor-attribute-error = { path = "./attribute/error", version = "0.32.1" }
-anchor-attribute-event = { path = "./attribute/event", version = "0.32.1" }
-anchor-attribute-program = { path = "./attribute/program", version = "0.32.1" }
-anchor-derive-accounts = { path = "./derive/accounts", version = "0.32.1" }
-anchor-derive-serde = { path = "./derive/serde", version = "0.32.1" }
-anchor-derive-space = { path = "./derive/space", version = "0.32.1" }
+trezoaanchor-attribute-access-control = { path = "./attribute/access-control", version = "0.32.1" }
+trezoaanchor-attribute-account = { path = "./attribute/account", version = "0.32.1" }
+trezoaanchor-attribute-constant = { path = "./attribute/constant", version = "0.32.1" }
+trezoaanchor-attribute-error = { path = "./attribute/error", version = "0.32.1" }
+trezoaanchor-attribute-event = { path = "./attribute/event", version = "0.32.1" }
+trezoaanchor-attribute-program = { path = "./attribute/program", version = "0.32.1" }
+trezoaanchor-derive-accounts = { path = "./derive/accounts", version = "0.32.1" }
+trezoaanchor-derive-serde = { path = "./derive/serde", version = "0.32.1" }
+trezoaanchor-derive-space = { path = "./derive/space", version = "0.32.1" }
 
-# `anchor-lang-idl` should only be included with `idl-build` feature
-anchor-lang-idl = { path = "../idl", version = "0.1.2", optional = true }
+# `trezoaanchor-lang-idl` should only be included with `idl-build` feature
+trezoaanchor-lang-idl = { path = "../idl", version = "0.1.2", optional = true }
 
 base64 = "0.21"
 bincode = "1"
@@ -64,30 +64,30 @@ borsh = "1.5.7"
 bytemuck = { version = "1", features = ["derive"] }
 const-crypto = "0.3.0"
 
-solana-account-info.workspace = true
-solana-clock.workspace = true
-solana-cpi.workspace = true
-solana-define-syscall.workspace = true
-solana-feature-gate-interface.workspace = true
-solana-instruction.workspace = true
-solana-instructions-sysvar.workspace = true
-solana-invoke.workspace = true
-solana-loader-v3-interface = { workspace = true, features = ["bincode"] }
-solana-msg.workspace = true
-solana-program-entrypoint.workspace = true
-solana-program-error = { workspace = true, features = ["borsh"] }
-solana-program-memory.workspace = true
-solana-program-option.workspace = true
-solana-program-pack.workspace = true
-solana-pubkey = { workspace = true, features = ["borsh", "bytemuck", "serde"] }
-solana-sdk-ids.workspace = true
-solana-stake-interface = { workspace = true, features = ["sysvar", "bincode"] }
-solana-system-interface.workspace = true
-solana-sysvar = { workspace = true, features = ["bincode"] }
-solana-sysvar-id.workspace = true
+trezoa-account-info.workspace = true
+trezoa-clock.workspace = true
+trezoa-cpi.workspace = true
+trezoa-define-syscall.workspace = true
+trezoa-feature-gate-interface.workspace = true
+trezoa-instruction.workspace = true
+trezoa-instructions-sysvar.workspace = true
+trezoa-invoke.workspace = true
+trezoa-loader-v3-interface = { workspace = true, features = ["bincode"] }
+trezoa-msg.workspace = true
+trezoa-program-entrypoint.workspace = true
+trezoa-program-error = { workspace = true, features = ["borsh"] }
+trezoa-program-memory.workspace = true
+trezoa-program-option.workspace = true
+trezoa-program-pack.workspace = true
+trezoa-pubkey = { workspace = true, features = ["borsh", "bytemuck", "serde"] }
+trezoa-sdk-ids.workspace = true
+trezoa-stake-interface = { workspace = true, features = ["sysvar", "bincode"] }
+trezoa-system-interface.workspace = true
+trezoa-sysvar = { workspace = true, features = ["bincode"] }
+trezoa-sysvar-id.workspace = true
 
 thiserror = "1"
 
 [lints.rust.unexpected_cfgs]
 level = "warn"
-check-cfg = ['cfg(target_os, values("solana"))']
+check-cfg = ['cfg(target_os, values("trezoa"))']

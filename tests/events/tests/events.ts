@@ -1,20 +1,20 @@
-import * as anchor from "@coral-xyz/anchor";
+import * as trezoaanchor from "@trezoa-xyz/trezoaanchor";
 import { assert } from "chai";
 
 import { Events } from "../target/types/events";
 
 describe("Events", () => {
   // Configure the client to use the local cluster.
-  anchor.setProvider(anchor.AnchorProvider.env());
-  const program = anchor.workspace.Events as anchor.Program<Events>;
-  const confirmOptions: anchor.web3.ConfirmOptions = {
+  trezoaanchor.setProvider(trezoaanchor.TrezoaAnchorProvider.env());
+  const program = trezoaanchor.workspace.Events as trezoaanchor.Program<Events>;
+  const confirmOptions: trezoaanchor.web3.ConfirmOptions = {
     commitment: "confirmed",
     preflightCommitment: "confirmed",
     skipPreflight: true,
     maxRetries: 3,
   };
 
-  type Event = anchor.IdlEvents<typeof program["idl"]>;
+  type Event = trezoaanchor.IdlEvents<typeof program["idl"]>;
   const getEvent = async <E extends keyof Event>(
     eventName: E,
     methodName: keyof typeof program["methods"]
@@ -74,25 +74,25 @@ describe("Events", () => {
         }
       );
 
-      const ixData = anchor.utils.bytes.bs58.decode(
+      const ixData = trezoaanchor.utils.bytes.bs58.decode(
         txResult.meta.innerInstructions[0].instructions[0].data
       );
-      const eventData = anchor.utils.bytes.base64.encode(ixData.slice(8));
+      const eventData = trezoaanchor.utils.bytes.base64.encode(ixData.slice(8));
       const event = program.coder.events.decode(eventData);
 
       assert.strictEqual(event.name, "myOtherEvent");
       assert.strictEqual(event.data.label, "cpi");
-      assert.strictEqual((event.data.data as anchor.BN).toNumber(), 7);
+      assert.strictEqual((event.data.data as trezoaanchor.BN).toNumber(), 7);
     });
 
     it("Throws on unauthorized invocation", async () => {
-      const tx = new anchor.web3.Transaction();
+      const tx = new trezoaanchor.web3.Transaction();
       tx.add(
-        new anchor.web3.TransactionInstruction({
+        new trezoaanchor.web3.TransactionInstruction({
           programId: program.programId,
           keys: [
             {
-              pubkey: anchor.web3.PublicKey.findProgramAddressSync(
+              pubkey: trezoaanchor.web3.PublicKey.findProgramAddressSync(
                 [Buffer.from("__event_authority")],
                 program.programId
               )[0],

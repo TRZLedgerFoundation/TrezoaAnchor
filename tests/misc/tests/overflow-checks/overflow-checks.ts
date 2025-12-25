@@ -1,14 +1,14 @@
-import * as anchor from "@coral-xyz/anchor";
+import * as trezoaanchor from "@trezoa-xyz/trezoaanchor";
 
 import { OverflowChecks } from "../../target/types/overflow_checks";
 
 describe("overflow-checks", () => {
-  anchor.setProvider(anchor.AnchorProvider.env());
+  trezoaanchor.setProvider(trezoaanchor.TrezoaAnchorProvider.env());
 
-  const program = anchor.workspace
-    .OverflowChecks as anchor.Program<OverflowChecks>;
+  const program = trezoaanchor.workspace
+    .OverflowChecks as trezoaanchor.Program<OverflowChecks>;
 
-  const accountKp = anchor.web3.Keypair.generate();
+  const accountKp = trezoaanchor.web3.Keypair.generate();
   const testOverflow = async (method: keyof typeof program["methods"]) => {
     try {
       await program.methods[method]()
@@ -55,7 +55,7 @@ describe("overflow-checks", () => {
     await fs.writeFile("Cargo.toml", cargoToml.replace(CHECK, COMMENTED_CHECK));
 
     const { spawnSync } = await import("child_process");
-    const { stderr, status } = spawnSync("anchor", ["build"]);
+    const { stderr, status } = spawnSync("trezoaanchor", ["build"]);
 
     try {
       if (status === 0) {

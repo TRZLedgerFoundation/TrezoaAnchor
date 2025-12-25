@@ -1,21 +1,21 @@
-import { PublicKey } from "@solana/web3.js";
-import { Program, AnchorProvider } from "@coral-xyz/anchor";
+import { PublicKey } from "@trezoa/web3.js";
+import { Program, TrezoaAnchorProvider } from "@trezoa-xyz/trezoaanchor";
 
 import { SplMemoCoder } from "./coder";
 
-export const SPL_MEMO_PROGRAM_ID = new PublicKey(
+export const TPL_MEMO_PROGRAM_ID = new PublicKey(
   "Memo1UhkJRfHyvLMcVucJwxXeuD728EqVDDwQDxFMNo"
 );
 
 interface GetProgramParams {
   programId?: PublicKey;
-  provider?: AnchorProvider;
+  provider?: TrezoaAnchorProvider;
 }
 
 export function splMemoProgram(params?: GetProgramParams): Program<SplMemo> {
   return new Program<SplMemo>(
     IDL,
-    params?.programId ?? SPL_MEMO_PROGRAM_ID,
+    params?.programId ?? TPL_MEMO_PROGRAM_ID,
     params?.provider,
     new SplMemoCoder(IDL)
   );

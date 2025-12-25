@@ -1,37 +1,37 @@
 ---
 title: 0.31.1
-description: Anchor - Release Notes 0.31.1
+description: TrezoaAnchor - Release Notes 0.31.1
 ---
 
 This patch release aims to fix `proc-macro2` related IDL build errors (see
 [`proc-macro2` build fix](#proc-macro2-build-fix)).
 
-New Releases for Anchor will be published under the `solanafoundation` GitHub
+New Releases for TrezoaAnchor will be published under the `trezoafoundation` GitHub
 organization from now on.
 
 ---
 
 ## How to upgrade
 
-1. Update `anchor-cli`:
+1. Update `trezoaanchor-cli`:
 
    ```sh
    avm install 0.31.1
    ```
 
-2. Update Anchor crate(s) to `0.31.1`.
+2. Update TrezoaAnchor crate(s) to `0.31.1`.
 
 3. Update TS package(s) to `0.31.1`.
 
-## Recommended Solana Version
+## Recommended Trezoa Version
 
-The recommended Solana version is `2.1.0`, the same as
-[v0.31.0's Recommended Solana Version](./0-31-0#recommended-solana-version).
+The recommended Trezoa version is `2.1.0`, the same as
+[v0.31.0's Recommended Trezoa Version](./0-31-0#recommended-trezoa-version).
 
 ## Docker
 
 This release uses a new docker image found at
-[solanafoundation/anchor](https://hub.docker.com/r/solanafoundation/anchor). New
+[trezoafoundation/trezoaanchor](https://hub.docker.com/r/trezoafoundation/trezoaanchor). New
 images will be pushed to this organization in the future.
 
 ## IDL
@@ -41,7 +41,7 @@ images will be pushed to this organization in the future.
 `proc-macro2 1.0.95` removed the `source_file` method of `Span` due to an
 underlying `nightly` compiler change
 [rust-lang/rust#139671](https://github.com/rust-lang/rust/pull/139671), which
-resulted in the following error for Anchor users:
+resulted in the following error for TrezoaAnchor users:
 
 ```
 error[E0599]: no method named `source_file` found for struct `proc_macro2::Span` in the current scope
@@ -70,4 +70,4 @@ has been fixed.
 ---
 
 See the full list of notable changes in the
-[CHANGELOG](https://github.com/solana-foundation/anchor/blob/v0.31.1/CHANGELOG.md#0311---2025-04-19).
+[CHANGELOG](https://github.com/trz-ledger-foundation/trezoaanchor/blob/v0.31.1/CHANGELOG.md#0311---2025-04-19).

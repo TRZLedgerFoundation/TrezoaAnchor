@@ -5,9 +5,9 @@ use crate::{
 use anyhow::Result;
 use clap::{Parser, ValueEnum};
 use heck::{ToLowerCamelCase, ToPascalCase, ToSnakeCase};
-use solana_keypair::{read_keypair_file, write_keypair_file, Keypair};
-use solana_pubkey::Pubkey;
-use solana_signer::Signer;
+use trezoa_keypair::{read_keypair_file, write_keypair_file, Keypair};
+use trezoa_pubkey::Pubkey;
+use trezoa_signer::Signer;
 use std::{
     fmt::Write as _,
     fs::{self, File},
@@ -38,7 +38,7 @@ pub fn create_program(name: &str, template: ProgramTemplate, with_mollusk: bool)
             program_path.join("Cargo.toml"),
             cargo_toml(name, with_mollusk),
         ),
-        // Note: Xargo.toml is no longer needed for modern Solana builds using SBF
+        // Note: Xargo.toml is no longer needed for modern Trezoa builds using SBF
     ];
 
     let template_files = match template {
@@ -68,7 +68,7 @@ fn create_program_template_single(name: &str, program_path: &Path) -> Files {
     vec![(
         program_path.join("src").join("lib.rs"),
         format!(
-            r#"use anchor_lang::prelude::*;
+            r#"use trezoaanchor-lang::prelude::*;
 
 declare_id!("{}");
 
@@ -103,7 +103,7 @@ pub mod error;
 pub mod instructions;
 pub mod state;
 
-use anchor_lang::prelude::*;
+use trezoaanchor-lang::prelude::*;
 
 pub use constants::*;
 pub use instructions::*;
@@ -126,16 +126,16 @@ pub mod {} {{
         ),
         (
             src_path.join("constants.rs"),
-            r#"use anchor_lang::prelude::*;
+            r#"use trezoaanchor-lang::prelude::*;
 
 #[constant]
-pub const SEED: &str = "anchor";
+pub const SEED: &str = "trezoaanchor";
 "#
             .into(),
         ),
         (
             src_path.join("error.rs"),
-            r#"use anchor_lang::prelude::*;
+            r#"use trezoaanchor-lang::prelude::*;
 
 #[error_code]
 pub enum ErrorCode {
@@ -155,7 +155,7 @@ pub use initialize::*;
         ),
         (
             src_path.join("instructions").join("initialize.rs"),
-            r#"use anchor_lang::prelude::*;
+            r#"use trezoaanchor-lang::prelude::*;
 
 #[derive(Accounts)]
 pub struct Initialize {}
@@ -204,7 +204,7 @@ mollusk-svm = "~0.4"
         r#"[package]
 name = "{0}"
 version = "0.1.0"
-description = "Created with Anchor"
+description = "Created with TrezoaAnchor"
 edition = "2021"
 
 [lib]
@@ -217,18 +217,18 @@ cpi = ["no-entrypoint"]
 no-entrypoint = []
 no-idl = []
 no-log-ix-name = []
-idl-build = ["anchor-lang/idl-build"]
-anchor-debug = []
+idl-build = ["trezoaanchor-lang/idl-build"]
+trezoaanchor-debug = []
 custom-heap = []
 custom-panic = []
 {2}
 
 [dependencies]
-anchor-lang = "{3}"
+trezoaanchor-lang = "{3}"
 {4}
 
 [lints.rust]
-unexpected_cfgs = {{ level = "warn", check-cfg = ['cfg(target_os, values("solana"))'] }}
+unexpected_cfgs = {{ level = "warn", check-cfg = ['cfg(target_os, values("trezoa"))'] }}
 "#,
         name,
         name.to_snake_case(),
@@ -264,18 +264,18 @@ token = "{token}"
 pub fn deploy_js_script_host(cluster_url: &str, script_path: &str) -> String {
     format!(
         r#"
-const anchor = require('@coral-xyz/anchor');
+const trezoaanchor = require('@trezoa-xyz/trezoaanchor');
 
 // Deploy script defined by the user.
 const userScript = require("{script_path}");
 
 async function main() {{
-    const connection = new anchor.web3.Connection(
+    const connection = new trezoaanchor.web3.Connection(
       "{cluster_url}",
-      anchor.AnchorProvider.defaultOptions().commitment
+      trezoaanchor.TrezoaAnchorProvider.defaultOptions().commitment
     );
-    const wallet = anchor.Wallet.local();
-    const provider = new anchor.AnchorProvider(connection, wallet);
+    const wallet = trezoaanchor.Wallet.local();
+    const provider = new trezoaanchor.TrezoaAnchorProvider(connection, wallet);
 
     // Run the user's deploy script.
     userScript(provider);
@@ -287,18 +287,18 @@ main();
 
 pub fn deploy_ts_script_host(cluster_url: &str, script_path: &str) -> String {
     format!(
-        r#"import * as anchor from '@coral-xyz/anchor';
+        r#"import * as trezoaanchor from '@trezoa-xyz/trezoaanchor';
 
 // Deploy script defined by the user.
 const userScript = require("{script_path}");
 
 async function main() {{
-    const connection = new anchor.web3.Connection(
+    const connection = new trezoaanchor.web3.Connection(
       "{cluster_url}",
-      anchor.AnchorProvider.defaultOptions().commitment
+      trezoaanchor.TrezoaAnchorProvider.defaultOptions().commitment
     );
-    const wallet = anchor.Wallet.local();
-    const provider = new anchor.AnchorProvider(connection, wallet);
+    const wallet = trezoaanchor.Wallet.local();
+    const provider = new trezoaanchor.TrezoaAnchorProvider(connection, wallet);
 
     // Run the user's deploy script.
     userScript(provider);
@@ -311,13 +311,13 @@ main();
 pub fn deploy_script() -> &'static str {
     r#"// Migrations are an early feature. Currently, they're nothing more than this
 // single deploy script that's invoked from the CLI, injecting a provider
-// configured from the workspace's Anchor.toml.
+// configured from the workspace's TrezoaAnchor.toml.
 
-const anchor = require("@coral-xyz/anchor");
+const trezoaanchor = require("@trezoa-xyz/trezoaanchor");
 
 module.exports = async function (provider) {
   // Configure client to use the provider.
-  anchor.setProvider(provider);
+  trezoaanchor.setProvider(provider);
 
   // Add your deploy script here.
 };
@@ -327,13 +327,13 @@ module.exports = async function (provider) {
 pub fn ts_deploy_script() -> &'static str {
     r#"// Migrations are an early feature. Currently, they're nothing more than this
 // single deploy script that's invoked from the CLI, injecting a provider
-// configured from the workspace's Anchor.toml.
+// configured from the workspace's TrezoaAnchor.toml.
 
-import * as anchor from "@coral-xyz/anchor";
+import * as trezoaanchor from "@trezoa-xyz/trezoaanchor";
 
-module.exports = async function (provider: anchor.AnchorProvider) {
+module.exports = async function (provider: trezoaanchor.TrezoaAnchorProvider) {
   // Configure client to use the provider.
-  anchor.setProvider(provider);
+  trezoaanchor.setProvider(provider);
 
   // Add your deploy script here.
 };
@@ -342,15 +342,15 @@ module.exports = async function (provider: anchor.AnchorProvider) {
 
 pub fn mocha(name: &str) -> String {
     format!(
-        r#"const anchor = require("@coral-xyz/anchor");
+        r#"const trezoaanchor = require("@trezoa-xyz/trezoaanchor");
 
 describe("{}", () => {{
   // Configure the client to use the local cluster.
-  anchor.setProvider(anchor.AnchorProvider.env());
+  trezoaanchor.setProvider(trezoaanchor.TrezoaAnchorProvider.env());
 
   it("Is initialized!", async () => {{
     // Add your test here.
-    const program = anchor.workspace.{};
+    const program = trezoaanchor.workspace.{};
     const tx = await program.methods.initialize().rpc();
     console.log("Your transaction signature", tx);
   }});
@@ -363,15 +363,15 @@ describe("{}", () => {{
 
 pub fn jest(name: &str) -> String {
     format!(
-        r#"const anchor = require("@coral-xyz/anchor");
+        r#"const trezoaanchor = require("@trezoa-xyz/trezoaanchor");
 
 describe("{}", () => {{
   // Configure the client to use the local cluster.
-  anchor.setProvider(anchor.AnchorProvider.env());
+  trezoaanchor.setProvider(trezoaanchor.TrezoaAnchorProvider.env());
 
   it("Is initialized!", async () => {{
     // Add your test here.
-    const program = anchor.workspace.{};
+    const program = trezoaanchor.workspace.{};
     const tx = await program.methods.initialize().rpc();
     console.log("Your transaction signature", tx);
   }});
@@ -392,7 +392,7 @@ pub fn package_json(jest: bool, license: String) -> String {
     "lint": "prettier */*.js \"*/**/*{{.js,.ts}}\" --check"
   }},
   "dependencies": {{
-    "@coral-xyz/anchor": "^{VERSION}"
+    "@trezoa-xyz/trezoaanchor": "^{VERSION}"
   }},
   "devDependencies": {{
     "jest": "^29.0.3",
@@ -410,7 +410,7 @@ pub fn package_json(jest: bool, license: String) -> String {
     "lint": "prettier */*.js \"*/**/*{{.js,.ts}}\" --check"
   }},
   "dependencies": {{
-    "@coral-xyz/anchor": "^{VERSION}"
+    "@trezoa-xyz/trezoaanchor": "^{VERSION}"
   }},
   "devDependencies": {{
     "chai": "^4.3.4",
@@ -433,7 +433,7 @@ pub fn ts_package_json(jest: bool, license: String) -> String {
     "lint": "prettier */*.js \"*/**/*{{.js,.ts}}\" --check"
   }},
   "dependencies": {{
-    "@coral-xyz/anchor": "^{VERSION}"
+    "@trezoa-xyz/trezoaanchor": "^{VERSION}"
   }},
   "devDependencies": {{
     "@types/bn.js": "^5.1.0",
@@ -455,7 +455,7 @@ pub fn ts_package_json(jest: bool, license: String) -> String {
     "lint": "prettier */*.js \"*/**/*{{.js,.ts}}\" --check"
   }},
   "dependencies": {{
-    "@coral-xyz/anchor": "^{VERSION}"
+    "@trezoa-xyz/trezoaanchor": "^{VERSION}"
   }},
   "devDependencies": {{
     "chai": "^4.3.4",
@@ -475,15 +475,15 @@ pub fn ts_package_json(jest: bool, license: String) -> String {
 
 pub fn ts_mocha(name: &str) -> String {
     format!(
-        r#"import * as anchor from "@coral-xyz/anchor";
-import {{ Program }} from "@coral-xyz/anchor";
+        r#"import * as trezoaanchor from "@trezoa-xyz/trezoaanchor";
+import {{ Program }} from "@trezoa-xyz/trezoaanchor";
 import {{ {} }} from "../target/types/{}";
 
 describe("{}", () => {{
   // Configure the client to use the local cluster.
-  anchor.setProvider(anchor.AnchorProvider.env());
+  trezoaanchor.setProvider(trezoaanchor.TrezoaAnchorProvider.env());
 
-  const program = anchor.workspace.{} as Program<{}>;
+  const program = trezoaanchor.workspace.{} as Program<{}>;
 
   it("Is initialized!", async () => {{
     // Add your test here.
@@ -502,15 +502,15 @@ describe("{}", () => {{
 
 pub fn ts_jest(name: &str) -> String {
     format!(
-        r#"import * as anchor from "@coral-xyz/anchor";
-import {{ Program }} from "@coral-xyz/anchor";
+        r#"import * as trezoaanchor from "@trezoa-xyz/trezoaanchor";
+import {{ Program }} from "@trezoa-xyz/trezoaanchor";
 import {{ {} }} from "../target/types/{}";
 
 describe("{}", () => {{
   // Configure the client to use the local cluster.
-  anchor.setProvider(anchor.AnchorProvider.env());
+  trezoaanchor.setProvider(trezoaanchor.TrezoaAnchorProvider.env());
 
-  const program = anchor.workspace.{} as Program<{}>;
+  const program = trezoaanchor.workspace.{} as Program<{}>;
 
   it("Is initialized!", async () => {{
     // Add your test here.
@@ -556,7 +556,7 @@ pub fn ts_config(jest: bool) -> &'static str {
 }
 
 pub fn git_ignore() -> &'static str {
-    r#".anchor
+    r#".trezoaanchor
 .DS_Store
 target
 **/*.rs.bk
@@ -568,7 +568,7 @@ test-ledger
 }
 
 pub fn prettier_ignore() -> &'static str {
-    r#".anchor
+    r#".trezoaanchor
 .DS_Store
 target
 node_modules
@@ -585,12 +585,12 @@ pub fn node_shell(
 ) -> Result<String> {
     let mut eval_string = format!(
         r#"
-const anchor = require('@coral-xyz/anchor');
-const web3 = anchor.web3;
-const PublicKey = anchor.web3.PublicKey;
-const Keypair = anchor.web3.Keypair;
+const trezoaanchor = require('@trezoa-xyz/trezoaanchor');
+const web3 = trezoaanchor.web3;
+const PublicKey = trezoaanchor.web3.PublicKey;
+const Keypair = trezoaanchor.web3.Keypair;
 
-const __wallet = new anchor.Wallet(
+const __wallet = new trezoaanchor.Wallet(
   Keypair.fromSecretKey(
     Buffer.from(
       JSON.parse(
@@ -605,11 +605,11 @@ const __wallet = new anchor.Wallet(
   ),
 );
 const __connection = new web3.Connection("{cluster_url}", "processed");
-const provider = new anchor.AnchorProvider(__connection, __wallet, {{
+const provider = new trezoaanchor.TrezoaAnchorProvider(__connection, __wallet, {{
   commitment: "processed",
   preflightcommitment: "processed",
 }});
-anchor.setProvider(provider);
+trezoaanchor.setProvider(provider);
 "#,
     );
 
@@ -617,7 +617,7 @@ anchor.setProvider(provider);
         write!(
             &mut eval_string,
             r#"
-anchor.workspace.{} = new anchor.Program({}, provider);
+trezoaanchor.workspace.{} = new trezoaanchor.Program({}, provider);
 "#,
             program.name.to_lower_camel_case(),
             serde_json::to_string(&program.idl)?,
@@ -746,12 +746,12 @@ pub fn tests_cargo_toml(name: &str) -> String {
         r#"[package]
 name = "tests"
 version = "0.1.0"
-description = "Created with Anchor"
+description = "Created with TrezoaAnchor"
 edition = "2021"
 rust-version = "{ANCHOR_MSRV}"
 
 [dependencies]
-anchor-client = "{VERSION}"
+trezoaanchor-client = "{VERSION}"
 {name} = {{ version = "0.1.0", path = "../programs/{name}" }}
 "#
     )
@@ -773,8 +773,8 @@ mod test_initialize;
             format!(
                 r#"use std::str::FromStr;
 
-use anchor_client::{{
-    solana_sdk::{{
+use trezoaanchor_client::{{
+    trezoa_sdk::{{
         commitment_config::CommitmentConfig, pubkey::Pubkey, signature::read_keypair_file,
     }},
     Client, Cluster,
@@ -783,8 +783,8 @@ use anchor_client::{{
 #[test]
 fn test_initialize() {{
     let program_id = "{0}";
-    let anchor_wallet = std::env::var("ANCHOR_WALLET").unwrap();
-    let payer = read_keypair_file(&anchor_wallet).unwrap();
+    let trezoaanchor_wallet = std::env::var("ANCHOR_WALLET").unwrap();
+    let payer = read_keypair_file(&trezoaanchor_wallet).unwrap();
 
     let client = Client::new_with_options(Cluster::Localnet, &payer, CommitmentConfig::confirmed());
     let program_id = Pubkey::try_from(program_id).unwrap();
@@ -815,7 +815,7 @@ fn create_program_template_mollusk_test(name: &str, tests_path: &Path) -> Files 
             r#"#![cfg(feature = "test-sbf")]
 
 use {{
-    anchor_lang::{{solana_program::instruction::Instruction, InstructionData, ToAccountMetas}},
+    trezoaanchor-lang::{{trezoa_program::instruction::Instruction, InstructionData, ToAccountMetas}},
     mollusk_svm::{{result::Check, Mollusk}},
 }};
 

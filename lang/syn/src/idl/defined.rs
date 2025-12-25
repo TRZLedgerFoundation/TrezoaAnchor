@@ -33,7 +33,7 @@ fn impl_idl_build(
     type_def: Result<(TokenStream, Vec<syn::TypePath>)>,
 ) -> TokenStream {
     let idl = get_idl_module_path();
-    let idl_build_trait = quote!(anchor_lang::idl::build::IdlBuild);
+    let idl_build_trait = quote!(trezoaanchor-lang::idl::build::IdlBuild);
     let (impl_generics, ty_generics, where_clause) = generics.split_for_impl();
 
     let (idl_type_def, insert_defined) = match type_def {
@@ -595,7 +595,7 @@ pub fn gen_idl_type(
                             //
                             // As a workaround, we're manually checking to see if it *looks* like a
                             // constant identifier to fix the issue mentioned in
-                            // https://github.com/coral-xyz/anchor/issues/3520
+                            // https://github.com/trezoa-xyz/trezoaanchor/issues/3520
                             syn::GenericArgument::Type(syn::Type::Path(p))
                                 if p.path
                                     .segments

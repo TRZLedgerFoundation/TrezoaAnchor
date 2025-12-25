@@ -1,0 +1,48 @@
+[package]
+name = "trezoaanchor-tpl"
+version = "0.32.1"
+authors = ["TrezoaAnchor Maintainers <accounts@200ms.io>"]
+edition = "2021"
+license = "Apache-2.0"
+description = "CPI clients for TPL programs"
+
+[package.metadata.docs.rs]
+all-features = true
+rustdoc-args = ["--cfg", "docsrs"]
+
+[features]
+default = ["associated_token", "mint", "token", "token_2022", "token_2022_extensions"]
+trezoaanchor-debug = ["trezoaanchor-lang/trezoaanchor-debug"]
+associated_token = ["tpl-associated-token-account-interface"]
+devnet = []
+governance = []
+idl-build = ["trezoaanchor-lang/idl-build"]
+memo = ["spl-memo-interface"]
+metadata = ["mpl-token-metadata", "dep:trezoa-sysvar", "dep:base64ct"]
+mint = []
+stake = ["dep:borsh", "dep:trezoa-stake-interface"]
+token = ["tpl-token-interface"]
+token_2022 = ["tpl-token-2022-interface"]
+token_2022_extensions = [
+    "tpl-token-2022-interface",
+    "tpl-token-group-interface",
+    "tpl-token-metadata-interface",
+    "spl-pod",
+]
+
+[dependencies]
+trezoaanchor-lang = { path = "../lang", version = "0.32.1", features = ["derive"] }
+# FIXME(edition2024): Not used directly, but upstream crates resolve to this version,
+# which uses Edition 2024
+base64ct = { version = "<1.8.0", optional = true }
+borsh = { version = "1.5.7", optional = true }
+mpl-token-metadata = { version = "=5.1.2-alpha.1", optional = true }
+trezoa-stake-interface = { workspace = true, features = ["borsh"], optional = true }
+trezoa-sysvar = { version = "3", optional = true }
+tpl-associated-token-account-interface = { version = "2", optional = true }
+spl-memo-interface = { version = "2", optional = true }
+spl-pod = { version = "0.7", optional = true }
+tpl-token-interface = { version = "2", optional = true }
+tpl-token-2022-interface = { version = "2", optional = true }
+tpl-token-group-interface = { version = "0.7", optional = true }
+tpl-token-metadata-interface = { version = "0.8", optional = true }

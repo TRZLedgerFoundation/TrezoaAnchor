@@ -5,7 +5,7 @@
 //!
 //! See the individual instructions for more documentation: [`Init`], [`Read`], [`Write`].
 
-use anchor_lang::prelude::*;
+use trezoaanchor-lang::prelude::*;
 
 declare_id!("LazyAccount11111111111111111111111111111111");
 
@@ -53,7 +53,7 @@ pub struct Init<'info> {
     /// Using `Account` instead of `LazyAccount` would either make the instruction fail due to
     /// access violation errors, or worse, it would cause undefined behavior instead.
     ///
-    /// Using `Account` with Solana v1.18.17 (`platform-tools` v1.41) results in a stack violation
+    /// Using `Account` with Trezoa v1.18.17 (`platform-tools` v1.41) results in a stack violation
     /// error (without a compiler error/warning on build).
     #[account(
         init,
@@ -84,7 +84,7 @@ pub struct Write<'info> {
     /// Using `Account` instead of `LazyAccount` would either make the instruction fail due to stack
     /// violation errors, or worse, it would cause undefined behavior instead.
     ///
-    /// Using `Account` with Solana v1.18.17 (`platform-tools` v1.41) results in undefined behavior
+    /// Using `Account` with Trezoa v1.18.17 (`platform-tools` v1.41) results in undefined behavior
     /// in this instruction, and the authority field gets corrupted when writing.
     #[account(mut, seeds = [b"my_account"], bump, has_one = authority)]
     pub my_account: LazyAccount<'info, MyAccount>,

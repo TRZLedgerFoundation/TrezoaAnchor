@@ -1,23 +1,23 @@
-use anchor_lang::prelude::*;
-use anchor_lang::solana_program::instruction::Instruction as SolanaInstruction;
+use trezoaanchor-lang::prelude::*;
+use trezoaanchor-lang::trezoa_program::instruction::Instruction as TrezoaInstruction;
 
 declare_program!(external);
 
 #[test]
 pub fn test_instruction_utils() {
     // Incorrect program
-    assert!(external::utils::Instruction::try_from_solana_instruction(
-        &SolanaInstruction::new_with_bytes(system_program::ID, &[], vec![]),
+    assert!(external::utils::Instruction::try_from_trezoa_instruction(
+        &TrezoaInstruction::new_with_bytes(system_program::ID, &[], vec![]),
     )
     .is_err());
     // Incorrect instruction
-    assert!(external::utils::Instruction::try_from_solana_instruction(
-        &SolanaInstruction::new_with_bytes(external::ID, &[], vec![]),
+    assert!(external::utils::Instruction::try_from_trezoa_instruction(
+        &TrezoaInstruction::new_with_bytes(external::ID, &[], vec![]),
     )
     .is_err());
     // Not enough accounts
-    assert!(external::utils::Instruction::try_from_solana_instruction(
-        &SolanaInstruction::new_with_bytes(
+    assert!(external::utils::Instruction::try_from_trezoa_instruction(
+        &TrezoaInstruction::new_with_bytes(
             external::ID,
             external::client::args::Init::DISCRIMINATOR,
             vec![],
@@ -25,8 +25,8 @@ pub fn test_instruction_utils() {
     )
     .is_err());
     // Incorrect account(s)
-    assert!(external::utils::Instruction::try_from_solana_instruction(
-        &SolanaInstruction::new_with_bytes(
+    assert!(external::utils::Instruction::try_from_trezoa_instruction(
+        &TrezoaInstruction::new_with_bytes(
             external::ID,
             external::client::args::Init::DISCRIMINATOR,
             vec![
@@ -41,8 +41,8 @@ pub fn test_instruction_utils() {
     // Correct (`init`)
     let authority = Pubkey::from_str_const("Authority1111111111111111111111111111111111");
     let my_account = Pubkey::from_str_const("MyAccount1111111111111111111111111111111111");
-    match external::utils::Instruction::try_from_solana_instruction(
-        &SolanaInstruction::new_with_bytes(
+    match external::utils::Instruction::try_from_trezoa_instruction(
+        &TrezoaInstruction::new_with_bytes(
             external::ID,
             external::client::args::Init::DISCRIMINATOR,
             vec![
@@ -61,8 +61,8 @@ pub fn test_instruction_utils() {
         Err(e) => panic!("Expected Ok result, got error: {:?}", e),
     };
     // Missing arg
-    assert!(external::utils::Instruction::try_from_solana_instruction(
-        &SolanaInstruction::new_with_bytes(
+    assert!(external::utils::Instruction::try_from_trezoa_instruction(
+        &TrezoaInstruction::new_with_bytes(
             external::ID,
             external::client::args::Update::DISCRIMINATOR,
             vec![
@@ -74,8 +74,8 @@ pub fn test_instruction_utils() {
     .is_err());
     // Correct (`update`)
     let expected_args = external::client::args::Update { value: 1 };
-    match external::utils::Instruction::try_from_solana_instruction(
-        &SolanaInstruction::new_with_bytes(
+    match external::utils::Instruction::try_from_trezoa_instruction(
+        &TrezoaInstruction::new_with_bytes(
             external::ID,
             &[
                 external::client::args::Update::DISCRIMINATOR,
@@ -99,8 +99,8 @@ pub fn test_instruction_utils() {
 
     // Correct (`update_composite`)
     let expected_args = external::client::args::UpdateComposite { value: 2 };
-    match external::utils::Instruction::try_from_solana_instruction(
-        &SolanaInstruction::new_with_bytes(
+    match external::utils::Instruction::try_from_trezoa_instruction(
+        &TrezoaInstruction::new_with_bytes(
             external::ID,
             &[
                 external::client::args::UpdateComposite::DISCRIMINATOR,
@@ -124,8 +124,8 @@ pub fn test_instruction_utils() {
 
     // Correct (`update_non_instruction_composite`)
     let expected_args = external::client::args::UpdateNonInstructionComposite { value: 3 };
-    match external::utils::Instruction::try_from_solana_instruction(
-        &SolanaInstruction::new_with_bytes(
+    match external::utils::Instruction::try_from_trezoa_instruction(
+        &TrezoaInstruction::new_with_bytes(
             external::ID,
             &[
                 external::client::args::UpdateNonInstructionComposite::DISCRIMINATOR,
@@ -151,8 +151,8 @@ pub fn test_instruction_utils() {
 
     // Correct (`update_non_instruction_composite2`)
     let expected_args = external::client::args::UpdateNonInstructionComposite2 { value: 4 };
-    match external::utils::Instruction::try_from_solana_instruction(
-        &SolanaInstruction::new_with_bytes(
+    match external::utils::Instruction::try_from_trezoa_instruction(
+        &TrezoaInstruction::new_with_bytes(
             external::ID,
             &[
                 external::client::args::UpdateNonInstructionComposite2::DISCRIMINATOR,
@@ -191,7 +191,7 @@ pub fn test_instruction_utils() {
         Err(e) => panic!("Expected Ok result, got error: {:?}", e),
     };
 
-    fn ser(val: impl AnchorSerialize) -> Vec<u8> {
+    fn ser(val: impl TrezoaAnchorSerialize) -> Vec<u8> {
         let mut w = vec![];
         val.serialize(&mut w).unwrap();
         w

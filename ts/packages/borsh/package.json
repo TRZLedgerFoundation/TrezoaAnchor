@@ -1,7 +1,7 @@
 {
-  "name": "@coral-xyz/borsh",
+  "name": "@trezoa-xyz/borsh",
   "version": "0.32.1",
-  "description": "Anchor Borsh",
+  "description": "TrezoaAnchor Borsh",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "exports": {
@@ -24,7 +24,7 @@
     "buffer-layout": "^1.2.0"
   },
   "peerDependencies": {
-    "@solana/web3.js": "^1.69.0"
+    "@trezoa/web3.js": "^1.69.0"
   },
   "files": [
     "dist"

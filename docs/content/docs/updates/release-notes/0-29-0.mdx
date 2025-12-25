@@ -1,10 +1,10 @@
 ---
 title: 0.29.0
-description: Anchor - Release Notes 0.29.0
+description: TrezoaAnchor - Release Notes 0.29.0
 ---
 
-Anchor keeps a
-[CHANGELOG](https://github.com/coral-xyz/anchor/blob/master/CHANGELOG.md) but
+TrezoaAnchor keeps a
+[CHANGELOG](https://github.com/trezoa-xyz/trezoaanchor/blob/master/CHANGELOG.md) but
 it's not easy to make sense what has changed, what effect does the change have
 and how to migrate. This is where release notes come in, an easy to digest and
 actionable view for each release.
@@ -16,53 +16,53 @@ actionable view for each release.
 1. Update `avm`:
 
    ```sh
-   cargo install --git https://github.com/coral-xyz/anchor --tag v0.29.0 avm --locked
+   cargo install --git https://github.com/trezoa-xyz/trezoaanchor --tag v0.29.0 avm --locked
    ```
 
-2. Update `anchor-cli`:
+2. Update `trezoaanchor-cli`:
 
    ```sh
    avm install latest
    ```
 
-3. Update Anchor crate(s) to `0.29.0`. Optionally, run `cargo update` to update
+3. Update TrezoaAnchor crate(s) to `0.29.0`. Optionally, run `cargo update` to update
    other dependencies to the latest compatible versions.
 
 4. Update TS package(s) to `0.29.0`.
 
-## Solana `1.14` is no longer supported
+## Trezoa `1.14` is no longer supported
 
-Minimum supported Solana version is now `1.16.0` because
+Minimum supported Trezoa version is now `1.16.0` because
 
 - All clusters including mainnet-beta are now running `^1.16`
 - There is a
-  [compatibility issue](https://github.com/solana-labs/solana/issues/31960)
+  [compatibility issue](https://github.com/trezoa-xyz/trezoa/issues/31960)
   between `1.14` and `1.16`
 
-If you are still on Solana `1.14`, update by running:
+If you are still on Trezoa `1.14`, update by running:
 
 ```sh
-solana-install init 1.17.0
+trezoaanchor-install init 1.17.0
 ```
 
 ## Override toolchain for the workspace
 
-`Anchor.toml` has a new section called `[toolchain]` that allows overriding the
+`TrezoaAnchor.toml` has a new section called `[toolchain]` that allows overriding the
 current toolchain versions inside the workspace.
 
 ```toml
 [toolchain]
-anchor_version = "0.29.0" # `anchor-cli` version to use
-solana_version = "1.17.0" # Solana version to use
+trezoaanchor_version = "0.29.0" # `trezoaanchor-cli` version to use
+trezoa_version = "1.17.0" # Trezoa version to use
 ```
 
 ### Notes
 
 - Fields are optional.
-- `anchor_version` requires
-  [`avm`](https://github.com/coral-xyz/anchor/tree/master/avm) to be installed.
-- Before this release, `anchor_version` and `solana_version` keys in
-  `Anchor.toml` were being used for Docker verifiable builds only. Now, all
+- `trezoaanchor_version` requires
+  [`avm`](https://github.com/trezoa-xyz/trezoaanchor/tree/master/avm) to be installed.
+- Before this release, `trezoaanchor_version` and `trezoa_version` keys in
+  `TrezoaAnchor.toml` were being used for Docker verifiable builds only. Now, all
   commands work via the `[toolchain]` section.
 
 ## Install CLI from commit with `avm`
@@ -70,10 +70,10 @@ solana_version = "1.17.0" # Solana version to use
 It is possible to install CLI from commit by running:
 
 ```sh
-cargo install --git https://github.com/coral-xyz/anchor --rev 6cf200493a307c01487c7b492b4893e0d6f6cb23 anchor-cli --locked
+cargo install --git https://github.com/trezoa-xyz/trezoaanchor --rev 6cf200493a307c01487c7b492b4893e0d6f6cb23 trezoaanchor-cli --locked
 ```
 
-but this overrides the `anchor` binary and does not work well with `avm`.
+but this overrides the `trezoaanchor` binary and does not work well with `avm`.
 
 In this release, `avm` supports installing and switching between commits.
 
@@ -96,16 +96,16 @@ avm install 6cf200
 avm use 0.28.0-6cf200493a307c01487c7b492b4893e0d6f6cb23
 ```
 
-Specify `toolchain.anchor_version` as `<VERSION>-<COMMIT>`:
+Specify `toolchain.trezoaanchor_version` as `<VERSION>-<COMMIT>`:
 
 ```toml
 [toolchain]
-anchor_version = "0.28.0-6cf200493a307c01487c7b492b4893e0d6f6cb23"
+trezoaanchor_version = "0.28.0-6cf200493a307c01487c7b492b4893e0d6f6cb23"
 ```
 
 ## Multiple files template
 
-Programs created with `anchor init` or `anchor new` have a single `lib.rs` file
+Programs created with `trezoaanchor init` or `trezoaanchor new` have a single `lib.rs` file
 but not everyone prefers a single file approach for programs.
 
 The most popular way of splitting the program into multiple files looks
@@ -125,20 +125,20 @@ something like the following:
 To initialize a workspace with this program structure, run:
 
 ```
-anchor init <NAME> --template multiple
+trezoaanchor init <NAME> --template multiple
 ```
 
 or if you have an existing workspace:
 
 ```
-anchor new <NAME> --template multiple
+trezoaanchor new <NAME> --template multiple
 ```
 
 ## Upgradeable programs in tests
 
-You can now configure upgradability of the programs in `anchor test`.
+You can now configure upgradability of the programs in `trezoaanchor test`.
 
-In `Anchor.toml`:
+In `TrezoaAnchor.toml`:
 
 ```toml
 [test]
@@ -217,14 +217,14 @@ Add `idl-build` feature to your program's `Cargo.toml` to try it out.
 
 ```toml
 [features]
-idl-build = ["anchor-lang/idl-build"]
+idl-build = ["trezoaanchor-lang/idl-build"]
 ```
 
-The IDL will be built automatically when you run `anchor build` but if you'd
+The IDL will be built automatically when you run `trezoaanchor build` but if you'd
 like to _only_ generate the IDL, run:
 
 ```sh
-anchor idl build
+trezoaanchor idl build
 ```
 
 ### Notes
@@ -235,14 +235,14 @@ anchor idl build
 ```toml
 [features]
 idl-build = [
-    "anchor-lang/idl-build",
-    "anchor-spl/idl-build",
+    "trezoaanchor-lang/idl-build",
+    "trezoaanchor-tpl/idl-build",
     "another-program/idl-build"
 ]
 ```
 
 - Compile time checks are supported.
-- External types from other Anchor programs are supported as long as the
+- External types from other TrezoaAnchor programs are supported as long as the
   external crate has the `idl-build` feature(see `another-program/idl-build`).
 - Conflicting type names e.g. `some_module::MyType` and `another_module::MyType`
   can be used together.
@@ -250,12 +250,12 @@ idl-build = [
   Rust compile times.
 - Even though most of it works great, some parts are still rough around the
   edges and you may encounter parts that are not fully ironed out. Please
-  [create an issue](https://github.com/coral-xyz/anchor/issues) if you run into
+  [create an issue](https://github.com/trezoa-xyz/trezoaanchor/issues) if you run into
   a problem.
 
 ## Type aliases
 
-Anchor IDL now supports type aliases.
+TrezoaAnchor IDL now supports type aliases.
 
 ```rust
 pub type U8Array = [u8; 8];
@@ -311,11 +311,11 @@ Generates the following IDL:
 **Note:** This example only works with the default IDL generation
 method(parsing) for now because type aliases for default Rust types don't work
 properly with
-`idl-build`([#2640](https://github.com/coral-xyz/anchor/issues/2640)).
+`idl-build`([#2640](https://github.com/trezoa-xyz/trezoaanchor/issues/2640)).
 
 ## Export `mpl-token-metadata`
 
-`anchor-spl` with `metadata` feature enabled now exports the
+`trezoaanchor-tpl` with `metadata` feature enabled now exports the
 `mpl-token-metadata` crate.
 
 **Note:** Consider removing the `mpl-token-metadata` dependency to reduce the
@@ -323,14 +323,14 @@ possibility of having conflicting versions:
 
 ```diff
 [dependencies]
-anchor-spl = { version = "0.29.0", features = ["metadata"] }
+trezoaanchor-tpl = { version = "0.29.0", features = ["metadata"] }
 - mpl-token-metadata = "1.13.1"
 ```
 
-and use the exported crate from `anchor-spl`:
+and use the exported crate from `trezoaanchor-tpl`:
 
 ```rust
-use anchor_spl::metadata::mpl_token_metadata;
+use trezoaanchor_spl::metadata::mpl_token_metadata;
 ```
 
 ## TypeScript SDK improvements
@@ -338,16 +338,16 @@ use anchor_spl::metadata::mpl_token_metadata;
 1. `Program.addEventListener` method is now strongly typed -- correct types for
    the event names and the event returned from the callback instead of `any`.
 
-2. `anchor.workspace` now lazy loads programs on-demand. Programs that are not
+2. `trezoaanchor.workspace` now lazy loads programs on-demand. Programs that are not
    being used in the tests won't get loaded and therefore won't cause errors.
 
 3. JavaScript convention is to use camelCase for property names but programs are
-   accessed via PascalCase e.g. `anchor.workspace.MyProgram` which is
+   accessed via PascalCase e.g. `trezoaanchor.workspace.MyProgram` which is
    unintuitive. Both variations work in this release.
 
    ```ts
-   const camel = anchor.workspace.myProgram;
-   const pascal = anchor.workspace.MyProgram;
+   const camel = trezoaanchor.workspace.myProgram;
+   const pascal = trezoaanchor.workspace.MyProgram;
    ```
 
 4. Removed `assert` and `base64-js` dependency.
@@ -365,18 +365,18 @@ To pull the latest image, run:
 docker pull backpackapp/build:v0.29.0
 ```
 
-**Note:** `anchor build --verifiable` now works with the latest image.
+**Note:** `trezoaanchor build --verifiable` now works with the latest image.
 
 ## Enhanced performance
 
 `0.29.0` performance is noticeably improved in all areas, the biggest one being
-[binary size](https://github.com/coral-xyz/anchor/blob/master/bench/BINARY_SIZE.md#0290)
+[binary size](https://github.com/trezoa-xyz/trezoaanchor/blob/master/bench/BINARY_SIZE.md#0290)
 which is reduced ~36% compared to `0.28.0`!
 
 Similar benchmarks can be found for
-[compute units](https://github.com/coral-xyz/anchor/blob/master/bench/COMPUTE_UNITS.md#0290)
+[compute units](https://github.com/trezoa-xyz/trezoaanchor/blob/master/bench/COMPUTE_UNITS.md#0290)
 and
-[stack memory](https://github.com/coral-xyz/anchor/blob/master/bench/STACK_MEMORY.md#0290).
+[stack memory](https://github.com/trezoa-xyz/trezoaanchor/blob/master/bench/STACK_MEMORY.md#0290).
 
 **Note:** The benchmark results will vary between programs but the overall
 direction should be the same.
@@ -384,4 +384,4 @@ direction should be the same.
 ---
 
 See the full list of changes in the
-[CHANGELOG](https://github.com/coral-xyz/anchor/blob/master/CHANGELOG.md#0290---2023-10-16).
+[CHANGELOG](https://github.com/trezoa-xyz/trezoaanchor/blob/master/CHANGELOG.md#0290---2023-10-16).

@@ -1,5 +1,5 @@
-import * as anchor from "@coral-xyz/anchor";
-import { AnchorError, Program } from "@coral-xyz/anchor";
+import * as trezoaanchor from "@trezoa-xyz/trezoaanchor";
+import { TrezoaAnchorError, Program } from "@trezoa-xyz/trezoaanchor";
 import { CustomProgram } from "../target/types/custom_program";
 import { assert } from "chai";
 
@@ -12,18 +12,18 @@ const NON_EXECUTABLE_ACCOUNT_ID =
 const CUSTOM_PROGRAM_ADDRESS = "dRiftyHA39MWEi3m9aunc5MzRF1JYuBsbn6VPcn33UH";
 
 describe("custom_program", () => {
-  anchor.setProvider(anchor.AnchorProvider.local());
-  const program = anchor.workspace.CustomProgram as Program<CustomProgram>;
+  trezoaanchor.setProvider(trezoaanchor.TrezoaAnchorProvider.local());
+  const program = trezoaanchor.workspace.CustomProgram as Program<CustomProgram>;
 
   it("Should pass test program validation", async () => {
     try {
       await program.methods
         .testProgramValidation()
         .accounts({
-          genericProgram: new anchor.web3.PublicKey(CUSTOM_PROGRAM_ID),
-          systemProgram: anchor.web3.SystemProgram.programId,
+          genericProgram: new trezoaanchor.web3.PublicKey(CUSTOM_PROGRAM_ID),
+          systemProgram: trezoaanchor.web3.SystemProgram.programId,
           customProgramInput: program.programId,
-          customProgramAddress: new anchor.web3.PublicKey(
+          customProgramAddress: new trezoaanchor.web3.PublicKey(
             CUSTOM_PROGRAM_ADDRESS
           ),
         })
@@ -39,10 +39,10 @@ describe("custom_program", () => {
       await program.methods
         .testProgramValidation()
         .accounts({
-          genericProgram: new anchor.web3.PublicKey(CUSTOM_PROGRAM_ID),
-          systemProgram: anchor.web3.SystemProgram.programId,
+          genericProgram: new trezoaanchor.web3.PublicKey(CUSTOM_PROGRAM_ID),
+          systemProgram: trezoaanchor.web3.SystemProgram.programId,
           customProgramInput: program.programId,
-          customProgramAddress: new anchor.web3.PublicKey(
+          customProgramAddress: new trezoaanchor.web3.PublicKey(
             NON_EXECUTABLE_ACCOUNT_ID
           ),
         })
@@ -50,8 +50,8 @@ describe("custom_program", () => {
       assert.ok(false);
     } catch (_err) {
       assert.ok(true);
-      assert.isTrue(_err instanceof AnchorError);
-      const err: AnchorError = _err;
+      assert.isTrue(_err instanceof TrezoaAnchorError);
+      const err: TrezoaAnchorError = _err;
       assert.strictEqual(err.error.errorCode.number, 3009);
       assert.strictEqual(
         err.error.errorMessage,
@@ -65,17 +65,17 @@ describe("custom_program", () => {
       await program.methods
         .testProgramValidation()
         .accounts({
-          genericProgram: new anchor.web3.PublicKey(CUSTOM_PROGRAM_ID),
-          systemProgram: anchor.web3.SystemProgram.programId,
+          genericProgram: new trezoaanchor.web3.PublicKey(CUSTOM_PROGRAM_ID),
+          systemProgram: trezoaanchor.web3.SystemProgram.programId,
           customProgramInput: program.programId,
-          customProgramAddress: new anchor.web3.PublicKey(CUSTOM_PROGRAM_ID),
+          customProgramAddress: new trezoaanchor.web3.PublicKey(CUSTOM_PROGRAM_ID),
         })
         .rpc();
       assert.ok(false);
     } catch (_err) {
       assert.ok(true);
-      assert.isTrue(_err instanceof AnchorError);
-      const err: AnchorError = _err;
+      assert.isTrue(_err instanceof TrezoaAnchorError);
+      const err: TrezoaAnchorError = _err;
       assert.strictEqual(err.error.errorCode.number, 2012);
       assert.strictEqual(
         err.error.errorMessage,

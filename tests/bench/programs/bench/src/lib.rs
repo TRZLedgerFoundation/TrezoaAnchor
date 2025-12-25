@@ -1,9 +1,9 @@
-//! This program is used to measure the performance of Anchor programs.
+//! This program is used to measure the performance of TrezoaAnchor programs.
 //!
-//! If you are making a change to this program, run `anchor run sync`.
+//! If you are making a change to this program, run `trezoaanchor run sync`.
 
-use anchor_lang::prelude::*;
-use anchor_spl::token_interface::{Mint, TokenAccount, TokenInterface};
+use trezoaanchor-lang::prelude::*;
+use trezoaanchor_spl::token_interface::{Mint, TokenAccount, TokenInterface};
 
 declare_id!("Bench11111111111111111111111111111111111111");
 

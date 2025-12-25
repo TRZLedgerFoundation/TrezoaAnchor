@@ -1,10 +1,10 @@
-//! The typescript example serves to show how one would setup an Anchor
+//! The typescript example serves to show how one would setup an TrezoaAnchor
 //! workspace with TypeScript tests and migrations.
 
 mod other;
 
-use anchor_lang::prelude::*;
-use anchor_spl::{
+use trezoaanchor-lang::prelude::*;
+use trezoaanchor_spl::{
     associated_token::AssociatedToken,
     token::{Mint, Token, TokenAccount},
 };

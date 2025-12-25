@@ -8,7 +8,7 @@ pub fn gen_idl_print_fn_address(address: String) -> TokenStream {
 
     quote! {
         #[test]
-        pub fn __anchor_private_print_idl_address() {
+        pub fn __trezoaanchor_private_print_idl_address() {
             #fn_body
         }
     }

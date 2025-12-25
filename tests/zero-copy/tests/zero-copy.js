@@ -1,23 +1,23 @@
-const anchor = require("@coral-xyz/anchor");
+const trezoaanchor = require("@trezoa-xyz/trezoaanchor");
 const { assert } = require("chai");
 const nativeAssert = require("assert");
-const PublicKey = anchor.web3.PublicKey;
-const BN = anchor.BN;
+const PublicKey = trezoaanchor.web3.PublicKey;
+const BN = trezoaanchor.BN;
 
 describe("zero-copy", () => {
   // Configure the client to use the local cluster.
-  anchor.setProvider(anchor.AnchorProvider.env());
+  trezoaanchor.setProvider(trezoaanchor.TrezoaAnchorProvider.env());
 
-  const program = anchor.workspace.ZeroCopy;
-  const programCpi = anchor.workspace.ZeroCpi;
+  const program = trezoaanchor.workspace.ZeroCopy;
+  const programCpi = trezoaanchor.workspace.ZeroCpi;
 
-  const foo = anchor.web3.Keypair.generate();
+  const foo = trezoaanchor.web3.Keypair.generate();
   it("Is creates a zero copy account", async () => {
     await program.rpc.createFoo({
       accounts: {
         foo: foo.publicKey,
         authority: program.provider.wallet.publicKey,
-        rent: anchor.web3.SYSVAR_RENT_PUBKEY,
+        rent: trezoaanchor.web3.SYSVAR_RENT_PUBKEY,
       },
       instructions: [await program.account.foo.createInstruction(foo)],
       signers: [foo],
@@ -93,7 +93,7 @@ describe("zero-copy", () => {
         )[0],
         authority: program.provider.wallet.publicKey,
         foo: foo.publicKey,
-        systemProgram: anchor.web3.SystemProgram.programId,
+        systemProgram: trezoaanchor.web3.SystemProgram.programId,
       },
     });
 
@@ -151,14 +151,14 @@ describe("zero-copy", () => {
     assert.strictEqual(barAccountAfterCpi.data.toNumber(), 1337);
   });
 
-  const eventQ = anchor.web3.Keypair.generate();
+  const eventQ = trezoaanchor.web3.Keypair.generate();
   const size = 1000000 + 8; // Account size in bytes.
 
   it("Creates a large event queue", async () => {
     await program.rpc.createLargeAccount({
       accounts: {
         eventQ: eventQ.publicKey,
-        rent: anchor.web3.SYSVAR_RENT_PUBKEY,
+        rent: trezoaanchor.web3.SYSVAR_RENT_PUBKEY,
       },
       instructions: [
         await program.account.eventQ.createInstruction(eventQ, size),

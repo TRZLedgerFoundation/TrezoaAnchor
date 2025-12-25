@@ -1,7 +1,7 @@
 {
   "redirects": [
     {
-      "source": "/docs/solana-playground",
+      "source": "/docs/trezoa-playground",
       "destination": "/docs/quickstart/solpg"
     },
     {
@@ -9,7 +9,7 @@
       "destination": "/docs/quickstart/local"
     },
     {
-      "source": "/docs/intro-to-solana",
+      "source": "/docs/intro-to-trezoa",
       "destination": "/docs"
     },
     {
@@ -74,7 +74,7 @@
     },
     {
       "source": "/docs/manifest",
-      "destination": "/docs/references/anchor-toml"
+      "destination": "/docs/references/trezoaanchor-toml"
     },
     {
       "source": "/docs/cli",
@@ -85,7 +85,7 @@
       "destination": "/docs/references/avm"
     },
     {
-      "source": "/docs/javascript-anchor-types",
+      "source": "/docs/javascript-trezoaanchor-types",
       "destination": "/docs/references/type-conversion"
     },
     {

@@ -1,4 +1,4 @@
-import { Idl, TypesCoder } from "@coral-xyz/anchor";
+import { Idl, TypesCoder } from "@trezoa-xyz/trezoaanchor";
 
 export class SplGovernanceTypesCoder implements TypesCoder {
   constructor(_idl: Idl) {}

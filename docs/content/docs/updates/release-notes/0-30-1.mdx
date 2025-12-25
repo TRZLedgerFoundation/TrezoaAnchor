@@ -1,6 +1,6 @@
 ---
 title: 0.30.1
-description: Anchor - Release Notes 0.30.1
+description: TrezoaAnchor - Release Notes 0.30.1
 ---
 
 There are a good number of quality of life improvements in this patch release.
@@ -11,23 +11,23 @@ breaking changes.
 
 ## How to upgrade
 
-1. Update `anchor-cli`:
+1. Update `trezoaanchor-cli`:
 
    ```sh
    avm install 0.30.1
    ```
 
-2. Update Anchor crate(s) to `0.30.1`.
+2. Update TrezoaAnchor crate(s) to `0.30.1`.
 
 3. Update TS package(s) to `0.30.1`.
 
-## Recommended Solana Version
+## Recommended Trezoa Version
 
-While this release supports anything above `1.17.3`, the recommended Solana
-version is `1.18.17`. You can upgrade Solana tools by running:
+While this release supports anything above `1.17.3`, the recommended Trezoa
+version is `1.18.17`. You can upgrade Trezoa tools by running:
 
 ```
-solana-install init 1.18.17
+trezoaanchor-install init 1.18.17
 ```
 
 ## IDL
@@ -35,16 +35,16 @@ solana-install init 1.18.17
 ### Convert legacy IDLs
 
 A new feature has been added to the IDL crate in order to convert legacy IDLs
-(pre Anchor v0.30) to new IDLs.
+(pre TrezoaAnchor v0.30) to new IDLs.
 
 To programmatically convert legacy IDLs, add:
 
 ```
-anchor-lang-idl = { version = "0.1.1", features = ["convert"] }
+trezoaanchor-lang-idl = { version = "0.1.1", features = ["convert"] }
 ```
 
 and use the
-[`convert_idl`](https://docs.rs/anchor-lang-idl/0.1.1/anchor_lang_idl/convert/fn.convert_idl.html)
+[`convert_idl`](https://docs.rs/trezoaanchortrezoaanchor-lang-idl/0.1.1/trezoaanchor-lang_idl/convert/fn.convert_idl.html)
 function.
 
 **NOTE:** This functionality has also been implemented as a CLI command for
@@ -120,32 +120,32 @@ In this release, you can now override the nightly version with
 
 There was a compile error during generation with recursive external type
 resolution, which is now fixed. See
-[this](https://github.com/coral-xyz/anchor/pull/2946) if you'd like to see the
+[this](https://github.com/trezoa-xyz/trezoaanchor/pull/2946) if you'd like to see the
 problem in more detail.
 
 ### New spec crate
 
 Making changes to the IDL crate, e.g. adding features such as the
-[`convert`](https://github.com/coral-xyz/anchor/pull/2986) feature, would
+[`convert`](https://github.com/trezoa-xyz/trezoaanchor/pull/2986) feature, would
 require bumping the version to get the changes even if the spec itself doesn't
 change.
 
-To fix this problem, a new [crate](https://docs.rs/anchor-lang-idl-spec) that
+To fix this problem, a new [crate](https://docs.rs/trezoaanchortrezoaanchor-lang-idl-spec) that
 only includes the IDL spec has been introduced. The new crate's version will be
 used in the `idl.metadata.spec` field to differentiate between various IDLs.
 
 **NOTE:** This crate is accessible via the main IDL crate from
-[`anchor_lang_idl::types`](https://docs.rs/anchor-lang-idl/0.1.1/anchor_lang_idl/types/index.html).
+[`trezoaanchor-lang_idl::types`](https://docs.rs/trezoaanchortrezoaanchor-lang-idl/0.1.1/trezoaanchor-lang_idl/types/index.html).
 
 ## CLI
 
 ### `idl convert` command
 
-This command allows you to convert legacy IDLs with the new `anchor idl convert`
+This command allows you to convert legacy IDLs with the new `trezoaanchor idl convert`
 command:
 
 ```
-anchor idl convert <PATH_TO_IDL_JSON>
+trezoaanchor idl convert <PATH_TO_IDL_JSON>
 ```
 
 ### `idl type` command
@@ -154,7 +154,7 @@ This command creates TypeScript IDL type (with camelCase fields) from an
 existing IDL file:
 
 ```
-anchor idl type <PATH_TO_IDL_JSON>
+trezoaanchor idl type <PATH_TO_IDL_JSON>
 ```
 
 ### `idl build` toolchain override
@@ -163,16 +163,16 @@ See the [explanation](#override-nightly-version-on-builds) in the IDL section.
 Example usage with the CLI:
 
 ```sh
-RUSTUP_TOOLCHAIN="nightly-2024-05-09" anchor idl build
+RUSTUP_TOOLCHAIN="nightly-2024-05-09" trezoaanchor idl build
 ```
 
 ### Automatic program id updates
 
 When building a program for the first time ever, the program id declarations
 will get automatically updated if there is not a `[programs.localnet]` entry in
-`Anchor.toml`.
+`TrezoaAnchor.toml`.
 
-Note that this is essentially the same as running `anchor keys sync`, only
+Note that this is essentially the same as running `trezoaanchor keys sync`, only
 difference being that this will only run once automatically.
 
 ### Upgradeable program clones
@@ -181,16 +181,16 @@ Cloning upgradeable programs with
 
 ```toml
 [test.validator]
-url = "https://api.mainnet-beta.solana.com"
+url = "https://api.mainnet-beta.trezoa.com"
 
 [[test.validator.clone]]
 address = "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb"
 ```
 
-would result in unusable programs due to a breaking change in Solana `1.17.12`.
+would result in unusable programs due to a breaking change in Trezoa `1.17.12`.
 
-This problem has been fixed from both Anchor and Solana's side. However, it
-requires using `solana-cli >=1.18.10`.
+This problem has been fixed from both TrezoaAnchor and Trezoa's side. However, it
+requires using `trezoa-cli >=1.18.10`.
 
 ### File system error improvements
 
@@ -203,8 +203,8 @@ In this release, file system related errors also include the path of the file.
 
 ### Using legacy IDLs with `declare_program!`
 
-[`declare_program!`](https://www.anchor-lang.com/release-notes/0.30.0#dependency-free-program-declaration)
-macro can now be used with legacy IDLs (pre Anchor v0.30).
+[`declare_program!`](https://www.trezoaanchor-lang.com/release-notes/0.30.0#dependency-free-program-declaration)
+macro can now be used with legacy IDLs (pre TrezoaAnchor v0.30).
 
 This works great as long as the program can be described correctly with the
 legacy IDL spec. However, if a program uses non-default features such as zero
@@ -212,13 +212,13 @@ copy, or `repr` modifications, the declaration of the program either won't
 compile, or will be invalid. There are two main solutions in this scenario:
 
 - Use the `idl convert` command, and manually fix the invalid parts
-- Generate the program's IDL by upgrading the program to Anchor v0.30
+- Generate the program's IDL by upgrading the program to TrezoaAnchor v0.30
 
 The latter option is preferred as it's less error-prone. If you have dependency
 issues while upgrading, simply remove them when generating the IDL since the IDL
 generation only cares about the signatures, and all program logic, including all
-dependencies (except Anchor), can be removed when generating the IDL.
-[Here](https://github.com/coral-xyz/anchor/blob/cc43e67399ad50cf7d33466f7bcd7e6dcee88ae2/ts/packages/spl-token/program/lib.rs)
+dependencies (except TrezoaAnchor), can be removed when generating the IDL.
+[Here](https://github.com/trezoa-xyz/trezoaanchor/blob/cc43e67399ad50cf7d33466f7bcd7e6dcee88ae2/ts/packages/tpl-token/program/lib.rs)
 is an example program that you can generate an IDL from.
 
 In short, IDLs should be preferably generated with v0.30 rather than the
@@ -244,9 +244,9 @@ public.
 
 ### `pubkey!` macro
 
-[`solana-program`](https://docs.rs/solana-program/1.18.17/solana_program/index.html)
+[`trezoa-program`](https://docs.rs/trezoaanchor-program/1.18.17/trezoa_program/index.html)
 has
-[`pubkey!`](https://docs.rs/solana-program/1.18.17/solana_program/macro.pubkey.html)
+[`pubkey!`](https://docs.rs/trezoaanchor-program/1.18.17/trezoa_program/macro.pubkey.html)
 to easily declare public keys:
 
 ```rust
@@ -261,21 +261,21 @@ let key = Pubkey::from_str("11111111111111111111111111111111").unwrap();
 ```
 
 However, because of how the macro is implemented, it wasn't possible to use it
-from Anchor without also including `solana-program` to your dependency list as
-the macro was specifically using `::solana_program`.
+from TrezoaAnchor without also including `trezoa-program` to your dependency list as
+the macro was specifically using `::trezoa_program`.
 
-You can now directly use `pubkey!` as it's exported from `anchor_lang::prelude`.
+You can now directly use `pubkey!` as it's exported from `trezoaanchor-lang::prelude`.
 
-Note that because `solana_program` is exported from `anchor_lang`, you can also
-remove `solana-program` dependency from your `Cargo.toml` if `pubkey!` was the
+Note that because `trezoa_program` is exported from `trezoaanchor-lang`, you can also
+remove `trezoa-program` dependency from your `Cargo.toml` if `pubkey!` was the
 reason for adding it.
 
 ### `ID_CONST` constant
 
 Program ids declared from
-[`declare_id!`](https://docs.rs/anchor-lang/0.30.1/anchor_lang/macro.declare_id.html)
+[`declare_id!`](https://docs.rs/trezoaanchortrezoaanchor-lang/0.30.1/trezoaanchor-lang/macro.declare_id.html)
 and
-[`declare_program!`](https://docs.rs/anchor-lang/0.30.1/anchor_lang/macro.declare_program.html)
+[`declare_program!`](https://docs.rs/trezoaanchortrezoaanchor-lang/0.30.1/trezoaanchor-lang/macro.declare_program.html)
 have `ID` declared as `static` which doesn't allow compile time checks.
 
 Both of these macros now have a new constant (`ID_CONST`), which is essentially
@@ -284,7 +284,7 @@ the same as `ID`, but is declared as `const` instead of `static`.
 ### Stack usage of token extensions
 
 Stack usage of the new
-[token extensions constraints](https://www.anchor-lang.com/release-notes/0.30.0#token-extensions)
+[token extensions constraints](https://www.trezoaanchor-lang.com/release-notes/0.30.0#token-extensions)
 has been improved.
 
 ### Error propagation from integer conversion errors
@@ -295,22 +295,22 @@ You can now propagate integer conversion errors with `?`:
 let n: i32 = u32::MAX.try_into()?;
 ```
 
-## SPL
+## TPL
 
 ### Export ATA crate
 
-[`spl-associated-token-account](https://crates.io/crates/spl-associated-token-account)
-crate is now re-exported from `anchor_spl::associated_token`.
+[`tpl-associated-token-account](https://crates.io/crates/tpl-associated-token-account)
+crate is now re-exported from `trezoaanchor_spl::associated_token`.
 
 Similar to how you can
-[remove](https://www.anchor-lang.com/release-notes/0.29.0#export-mpl-token-metadata)
+[remove](https://www.trezoaanchor-lang.com/release-notes/0.29.0#export-mpl-token-metadata)
 the `mpl-token-metadata` crate from your dependency list, you can also remove
-`spl-associated-token-accounts` crate.
+`tpl-associated-token-accounts` crate.
 
 ```toml
 [dependencies]
-anchor-spl = "0.30.1"
-- spl-associated-token-account = "3.0.2"
+trezoaanchor-tpl = "0.30.1"
+- tpl-associated-token-account = "3.0.2"
 ```
 
 ## TypeScript
@@ -318,7 +318,7 @@ anchor-spl = "0.30.1"
 ### ATA resolution
 
 The
-[account resolution](https://www.anchor-lang.com/release-notes/0.30.0#account-resolution)
+[account resolution](https://www.trezoaanchor-lang.com/release-notes/0.30.0#account-resolution)
 support has been extended to support associated token accounts in this release.
 
 If you use ATAs in your instruction, you'll get a type error if you call the
@@ -338,14 +338,14 @@ no longer results in an error.
 ### Versioned transactions
 
 A problem where `maxSupportedTransactionVersion` was needed, but not being set
-from `AnchorProvider` has been fixed.
+from `TrezoaAnchorProvider` has been fixed.
 
 ### New errors package
 
-Anchor errors have been separated into a new package
-[`@coral-xyz/anchor-errors`](https://www.npmjs.com/package/@coral-xyz/anchor-errors).
+TrezoaAnchor errors have been separated into a new package
+[`@trezoa-xyz/trezoaanchor-errors`](https://www.npmjs.com/package/@trezoa-xyz/trezoaanchor-errors).
 
 ---
 
 See the full list of notable changes in the
-[CHANGELOG](https://github.com/coral-xyz/anchor/blob/v0.30.1/CHANGELOG.md#0301---2024-06-20).
+[CHANGELOG](https://github.com/trezoa-xyz/trezoaanchor/blob/v0.30.1/CHANGELOG.md#0301---2024-06-20).

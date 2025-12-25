@@ -1,22 +1,22 @@
 [package]
-name = "anchor-derive-accounts"
+name = "trezoaanchor-derive-accounts"
 version = "0.32.1"
-authors = ["Anchor Maintainers <accounts@200ms.io>"]
-repository = "https://github.com/coral-xyz/anchor"
+authors = ["TrezoaAnchor Maintainers <accounts@200ms.io>"]
+repository = "https://github.com/trezoa-xyz/trezoaanchor"
 license = "Apache-2.0"
-description = "Anchor Derive macro for accounts"
+description = "TrezoaAnchor Derive macro for accounts"
 edition = "2021"
 
 [lib]
 proc-macro = true
 
 [features]
-allow-missing-optionals = ["anchor-syn/allow-missing-optionals"]
-anchor-debug = ["anchor-syn/anchor-debug"]
-idl-build = ["anchor-syn/idl-build"]
-init-if-needed = ["anchor-syn/init-if-needed"]
+allow-missing-optionals = ["trezoaanchor-syn/allow-missing-optionals"]
+trezoaanchor-debug = ["trezoaanchor-syn/trezoaanchor-debug"]
+idl-build = ["trezoaanchor-syn/idl-build"]
+init-if-needed = ["trezoaanchor-syn/init-if-needed"]
 
 [dependencies]
-anchor-syn = { path = "../../syn", version = "0.32.1" }
+trezoaanchor-syn = { path = "../../syn", version = "0.32.1" }
 quote = "1"
 syn = { version = "1", features = ["full"] }

@@ -1,12 +1,12 @@
 {
-  "name": "@coral-xyz/spl-token-lending",
-  "description": "Anchor client for Solana Program Library Token Lending",
+  "name": "@trezoa-xyz/tpl-token-lending",
+  "description": "TrezoaAnchor client for Trezoa Program Library Token Lending",
   "version": "0.2.0",
   "author": "acheron <acheroncrypto@gmail.com>",
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
-    "url": "https://github.com/coral-xyz/anchor.git"
+    "url": "https://github.com/trezoa-xyz/trezoaanchor.git"
   },
   "files": [
     "dist"
@@ -27,8 +27,8 @@
     "watch": "tsc -p tsconfig.cjs.json --watch"
   },
   "dependencies": {
-    "@coral-xyz/anchor": "=0.32.1",
-    "@native-to-anchor/buffer-layout": "=0.1.0"
+    "@trezoa-xyz/trezoaanchor": "=0.32.1",
+    "@native-to-trezoaanchor/buffer-layout": "=0.1.0"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "=21.0.2",

@@ -1,18 +1,18 @@
-import { PublicKey } from "@solana/web3.js";
-import { Program, AnchorProvider } from "@coral-xyz/anchor";
+import { PublicKey } from "@trezoa/web3.js";
+import { Program, TrezoaAnchorProvider } from "@trezoa-xyz/trezoaanchor";
 
 import { SplTokenCoder } from "./coder";
 
-export const SPL_TOKEN_PROGRAM_ID = new PublicKey(
+export const TPL_TOKEN_PROGRAM_ID = new PublicKey(
   "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
 );
 
 interface GetProgramParams {
   programId?: PublicKey;
-  provider?: AnchorProvider;
+  provider?: TrezoaAnchorProvider;
 }
 
-export function splTokenProgram(params?: GetProgramParams): Program<SplToken> {
+export function tplTokenProgram(params?: GetProgramParams): Program<SplToken> {
   return new Program<SplToken>(
     params?.programId ? { ...IDL, address: params.programId.toString() } : IDL,
     params?.provider,
@@ -836,7 +836,7 @@ type SplToken = {
             docs: [
               "If is_native.is_some, this is a native token, and the value logs the rent-exempt reserve. An",
               "Account is required to be rent-exempt, so the value is used by the Processor to ensure that",
-              "wrapped SOL accounts do not drop below this threshold."
+              "wrapped TRZ accounts do not drop below this threshold."
             ];
             type: {
               coption: "u64";
@@ -1676,7 +1676,7 @@ const IDL: SplToken = {
             docs: [
               "If is_native.is_some, this is a native token, and the value logs the rent-exempt reserve. An",
               "Account is required to be rent-exempt, so the value is used by the Processor to ensure that",
-              "wrapped SOL accounts do not drop below this threshold.",
+              "wrapped TRZ accounts do not drop below this threshold.",
             ],
             type: {
               coption: "u64",

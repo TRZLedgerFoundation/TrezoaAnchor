@@ -1,8 +1,8 @@
-// Avoiding AccountInfo deprecated msg in anchor context
+// Avoiding AccountInfo deprecated msg in trezoaanchor context
 #![allow(deprecated)]
-use crate::solana_program::account_info::AccountInfo;
-use crate::solana_program::instruction::AccountMeta;
-use crate::solana_program::pubkey::Pubkey;
+use crate::trezoa_program::account_info::AccountInfo;
+use crate::trezoa_program::instruction::AccountMeta;
+use crate::trezoa_program::pubkey::Pubkey;
 use crate::{Accounts, Result, ToAccountInfos, ToAccountMetas};
 use std::collections::BTreeSet;
 
@@ -39,7 +39,7 @@ impl<'info, B, T: Accounts<'info, B>> Accounts<'info, B> for Vec<T> {
 
 #[cfg(test)]
 mod tests {
-    use crate::solana_program::pubkey::Pubkey;
+    use crate::trezoa_program::pubkey::Pubkey;
 
     use super::*;
 

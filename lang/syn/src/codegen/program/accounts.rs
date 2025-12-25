@@ -7,11 +7,11 @@ pub fn generate(program: &Program) -> proc_macro2::TokenStream {
 
     // Go through instruction accounts.
     for ix in &program.ixs {
-        let anchor_ident = &ix.anchor_ident;
+        let trezoaanchor_ident = &ix.trezoaanchor_ident;
         // TODO: move to fn and share with accounts.rs.
         let macro_name = format!(
             "__client_accounts_{}",
-            anchor_ident.to_string().to_snake_case()
+            trezoaanchor_ident.to_string().to_snake_case()
         );
         accounts.insert(macro_name, ix.cfgs.as_slice());
     }
@@ -32,7 +32,7 @@ pub fn generate(program: &Program) -> proc_macro2::TokenStream {
     //       each struct here. This is convenient for Rust clients.
 
     quote! {
-        /// An Anchor generated module, providing a set of structs
+        /// An TrezoaAnchor generated module, providing a set of structs
         /// mirroring the structs deriving `Accounts`, where each field is
         /// a `Pubkey`. This is useful for specifying accounts for a client.
         pub mod accounts {

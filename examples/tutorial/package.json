@@ -1,5 +1,5 @@
 {
-  "name": "anchor-examples",
+  "name": "trezoaanchor-examples",
   "private": true,
   "scripts": {
     "lint:fix": "prettier */*.js \"*/**/*{.js,.ts}\" -w",

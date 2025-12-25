@@ -1,6 +1,6 @@
 // @ts-nocheck
-import * as B from "@native-to-anchor/buffer-layout";
-import { Idl, InstructionCoder } from "@coral-xyz/anchor";
+import * as B from "@native-to-trezoaanchor/buffer-layout";
+import { Idl, InstructionCoder } from "@trezoa-xyz/trezoaanchor";
 
 export class SplBinaryOptionInstructionCoder implements InstructionCoder {
   constructor(_idl: Idl) {}

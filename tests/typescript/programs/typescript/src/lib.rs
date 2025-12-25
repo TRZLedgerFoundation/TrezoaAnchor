@@ -1,7 +1,7 @@
-//! The typescript example serves to show how one would setup an Anchor
+//! The typescript example serves to show how one would setup an TrezoaAnchor
 //! workspace with TypeScript tests and migrations.
 
-use anchor_lang::prelude::*;
+use trezoaanchor-lang::prelude::*;
 
 declare_id!("Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS");
 

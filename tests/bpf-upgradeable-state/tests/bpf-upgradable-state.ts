@@ -1,27 +1,27 @@
-import * as anchor from "@coral-xyz/anchor";
-import { AnchorError, Program } from "@coral-xyz/anchor";
-import { PublicKey } from "@solana/web3.js";
+import * as trezoaanchor from "@trezoa-xyz/trezoaanchor";
+import { TrezoaAnchorError, Program } from "@trezoa-xyz/trezoaanchor";
+import { PublicKey } from "@trezoa/web3.js";
 import { assert } from "chai";
 import { BpfUpgradeableState } from "../target/types/bpf_upgradeable_state";
 
 describe("bpf_upgradeable_state", () => {
-  const provider = anchor.AnchorProvider.env();
+  const provider = trezoaanchor.TrezoaAnchorProvider.env();
   // Configure the client to use the local cluster.
-  anchor.setProvider(provider);
+  trezoaanchor.setProvider(provider);
 
-  const program = anchor.workspace
+  const program = trezoaanchor.workspace
     .BpfUpgradeableState as Program<BpfUpgradeableState>;
   const programDataAddress = PublicKey.findProgramAddressSync(
     [program.programId.toBytes()],
-    new anchor.web3.PublicKey("BPFLoaderUpgradeab1e11111111111111111111111")
+    new trezoaanchor.web3.PublicKey("BPFLoaderUpgradeab1e11111111111111111111111")
   )[0];
 
   it("Reads ProgramData and sets field", async () => {
-    const settings = anchor.web3.Keypair.generate();
-    const tx = await program.rpc.setAdminSettings(new anchor.BN(500), {
+    const settings = trezoaanchor.web3.Keypair.generate();
+    const tx = await program.rpc.setAdminSettings(new trezoaanchor.BN(500), {
       accounts: {
         authority: provider.wallet.publicKey,
-        systemProgram: anchor.web3.SystemProgram.programId,
+        systemProgram: trezoaanchor.web3.SystemProgram.programId,
         programData: programDataAddress,
         program: program.programId,
         settings: settings.publicKey,
@@ -37,13 +37,13 @@ describe("bpf_upgradeable_state", () => {
   });
 
   it("Reads ProgramData and sets field, uses program state", async () => {
-    const settings = anchor.web3.Keypair.generate();
+    const settings = trezoaanchor.web3.Keypair.generate();
     const tx = await program.rpc.setAdminSettingsUseProgramState(
-      new anchor.BN(500),
+      new trezoaanchor.BN(500),
       {
         accounts: {
           authority: provider.wallet.publicKey,
-          systemProgram: anchor.web3.SystemProgram.programId,
+          systemProgram: trezoaanchor.web3.SystemProgram.programId,
           programData: programDataAddress,
           program: program.programId,
           settings: settings.publicKey,
@@ -60,9 +60,9 @@ describe("bpf_upgradeable_state", () => {
   });
 
   it("Validates constraint on ProgramData", async () => {
-    const settings = anchor.web3.Keypair.generate();
+    const settings = trezoaanchor.web3.Keypair.generate();
     try {
-      const authority = anchor.web3.Keypair.generate();
+      const authority = trezoaanchor.web3.Keypair.generate();
       await provider.connection.confirmTransaction(
         await provider.connection.requestAirdrop(
           authority.publicKey,
@@ -70,10 +70,10 @@ describe("bpf_upgradeable_state", () => {
         ),
         "confirmed"
       );
-      await program.rpc.setAdminSettings(new anchor.BN(500), {
+      await program.rpc.setAdminSettings(new trezoaanchor.BN(500), {
         accounts: {
           authority: authority.publicKey,
-          systemProgram: anchor.web3.SystemProgram.programId,
+          systemProgram: trezoaanchor.web3.SystemProgram.programId,
           programData: programDataAddress,
           settings: settings.publicKey,
           program: program.programId,
@@ -82,8 +82,8 @@ describe("bpf_upgradeable_state", () => {
       });
       assert.ok(false);
     } catch (_err) {
-      assert.isTrue(_err instanceof AnchorError);
-      const err: AnchorError = _err;
+      assert.isTrue(_err instanceof TrezoaAnchorError);
+      const err: TrezoaAnchorError = _err;
       assert.strictEqual(err.error.errorCode.number, 2003);
       assert.strictEqual(
         err.error.errorMessage,
@@ -93,12 +93,12 @@ describe("bpf_upgradeable_state", () => {
   });
 
   it("Validates that account is ProgramData", async () => {
-    const settings = anchor.web3.Keypair.generate();
+    const settings = trezoaanchor.web3.Keypair.generate();
     try {
-      await program.rpc.setAdminSettings(new anchor.BN(500), {
+      await program.rpc.setAdminSettings(new trezoaanchor.BN(500), {
         accounts: {
           authority: provider.wallet.publicKey,
-          systemProgram: anchor.web3.SystemProgram.programId,
+          systemProgram: trezoaanchor.web3.SystemProgram.programId,
           programData: program.programId,
           settings: settings.publicKey,
           program: program.programId,
@@ -107,8 +107,8 @@ describe("bpf_upgradeable_state", () => {
       });
       assert.ok(false);
     } catch (_err) {
-      assert.isTrue(_err instanceof AnchorError);
-      const err: AnchorError = _err;
+      assert.isTrue(_err instanceof TrezoaAnchorError);
+      const err: TrezoaAnchorError = _err;
       assert.strictEqual(err.error.errorCode.number, 3013);
       assert.strictEqual(
         err.error.errorMessage,
@@ -118,12 +118,12 @@ describe("bpf_upgradeable_state", () => {
   });
 
   it("Validates that account is owned by the upgradeable bpf loader", async () => {
-    const settings = anchor.web3.Keypair.generate();
+    const settings = trezoaanchor.web3.Keypair.generate();
     try {
-      await program.rpc.setAdminSettings(new anchor.BN(500), {
+      await program.rpc.setAdminSettings(new trezoaanchor.BN(500), {
         accounts: {
           authority: provider.wallet.publicKey,
-          systemProgram: anchor.web3.SystemProgram.programId,
+          systemProgram: trezoaanchor.web3.SystemProgram.programId,
           programData: provider.wallet.publicKey,
           settings: settings.publicKey,
           program: program.programId,
@@ -132,8 +132,8 @@ describe("bpf_upgradeable_state", () => {
       });
       assert.ok(false);
     } catch (_err) {
-      assert.isTrue(_err instanceof AnchorError);
-      const err: AnchorError = _err;
+      assert.isTrue(_err instanceof TrezoaAnchorError);
+      const err: TrezoaAnchorError = _err;
       assert.strictEqual(err.error.errorCode.number, 3007);
       assert.strictEqual(
         err.error.errorMessage,
@@ -148,15 +148,15 @@ describe("bpf_upgradeable_state", () => {
     );
     const secondProgramProgramDataAddress = PublicKey.findProgramAddressSync(
       [secondProgramAddress.toBytes()],
-      new anchor.web3.PublicKey("BPFLoaderUpgradeab1e11111111111111111111111")
+      new trezoaanchor.web3.PublicKey("BPFLoaderUpgradeab1e11111111111111111111111")
     )[0];
 
-    const settings = anchor.web3.Keypair.generate();
+    const settings = trezoaanchor.web3.Keypair.generate();
     try {
-      await program.rpc.setAdminSettings(new anchor.BN(500), {
+      await program.rpc.setAdminSettings(new trezoaanchor.BN(500), {
         accounts: {
           authority: provider.wallet.publicKey,
-          systemProgram: anchor.web3.SystemProgram.programId,
+          systemProgram: trezoaanchor.web3.SystemProgram.programId,
           programData: secondProgramProgramDataAddress,
           settings: settings.publicKey,
           program: program.programId,
@@ -165,8 +165,8 @@ describe("bpf_upgradeable_state", () => {
       });
       assert.ok(false);
     } catch (_err) {
-      assert.isTrue(_err instanceof AnchorError);
-      const err: AnchorError = _err;
+      assert.isTrue(_err instanceof TrezoaAnchorError);
+      const err: TrezoaAnchorError = _err;
       assert.strictEqual(err.error.errorCode.number, 6000);
     }
   });
@@ -177,15 +177,15 @@ describe("bpf_upgradeable_state", () => {
     );
     const secondProgramProgramDataAddress = PublicKey.findProgramAddressSync(
       [secondProgramAddress.toBytes()],
-      new anchor.web3.PublicKey("BPFLoaderUpgradeab1e11111111111111111111111")
+      new trezoaanchor.web3.PublicKey("BPFLoaderUpgradeab1e11111111111111111111111")
     )[0];
 
-    const settings = anchor.web3.Keypair.generate();
+    const settings = trezoaanchor.web3.Keypair.generate();
     try {
-      await program.rpc.setAdminSettingsUseProgramState(new anchor.BN(500), {
+      await program.rpc.setAdminSettingsUseProgramState(new trezoaanchor.BN(500), {
         accounts: {
           authority: provider.wallet.publicKey,
-          systemProgram: anchor.web3.SystemProgram.programId,
+          systemProgram: trezoaanchor.web3.SystemProgram.programId,
           programData: secondProgramProgramDataAddress,
           settings: settings.publicKey,
           program: program.programId,
@@ -194,8 +194,8 @@ describe("bpf_upgradeable_state", () => {
       });
       assert.ok(false);
     } catch (_err) {
-      assert.isTrue(_err instanceof AnchorError);
-      const err: AnchorError = _err;
+      assert.isTrue(_err instanceof TrezoaAnchorError);
+      const err: TrezoaAnchorError = _err;
       assert.strictEqual(err.error.errorCode.number, 2003);
     }
   });

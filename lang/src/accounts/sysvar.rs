@@ -1,11 +1,11 @@
 //! Type validating that the account is a sysvar and deserializing it
 
 use crate::error::ErrorCode;
-use crate::solana_program::account_info::AccountInfo;
-use crate::solana_program::instruction::AccountMeta;
-use crate::solana_program::pubkey::Pubkey;
+use crate::trezoa_program::account_info::AccountInfo;
+use crate::trezoa_program::instruction::AccountMeta;
+use crate::trezoa_program::pubkey::Pubkey;
 use crate::{Accounts, AccountsExit, Key, Result, ToAccountInfos, ToAccountMetas};
-use solana_sysvar::{Sysvar as SolanaSysvar, SysvarSerialize as SolanaSysvarSerialize};
+use trezoa_sysvar::{Sysvar as TrezoaSysvar, SysvarSerialize as TrezoaSysvarSerialize};
 use std::collections::BTreeSet;
 use std::fmt;
 use std::ops::{Deref, DerefMut};
@@ -13,9 +13,9 @@ use std::ops::{Deref, DerefMut};
 /// Type validating that the account is a sysvar and deserializing it.
 ///
 /// If possible, sysvars should not be used via accounts
-/// but by using the [`get`](https://docs.rs/solana-program/latest/solana_program/sysvar/trait.Sysvar.html#method.get)
+/// but by using the [`get`](https://docs.rs/trezoaanchor-program/latest/trezoa_program/sysvar/trait.Sysvar.html#method.get)
 /// function on the desired sysvar. This is because using `get`
-/// does not run the risk of Anchor having a bug in its `Sysvar` type
+/// does not run the risk of TrezoaAnchor having a bug in its `Sysvar` type
 /// and using `get` also decreases tx size, making space for other
 /// accounts that cannot be requested via syscall.
 ///
@@ -31,12 +31,12 @@ use std::ops::{Deref, DerefMut};
 ///     let clock = Clock::get()?;
 /// }
 /// ```
-pub struct Sysvar<'info, T: SolanaSysvar> {
+pub struct Sysvar<'info, T: TrezoaSysvar> {
     info: &'info AccountInfo<'info>,
     account: T,
 }
 
-impl<T: SolanaSysvarSerialize + fmt::Debug> fmt::Debug for Sysvar<'_, T> {
+impl<T: TrezoaSysvarSerialize + fmt::Debug> fmt::Debug for Sysvar<'_, T> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.debug_struct("Sysvar")
             .field("info", &self.info)
@@ -45,7 +45,7 @@ impl<T: SolanaSysvarSerialize + fmt::Debug> fmt::Debug for Sysvar<'_, T> {
     }
 }
 
-impl<'info, T: SolanaSysvarSerialize> Sysvar<'info, T> {
+impl<'info, T: TrezoaSysvarSerialize> Sysvar<'info, T> {
     pub fn from_account_info(acc_info: &'info AccountInfo<'info>) -> Result<Sysvar<'info, T>> {
         match T::from_account_info(acc_info) {
             Ok(val) => Ok(Sysvar {
@@ -57,7 +57,7 @@ impl<'info, T: SolanaSysvarSerialize> Sysvar<'info, T> {
     }
 }
 
-impl<T: SolanaSysvarSerialize> Clone for Sysvar<'_, T> {
+impl<T: TrezoaSysvarSerialize> Clone for Sysvar<'_, T> {
     fn clone(&self) -> Self {
         Self {
             info: self.info,
@@ -66,7 +66,7 @@ impl<T: SolanaSysvarSerialize> Clone for Sysvar<'_, T> {
     }
 }
 
-impl<'info, B, T: SolanaSysvarSerialize> Accounts<'info, B> for Sysvar<'info, T> {
+impl<'info, B, T: TrezoaSysvarSerialize> Accounts<'info, B> for Sysvar<'info, T> {
     fn try_accounts(
         _program_id: &Pubkey,
         accounts: &mut &'info [AccountInfo<'info>],
@@ -83,25 +83,25 @@ impl<'info, B, T: SolanaSysvarSerialize> Accounts<'info, B> for Sysvar<'info, T>
     }
 }
 
-impl<T: SolanaSysvarSerialize> ToAccountMetas for Sysvar<'_, T> {
+impl<T: TrezoaSysvarSerialize> ToAccountMetas for Sysvar<'_, T> {
     fn to_account_metas(&self, _is_signer: Option<bool>) -> Vec<AccountMeta> {
         vec![AccountMeta::new_readonly(*self.info.key, false)]
     }
 }
 
-impl<'info, T: SolanaSysvarSerialize> ToAccountInfos<'info> for Sysvar<'info, T> {
+impl<'info, T: TrezoaSysvarSerialize> ToAccountInfos<'info> for Sysvar<'info, T> {
     fn to_account_infos(&self) -> Vec<AccountInfo<'info>> {
         vec![self.info.clone()]
     }
 }
 
-impl<'info, T: SolanaSysvarSerialize> AsRef<AccountInfo<'info>> for Sysvar<'info, T> {
+impl<'info, T: TrezoaSysvarSerialize> AsRef<AccountInfo<'info>> for Sysvar<'info, T> {
     fn as_ref(&self) -> &AccountInfo<'info> {
         self.info
     }
 }
 
-impl<T: SolanaSysvarSerialize> Deref for Sysvar<'_, T> {
+impl<T: TrezoaSysvarSerialize> Deref for Sysvar<'_, T> {
     type Target = T;
 
     fn deref(&self) -> &Self::Target {
@@ -109,15 +109,15 @@ impl<T: SolanaSysvarSerialize> Deref for Sysvar<'_, T> {
     }
 }
 
-impl<T: SolanaSysvarSerialize> DerefMut for Sysvar<'_, T> {
+impl<T: TrezoaSysvarSerialize> DerefMut for Sysvar<'_, T> {
     fn deref_mut(&mut self) -> &mut Self::Target {
         &mut self.account
     }
 }
 
-impl<'info, T: SolanaSysvarSerialize> AccountsExit<'info> for Sysvar<'info, T> {}
+impl<'info, T: TrezoaSysvarSerialize> AccountsExit<'info> for Sysvar<'info, T> {}
 
-impl<T: SolanaSysvarSerialize> Key for Sysvar<'_, T> {
+impl<T: TrezoaSysvarSerialize> Key for Sysvar<'_, T> {
     fn key(&self) -> Pubkey {
         *self.info.key
     }

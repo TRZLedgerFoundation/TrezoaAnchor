@@ -1,14 +1,14 @@
-import * as anchor from "@coral-xyz/anchor";
+import * as trezoaanchor from "@trezoa-xyz/trezoaanchor";
 import assert from "assert";
 
 import type { DeclareProgram } from "../target/types/declare_program";
 import type { External } from "../target/types/external";
 
 describe("declare-program", () => {
-  anchor.setProvider(anchor.AnchorProvider.env());
-  const program: anchor.Program<DeclareProgram> =
-    anchor.workspace.declareProgram;
-  const externalProgram: anchor.Program<External> = anchor.workspace.external;
+  trezoaanchor.setProvider(trezoaanchor.TrezoaAnchorProvider.env());
+  const program: trezoaanchor.Program<DeclareProgram> =
+    trezoaanchor.workspace.declareProgram;
+  const externalProgram: trezoaanchor.Program<External> = trezoaanchor.workspace.external;
 
   // TODO: Add a utility type that does this?
   let pubkeys: Awaited<
@@ -51,7 +51,7 @@ describe("declare-program", () => {
     // The program itself doesn't have an error definition, therefore its IDL
     // also shouldn't have the `errors` field.
     //
-    // https://github.com/solana-foundation/anchor/pull/3757#discussion_r2424695717
+    // https://github.com/trz-ledger-foundation/trezoaanchor/pull/3757#discussion_r2424695717
     if (program.idl.errors) throw new Error("The IDL should not have `errors`");
   });
 });

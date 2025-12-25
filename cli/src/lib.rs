@@ -4,14 +4,14 @@ use crate::config::{
     SurfnetInfoResponse, SurfpoolConfig, TestValidator, ValidatorType, WithPath, SHUTDOWN_WAIT,
     STARTUP_WAIT, SURFPOOL_HOST,
 };
-use anchor_client::Cluster;
-use anchor_lang::prelude::UpgradeableLoaderState;
-use anchor_lang::solana_program::bpf_loader_upgradeable;
-use anchor_lang::AnchorDeserialize;
-use anchor_lang_idl::convert::convert_idl;
-use anchor_lang_idl::types::{Idl, IdlArrayLen, IdlDefinedFields, IdlType, IdlTypeDefTy};
+use trezoaanchor_client::Cluster;
+use trezoaanchor-lang::prelude::UpgradeableLoaderState;
+use trezoaanchor-lang::trezoa_program::bpf_loader_upgradeable;
+use trezoaanchor-lang::TrezoaAnchorDeserialize;
+use trezoaanchor-lang_idl::convert::convert_idl;
+use trezoaanchor-lang_idl::types::{Idl, IdlArrayLen, IdlDefinedFields, IdlType, IdlTypeDefTy};
 use anyhow::{anyhow, bail, Context, Result};
-use checks::{check_anchor_version, check_deps, check_idl_build_feature, check_overflow};
+use checks::{check_trezoaanchor_version, check_deps, check_idl_build_feature, check_overflow};
 use clap::{CommandFactory, Parser};
 use dirs::home_dir;
 use heck::{ToKebabCase, ToLowerCamelCase, ToPascalCase, ToSnakeCase};
@@ -19,18 +19,18 @@ use regex::{Regex, RegexBuilder};
 use rust_template::{ProgramTemplate, TestTemplate};
 use semver::{Version, VersionReq};
 use serde_json::{json, Map, Value as JsonValue};
-use solana_cli_config::Config as SolanaCliConfig;
-use solana_commitment_config::CommitmentConfig;
-use solana_compute_budget_interface::ComputeBudgetInstruction;
-use solana_instruction::Instruction;
-use solana_keypair::Keypair;
-use solana_pubkey::Pubkey;
-use solana_pubsub_client::pubsub_client::{PubsubClient, PubsubClientSubscription};
-use solana_rpc_client::rpc_client::RpcClient;
-use solana_rpc_client_api::config::{RpcTransactionLogsConfig, RpcTransactionLogsFilter};
-use solana_rpc_client_api::request::RpcRequest;
-use solana_rpc_client_api::response::{Response as RpcResponse, RpcLogsResponse};
-use solana_signer::{EncodableKey, Signer};
+use trezoa_cli_config::Config as TrezoaCliConfig;
+use trezoa_commitment_config::CommitmentConfig;
+use trezoa_compute_budget_interface::ComputeBudgetInstruction;
+use trezoa_instruction::Instruction;
+use trezoa_keypair::Keypair;
+use trezoa_pubkey::Pubkey;
+use trezoa_pubsub_client::pubsub_client::{PubsubClient, PubsubClientSubscription};
+use trezoa_rpc_client::rpc_client::RpcClient;
+use trezoa_rpc_client_api::config::{RpcTransactionLogsConfig, RpcTransactionLogsFilter};
+use trezoa_rpc_client_api::request::RpcRequest;
+use trezoa_rpc_client_api::response::{Response as RpcResponse, RpcLogsResponse};
+use trezoa_signer::{EncodableKey, Signer};
 use std::collections::BTreeMap;
 use std::collections::HashMap;
 use std::collections::HashSet;
@@ -55,7 +55,7 @@ pub const DOCKER_BUILDER_VERSION: &str = VERSION;
 /// Default RPC port
 pub const DEFAULT_RPC_PORT: u16 = 8899;
 
-/// WebSocket port offset for solana-test-validator (RPC port + 1)
+/// WebSocket port offset for trezoaanchor-test-validator (RPC port + 1)
 pub const WEBSOCKET_PORT_OFFSET: u16 = 1;
 
 pub static AVM_HOME: LazyLock<PathBuf> = LazyLock::new(|| {
@@ -129,10 +129,10 @@ pub enum Command {
         /// Name of the program to build
         #[clap(short, long)]
         program_name: Option<String>,
-        /// Version of the Solana toolchain to use. For --verifiable builds
+        /// Version of the Trezoa toolchain to use. For --verifiable builds
         /// only.
         #[clap(short, long)]
-        solana_version: Option<String>,
+        trezoa_version: Option<String>,
         /// Docker image to use. For --verifiable builds only.
         #[clap(short, long)]
         docker_image: Option<String>,
@@ -185,7 +185,7 @@ pub enum Command {
         /// Name of the program to run the command on. Defaults to the package name.
         #[clap(long)]
         program_name: Option<String>,
-        /// Any additional arguments to pass to `solana-verify`.
+        /// Any additional arguments to pass to `trezoaanchor-verify`.
         #[clap(raw = true)]
         args: Vec<String>,
     },
@@ -255,7 +255,7 @@ pub enum Command {
     Clean,
     /// Deploys each program in the workspace.
     #[clap(hide = true)]
-    #[deprecated(since = "0.32.0", note = "use `anchor program deploy` instead")]
+    #[deprecated(since = "0.32.0", note = "use `trezoaanchor program deploy` instead")]
     Deploy {
         /// Only deploy this program
         #[clap(short, long)]
@@ -269,9 +269,9 @@ pub enum Command {
         /// Don't upload IDL during deployment (IDL is uploaded by default)
         #[clap(long)]
         no_idl: bool,
-        /// Arguments to pass to the underlying `solana program deploy` command.
+        /// Arguments to pass to the underlying `trezoa program deploy` command.
         #[clap(required = false, last = true)]
-        solana_args: Vec<String>,
+        trezoa_args: Vec<String>,
     },
     /// Runs the deploy migration script.
     Migrate,
@@ -279,7 +279,7 @@ pub enum Command {
     /// Upgrades a single program. The configured wallet must be the upgrade
     /// authority.
     #[clap(hide = true)]
-    #[deprecated(since = "0.32.0", note = "use `anchor program upgrade` instead")]
+    #[deprecated(since = "0.32.0", note = "use `trezoaanchor program upgrade` instead")]
     Upgrade {
         /// The program to upgrade.
         #[clap(short, long)]
@@ -289,13 +289,13 @@ pub enum Command {
         /// Max times to retry on failure.
         #[clap(long, default_value = "0")]
         max_retries: u32,
-        /// Arguments to pass to the underlying `solana program deploy` command.
+        /// Arguments to pass to the underlying `trezoa program deploy` command.
         #[clap(required = false, last = true)]
-        solana_args: Vec<String>,
+        trezoa_args: Vec<String>,
     },
-    /// Request an airdrop of SOL
+    /// Request an airdrop of TRZ
     Airdrop {
-        /// Amount of SOL to airdrop
+        /// Amount of TRZ to airdrop
         amount: f64,
         /// Recipient address (defaults to configured wallet)
         pubkey: Option<Pubkey>,
@@ -310,10 +310,10 @@ pub enum Command {
         #[clap(subcommand)]
         subcmd: ConfigCommand,
     },
-    /// Starts a node shell with an Anchor client setup according to the local
+    /// Starts a node shell with an TrezoaAnchor client setup according to the local
     /// config.
     Shell,
-    /// Runs the script defined by the current workspace's Anchor.toml.
+    /// Runs the script defined by the current workspace's TrezoaAnchor.toml.
     Run {
         /// The name of the script to run.
         script: String,
@@ -382,7 +382,7 @@ pub enum Command {
     Balance {
         /// Account to check balance for (defaults to configured wallet)
         pubkey: Option<Pubkey>,
-        /// Display balance in lamports instead of SOL
+        /// Display balance in lamports instead of TRZ
         #[clap(long)]
         lamports: bool,
     },
@@ -511,7 +511,7 @@ pub enum ProgramCommand {
         make_final: bool,
         /// Additional arguments to configure deployment (e.g., --with-compute-unit-price 1000)
         #[clap(required = false, last = true)]
-        solana_args: Vec<String>,
+        trezoa_args: Vec<String>,
     },
     /// Write a program into a buffer account
     WriteBuffer {
@@ -564,10 +564,10 @@ pub enum ProgramCommand {
     Show {
         /// Account address (buffer or program)
         account: Pubkey,
-        /// Get account information from the Solana config file
+        /// Get account information from the Trezoa config file
         #[clap(long)]
         get_programs: bool,
-        /// Get account information from the Solana config file
+        /// Get account information from the Trezoa config file
         #[clap(long)]
         get_buffers: bool,
         /// Show all accounts
@@ -595,7 +595,7 @@ pub enum ProgramCommand {
         max_retries: u32,
         /// Additional arguments to configure deployment (e.g., --with-compute-unit-price 1000)
         #[clap(required = false, last = true)]
-        solana_args: Vec<String>,
+        trezoa_args: Vec<String>,
     },
     /// Write the program data to a file
     Dump {
@@ -688,7 +688,7 @@ pub enum IdlCommand {
         #[clap(long)]
         non_canonical: bool,
     },
-    /// Convert legacy IDLs (pre Anchor 0.30) to the new IDL spec
+    /// Convert legacy IDLs (pre TrezoaAnchor 0.30) to the new IDL spec
     Convert {
         /// Path to the IDL file
         path: String,
@@ -765,37 +765,37 @@ pub enum ClusterCommand {
 
 #[derive(Debug, Parser)]
 pub enum ConfigCommand {
-    /// Get configuration settings from the local Anchor.toml
+    /// Get configuration settings from the local TrezoaAnchor.toml
     Get,
-    /// Set configuration settings in the local Anchor.toml
+    /// Set configuration settings in the local TrezoaAnchor.toml
     Set {
         /// Cluster to connect to (custom URL). Use -um, -ud, -ut, -ul for standard clusters
         #[clap(short = 'u', long = "url")]
         url: Option<String>,
-        /// Path to wallet keypair file to update the Anchor.toml file with
+        /// Path to wallet keypair file to update the TrezoaAnchor.toml file with
         #[clap(short = 'k', long = "keypair")]
         keypair: Option<String>,
     },
 }
 
 fn get_keypair(path: &str) -> Result<Keypair> {
-    solana_keypair::read_keypair_file(path)
+    trezoa_keypair::read_keypair_file(path)
         .map_err(|_| anyhow!("Unable to read keypair file ({path})"))
 }
 
-/// Format lamports as SOL with trailing zeros removed
+/// Format lamports as TRZ with trailing zeros removed
 fn format_sol(lamports: u64) -> String {
     let sol = lamports as f64 / 1_000_000_000.0;
     let formatted = format!("{:.8}", sol);
 
     // Remove trailing zeros and decimal point if not needed
     let trimmed = formatted.trim_end_matches('0').trim_end_matches('.');
-    format!("{} SOL", trimmed)
+    format!("{} TRZ", trimmed)
 }
 
-/// Get cluster URL and wallet path from Anchor config, CLI overrides, or Solana CLI config
+/// Get cluster URL and wallet path from TrezoaAnchor config, CLI overrides, or Trezoa CLI config
 fn get_cluster_and_wallet(cfg_override: &ConfigOverride) -> Result<(String, String)> {
-    // Try to get from Anchor workspace config first
+    // Try to get from TrezoaAnchor workspace config first
     if let Ok(Some(cfg)) = Config::discover(cfg_override) {
         return Ok((
             cfg.provider.cluster.url().to_string(),
@@ -803,39 +803,39 @@ fn get_cluster_and_wallet(cfg_override: &ConfigOverride) -> Result<(String, Stri
         ));
     }
 
-    // Try to load Solana CLI config
+    // Try to load Trezoa CLI config
     let (cluster_url, wallet_path) =
-        if let Some(config_file) = solana_cli_config::CONFIG_FILE.as_ref() {
-            match SolanaCliConfig::load(config_file) {
+        if let Some(config_file) = trezoa_cli_config::CONFIG_FILE.as_ref() {
+            match TrezoaCliConfig::load(config_file) {
                 Ok(cli_config) => (
                     cli_config.json_rpc_url.clone(),
                     cli_config.keypair_path.clone(),
                 ),
                 Err(_) => {
-                    // Fallback to defaults if Solana CLI config doesn't exist
+                    // Fallback to defaults if Trezoa CLI config doesn't exist
                     (
-                        "https://api.mainnet-beta.solana.com".to_string(),
+                        "https://api.mainnet-beta.trezoa.com".to_string(),
                         dirs::home_dir()
                             .map(|home| {
-                                home.join(".config/solana/id.json")
+                                home.join(".config/trezoa/id.json")
                                     .to_string_lossy()
                                     .to_string()
                             })
-                            .unwrap_or_else(|| "~/.config/solana/id.json".to_string()),
+                            .unwrap_or_else(|| "~/.config/trezoa/id.json".to_string()),
                     )
                 }
             }
         } else {
             // If CONFIG_FILE is None, use defaults
             (
-                "https://api.mainnet-beta.solana.com".to_string(),
+                "https://api.mainnet-beta.trezoa.com".to_string(),
                 dirs::home_dir()
                     .map(|home| {
-                        home.join(".config/solana/id.json")
+                        home.join(".config/trezoa/id.json")
                             .to_string_lossy()
                             .to_string()
                     })
-                    .unwrap_or_else(|| "~/.config/solana/id.json".to_string()),
+                    .unwrap_or_else(|| "~/.config/trezoa/id.json".to_string()),
             )
         };
 
@@ -904,7 +904,7 @@ pub fn entry(opts: Opts) -> Result<()> {
 /// Functions to restore toolchain entries
 type RestoreToolchainCallbacks = Vec<Box<dyn FnOnce() -> Result<()>>>;
 
-/// Override the toolchain from `Anchor.toml`.
+/// Override the toolchain from `TrezoaAnchor.toml`.
 ///
 /// Returns the previous versions to restore back to.
 fn override_toolchain(cfg_override: &ConfigOverride) -> Result<RestoreToolchainCallbacks> {
@@ -937,33 +937,33 @@ fn override_toolchain(cfg_override: &ConfigOverride) -> Result<RestoreToolchainC
                 .ok_or_else(|| anyhow!("Failed to parse the version of `{cmd_name}`"))
         }
 
-        if let Some(solana_version) = &cfg.toolchain.solana_version {
-            let current_version = get_current_version("solana")?;
-            if solana_version != &current_version {
-                // We are overriding with `solana-install` command instead of using the binaries
-                // from `~/.local/share/solana/install/releases` because we use multiple Solana
+        if let Some(trezoa_version) = &cfg.toolchain.trezoa_version {
+            let current_version = get_current_version("trezoa")?;
+            if trezoa_version != &current_version {
+                // We are overriding with `trezoaanchor-install` command instead of using the binaries
+                // from `~/.local/share/trezoa/install/releases` because we use multiple Trezoa
                 // binaries in various commands.
-                fn override_solana_version(version: String) -> Result<bool> {
+                fn override_trezoa_version(version: String) -> Result<bool> {
                     // There is a deprecation warning message starting with `1.18.19` which causes
-                    // parsing problems https://github.com/coral-xyz/anchor/issues/3147
+                    // parsing problems https://github.com/trezoa-xyz/trezoaanchor/issues/3147
                     let (cmd_name, domain) =
                         if Version::parse(&version)? < Version::parse("1.18.19")? {
-                            ("solana-install", "solana.com")
+                            ("trezoaanchor-install", "trezoa.com")
                         } else {
-                            ("agave-install", "anza.xyz")
+                            ("agave-install", "trezoa.xyz")
                         };
 
                     // Install the command if it's not installed
                     if get_current_version(cmd_name).is_err() {
-                        // `solana-install` and `agave-install` are not usable at the same time i.e.
+                        // `trezoaanchor-install` and `agave-install` are not usable at the same time i.e.
                         // using one of them makes the other unusable with the default installation,
                         // causing the installation process to run each time users switch between
-                        // `agave` supported versions. For example, if the user's active Solana
-                        // version is `1.18.17`, and he specifies `solana_version = "2.0.6"`, this
-                        // code path will run each time an Anchor command gets executed.
+                        // `agave` supported versions. For example, if the user's active Trezoa
+                        // version is `1.18.17`, and he specifies `trezoa_version = "2.0.6"`, this
+                        // code path will run each time an TrezoaAnchor command gets executed.
                         eprintln!(
                             "Command not installed: `{cmd_name}`. \
-                            See https://github.com/anza-xyz/agave/wiki/Agave-Transition, \
+                            See https://github.com/trezoa-xyz/agave/wiki/Trezoa-team-Transition, \
                             installing..."
                         );
                         let install_script = std::process::Command::new("curl")
@@ -985,7 +985,7 @@ fn override_toolchain(cfg_override: &ConfigOverride) -> Result<RestoreToolchainC
 
                     let output = std::process::Command::new(cmd_name).arg("list").output()?;
                     if !output.status.success() {
-                        return Err(anyhow!("Failed to list installed `solana` versions"));
+                        return Err(anyhow!("Failed to list installed `trezoa` versions"));
                     }
 
                     // Hide the installation progress if the version is already installed
@@ -1010,25 +1010,25 @@ fn override_toolchain(cfg_override: &ConfigOverride) -> Result<RestoreToolchainC
                         .map_err(|err| anyhow!("Failed to run `{cmd_name}` command: {err}"))
                 }
 
-                match override_solana_version(solana_version.to_owned())? {
+                match override_trezoa_version(trezoa_version.to_owned())? {
                     true => restore_cbs.push(Box::new(|| {
-                        match override_solana_version(current_version)? {
+                        match override_trezoa_version(current_version)? {
                             true => Ok(()),
-                            false => Err(anyhow!("Failed to restore `solana` version")),
+                            false => Err(anyhow!("Failed to restore `trezoa` version")),
                         }
                     })),
                     false => eprintln!(
-                        "Failed to override `solana` version to {solana_version}, \
+                        "Failed to override `trezoa` version to {trezoa_version}, \
                         using {current_version} instead"
                     ),
                 }
             }
         }
 
-        // Anchor version override should be handled last
-        if let Some(anchor_version) = &cfg.toolchain.anchor_version {
-            // Anchor binary name prefix(applies to binaries that are installed via `avm`)
-            const ANCHOR_BINARY_PREFIX: &str = "anchor-";
+        // TrezoaAnchor version override should be handled last
+        if let Some(trezoaanchor_version) = &cfg.toolchain.trezoaanchor_version {
+            // TrezoaAnchor binary name prefix(applies to binaries that are installed via `avm`)
+            const ANCHOR_BINARY_PREFIX: &str = "trezoaanchor-";
 
             // Get the current version from the executing binary name if possible because commit
             // based toolchain overrides do not have version information.
@@ -1043,21 +1043,21 @@ fn override_toolchain(cfg_override: &ConfigOverride) -> Result<RestoreToolchainC
                 .map(|(_, version)| version)
                 .unwrap_or(VERSION)
                 .to_owned();
-            if anchor_version != &current_version {
+            if trezoaanchor_version != &current_version {
                 let binary_path = home_dir()
                     .unwrap()
                     .join(".avm")
                     .join("bin")
-                    .join(format!("{ANCHOR_BINARY_PREFIX}{anchor_version}"));
+                    .join(format!("{ANCHOR_BINARY_PREFIX}{trezoaanchor_version}"));
 
                 if !binary_path.exists() {
                     eprintln!(
-                        "`anchor` {anchor_version} is not installed with `avm`. Installing...\n"
+                        "`trezoaanchor` {trezoaanchor_version} is not installed with `avm`. Installing...\n"
                     );
 
-                    if let Err(e) = install_with_avm(anchor_version, false) {
+                    if let Err(e) = install_with_avm(trezoaanchor_version, false) {
                         eprintln!(
-                            "Failed to install `anchor`: {e}, using {current_version} instead"
+                            "Failed to install `trezoaanchor`: {e}, using {current_version} instead"
                         );
                         return Ok(restore_cbs);
                     }
@@ -1078,8 +1078,8 @@ fn override_toolchain(cfg_override: &ConfigOverride) -> Result<RestoreToolchainC
     Ok(restore_cbs)
 }
 
-/// Installs Anchor using AVM, passing `--force` (and optionally) installing
-/// `solana-verify`.
+/// Installs TrezoaAnchor using AVM, passing `--force` (and optionally) installing
+/// `trezoaanchor-verify`.
 fn install_with_avm(version: &str, verify: bool) -> Result<()> {
     let mut cmd = std::process::Command::new("avm");
     cmd.arg("install");
@@ -1090,7 +1090,7 @@ fn install_with_avm(version: &str, verify: bool) -> Result<()> {
     }
     let status = cmd.status().context("running AVM")?;
     if !status.success() {
-        bail!("failed to install `anchor` {version} with avm");
+        bail!("failed to install `trezoaanchor` {version} with avm");
     }
     Ok(())
 }
@@ -1155,7 +1155,7 @@ fn process_command(opts: Opts) -> Result<()> {
             idl_ts,
             verifiable,
             program_name,
-            solana_version,
+            trezoa_version,
             docker_image,
             bootstrap,
             cargo_args,
@@ -1173,7 +1173,7 @@ fn process_command(opts: Opts) -> Result<()> {
             skip_lint,
             ignore_keys,
             program_name,
-            solana_version,
+            trezoa_version,
             docker_image,
             bootstrap,
             None,
@@ -1205,10 +1205,10 @@ fn process_command(opts: Opts) -> Result<()> {
             program_keypair,
             verifiable,
             no_idl,
-            solana_args,
+            trezoa_args,
         } => {
             eprintln!(
-                "Warning: 'anchor deploy' is deprecated. Use 'anchor program deploy' instead."
+                "Warning: 'trezoaanchor deploy' is deprecated. Use 'trezoaanchor program deploy' instead."
             );
             deploy(
                 &opts.cfg_override,
@@ -1216,7 +1216,7 @@ fn process_command(opts: Opts) -> Result<()> {
                 program_keypair,
                 verifiable,
                 no_idl,
-                solana_args,
+                trezoa_args,
             )
         }
         Command::Expand {
@@ -1228,17 +1228,17 @@ fn process_command(opts: Opts) -> Result<()> {
             program_id,
             program_filepath,
             max_retries,
-            solana_args,
+            trezoa_args,
         } => {
             eprintln!(
-                "Warning: 'anchor upgrade' is deprecated. Use 'anchor program upgrade' instead."
+                "Warning: 'trezoaanchor upgrade' is deprecated. Use 'trezoaanchor program upgrade' instead."
             );
             upgrade(
                 &opts.cfg_override,
                 program_id,
                 program_filepath,
                 max_retries,
-                solana_args,
+                trezoa_args,
             )
         }
         Command::Idl { subcmd } => idl(&opts.cfg_override, subcmd),
@@ -1312,7 +1312,7 @@ fn process_command(opts: Opts) -> Result<()> {
             clap_complete::generate(
                 shell,
                 &mut Opts::command(),
-                "anchor",
+                "trezoaanchor",
                 &mut std::io::stdout(),
             );
             Ok(())
@@ -1358,12 +1358,12 @@ fn init(
     // Additional keywords that have not been added to the `syn` crate as reserved words
     // https://github.com/dtolnay/syn/pull/1098
     let extra_keywords = ["async", "await", "try"];
-    // Anchor converts to snake case before writing the program name
+    // TrezoaAnchor converts to snake case before writing the program name
     if syn::parse_str::<syn::Ident>(&rust_name).is_err()
         || extra_keywords.contains(&rust_name.as_str())
     {
         return Err(anyhow!(
-            "Anchor workspace name must be a valid Rust identifier. It may not be a Rust reserved word, start with a digit, or include certain disallowed characters. See https://doc.rust-lang.org/reference/identifiers.html for more detail.",
+            "TrezoaAnchor workspace name must be a valid Rust identifier. It may not be a Rust reserved word, start with a digit, or include certain disallowed characters. See https://doc.rust-lang.org/reference/identifiers.html for more detail.",
         ));
     }
 
@@ -1395,7 +1395,7 @@ fn init(
     );
     cfg.programs.insert(Cluster::Localnet, localnet);
     let toml = cfg.to_string();
-    fs::write("Anchor.toml", toml)?;
+    fs::write("TrezoaAnchor.toml", toml)?;
 
     // Initialize .gitignore file
     fs::write(".gitignore", rust_template::git_ignore())?;
@@ -1531,7 +1531,7 @@ fn new(
                 );
 
                 let toml = cfg.to_string();
-                fs::write("Anchor.toml", toml)?;
+                fs::write("TrezoaAnchor.toml", toml)?;
 
                 println!("Created new program.");
             }
@@ -1610,11 +1610,11 @@ pub fn expand(
     }
 
     let workspace_cfg = Config::discover(cfg_override)?
-        .ok_or_else(|| anyhow!("The 'anchor expand' command requires an Anchor workspace."))?;
-    let cfg_parent = workspace_cfg.path().parent().expect("Invalid Anchor.toml");
+        .ok_or_else(|| anyhow!("The 'trezoaanchor expand' command requires an TrezoaAnchor workspace."))?;
+    let cfg_parent = workspace_cfg.path().parent().expect("Invalid TrezoaAnchor.toml");
     let cargo = Manifest::discover()?;
 
-    let expansions_path = cfg_parent.join(".anchor").join("expanded-macros");
+    let expansions_path = cfg_parent.join(".trezoaanchor").join("expanded-macros");
     fs::create_dir_all(&expansions_path)?;
 
     match cargo {
@@ -1678,7 +1678,7 @@ fn expand_program(
         .output()
         .map_err(|e| anyhow::format_err!("{}", e))?;
     if !exit.status.success() {
-        eprintln!("'anchor expand' failed. Perhaps you have not installed 'cargo-expand'? https://github.com/dtolnay/cargo-expand#installation");
+        eprintln!("'trezoaanchor expand' failed. Perhaps you have not installed 'cargo-expand'? https://github.com/dtolnay/cargo-expand#installation");
         std::process::exit(exit.status.code().unwrap_or(1));
     }
 
@@ -1705,7 +1705,7 @@ pub fn build(
     skip_lint: bool,
     ignore_keys: bool,
     program_name: Option<String>,
-    solana_version: Option<String>,
+    trezoa_version: Option<String>,
     docker_image: Option<String>,
     bootstrap: BootstrapMode,
     stdout: Option<File>, // Used for the package registry server.
@@ -1720,8 +1720,8 @@ pub fn build(
         cd_member(cfg_override, program_name)?;
     }
     let cfg = Config::discover(cfg_override)?
-        .ok_or_else(|| anyhow!("The 'anchor build' command requires an Anchor workspace."))?;
-    let cfg_parent = cfg.path().parent().expect("Invalid Anchor.toml");
+        .ok_or_else(|| anyhow!("The 'trezoaanchor build' command requires an TrezoaAnchor workspace."))?;
+    let cfg_parent = cfg.path().parent().expect("Invalid TrezoaAnchor.toml");
 
     // Require overflow checks
     let workspace_cargo_toml_path = cfg_parent.join("Cargo.toml");
@@ -1730,10 +1730,10 @@ pub fn build(
     }
 
     // Check whether there is a mismatch between CLI and crate/package versions
-    check_anchor_version(&cfg).ok();
+    check_trezoaanchor_version(&cfg).ok();
     check_deps(&cfg).ok();
 
-    // Check for program ID mismatches before building (skip if --ignore-keys is used), Always skipped in anchor test
+    // Check for program ID mismatches before building (skip if --ignore-keys is used), Always skipped in trezoaanchor test
     if !ignore_keys {
         check_program_id_mismatch(&cfg, program_name.clone())?;
     }
@@ -1759,7 +1759,7 @@ pub fn build(
     let cargo = Manifest::discover()?;
     let build_config = BuildConfig {
         verifiable,
-        solana_version: solana_version.or_else(|| cfg.toolchain.solana_version.clone()),
+        trezoa_version: trezoa_version.or_else(|| cfg.toolchain.trezoa_version.clone()),
         docker_image: docker_image.unwrap_or_else(|| cfg.docker()),
         bootstrap,
     };
@@ -1838,7 +1838,7 @@ fn build_all(
 ) -> Result<()> {
     let cur_dir = std::env::current_dir()?;
     let r = match cfg_path.parent() {
-        None => Err(anyhow!("Invalid Anchor.toml at {}", cfg_path.display())),
+        None => Err(anyhow!("Invalid TrezoaAnchor.toml at {}", cfg_path.display())),
         Some(_parent) => {
             for p in cfg.get_rust_program_list()? {
                 build_rust_cwd(
@@ -1904,7 +1904,7 @@ fn build_rust_cwd(
     }
 }
 
-// Builds an anchor program in a docker image and copies the build artifacts
+// Builds an trezoaanchor program in a docker image and copies the build artifacts
 // into the `target/` directory.
 #[allow(clippy::too_many_arguments)]
 fn build_cwd_verifiable(
@@ -1929,7 +1929,7 @@ fn build_cwd_verifiable(
         fs::create_dir_all(workspace_dir.join(&cfg.workspace.types))?;
     }
 
-    let container_name = "anchor-program";
+    let container_name = "trezoaanchor-program";
 
     // Build the binary in docker.
     let result = docker_build(
@@ -2065,7 +2065,7 @@ fn docker_build(
 }
 
 fn docker_prep(container_name: &str, build_config: &BuildConfig) -> Result<()> {
-    // Set the solana version in the container, if given. Otherwise use the
+    // Set the trezoa version in the container, if given. Otherwise use the
     // default.
     match build_config.bootstrap {
         BootstrapMode::Debian => {
@@ -2087,22 +2087,22 @@ fn docker_prep(container_name: &str, build_config: &BuildConfig) -> Result<()> {
         BootstrapMode::None => {}
     }
 
-    if let Some(solana_version) = &build_config.solana_version {
-        println!("Using solana version: {solana_version}");
+    if let Some(trezoa_version) = &build_config.trezoa_version {
+        println!("Using trezoa version: {trezoa_version}");
 
-        // Install Solana CLI
+        // Install Trezoa CLI
         docker_exec(
             container_name,
             &[
                 "curl",
                 "-sSfL",
-                &format!("https://release.anza.xyz/v{solana_version}/install",),
+                &format!("https://release.trezoa.xyz/v{trezoa_version}/install",),
                 "-o",
-                "solana_installer.sh",
+                "trezoa_installer.sh",
             ],
         )?;
-        docker_exec(container_name, &["sh", "solana_installer.sh"])?;
-        docker_exec(container_name, &["rm", "-f", "solana_installer.sh"])?;
+        docker_exec(container_name, &["sh", "trezoa_installer.sh"])?;
+        docker_exec(container_name, &["rm", "-f", "trezoa_installer.sh"])?;
     }
     Ok(())
 }
@@ -2134,7 +2134,7 @@ fn docker_build_bpf(
         .args([
             "exec",
             "--env",
-            "PATH=/root/.local/share/solana/install/active_release/bin:/root/.cargo/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+            "PATH=/root/.local/share/trezoa/install/active_release/bin:/root/.cargo/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
         ])
         .args(env_vars
             .iter()
@@ -2283,7 +2283,7 @@ fn _build_rust_cwd(
         fs::write(&ts_out, idl_ts(&idl)?)?;
 
         // Copy out the TypeScript type.
-        let cfg_parent = cfg.path().parent().expect("Invalid Anchor.toml");
+        let cfg_parent = cfg.path().parent().expect("Invalid TrezoaAnchor.toml");
         if !&cfg.workspace.types.is_empty() {
             fs::copy(
                 &ts_out,
@@ -2343,10 +2343,10 @@ pub fn verify(
     command_args.extend(args);
 
     println!("Verifying program {program_id}");
-    let verify_path = AVM_HOME.join("bin").join("solana-verify");
+    let verify_path = AVM_HOME.join("bin").join("trezoaanchor-verify");
     if !verify_path.exists() {
         install_with_avm(env!("CARGO_PKG_VERSION"), true)
-            .context("installing Anchor with solana-verify")?;
+            .context("installing TrezoaAnchor with trezoaanchor-verify")?;
     }
 
     let status = std::process::Command::new(verify_path)
@@ -2355,7 +2355,7 @@ pub fn verify(
         .stdout(std::process::Stdio::inherit())
         .stderr(std::process::Stdio::inherit())
         .status()
-        .with_context(|| "Failed to run `solana-verify`")?;
+        .with_context(|| "Failed to run `trezoaanchor-verify`")?;
 
     if !status.success() {
         return Err(anyhow!("Failed to verify program"));
@@ -2365,7 +2365,7 @@ pub fn verify(
 }
 
 fn cd_member(cfg_override: &ConfigOverride, program_name: &str) -> Result<()> {
-    // Change directories to the given `program_name`, using either Anchor or Cargo workspace
+    // Change directories to the given `program_name`, using either TrezoaAnchor or Cargo workspace
     let programs = program::get_programs_from_workspace(cfg_override, None)?;
 
     for program in programs {
@@ -2468,7 +2468,7 @@ fn idl_init(
     priority_fee: Option<u64>,
     non_canonical: bool,
 ) -> Result<()> {
-    // Get cluster URL and wallet path from Anchor config
+    // Get cluster URL and wallet path from TrezoaAnchor config
     let (cluster_url, wallet_path) = get_cluster_and_wallet(cfg_override)?;
 
     // Skip IDL initialization on localnet
@@ -2507,7 +2507,7 @@ fn idl_init(
     }
 
     let status = ProcessCommand::new("npx")
-        .arg("@solana-program/program-metadata")
+        .arg("@trezoa-program/program-metadata")
         .args(&args)
         .stdout(Stdio::inherit())
         .stderr(Stdio::inherit())
@@ -2526,7 +2526,7 @@ fn idl_upgrade(
     idl_filepath: String,
     priority_fee: Option<u64>,
 ) -> Result<()> {
-    // Get cluster URL and wallet path from Anchor config
+    // Get cluster URL and wallet path from TrezoaAnchor config
     let (cluster_url, wallet_path) = get_cluster_and_wallet(cfg_override)?;
 
     // Skip IDL upgrade on localnet
@@ -2560,7 +2560,7 @@ fn idl_upgrade(
     args.push(&idl_filepath);
 
     let status = ProcessCommand::new("npx")
-        .arg("@solana-program/program-metadata")
+        .arg("@trezoa-program/program-metadata")
         .args(&args)
         .stdout(Stdio::inherit())
         .stderr(Stdio::inherit())
@@ -2584,7 +2584,7 @@ fn idl_build(
     cargo_args: Vec<String>,
 ) -> Result<()> {
     let cfg = Config::discover(cfg_override)?
-        .ok_or_else(|| anyhow!("The 'anchor idl build' command requires an Anchor workspace."))?;
+        .ok_or_else(|| anyhow!("The 'trezoaanchor idl build' command requires an TrezoaAnchor workspace."))?;
     let current_dir = std::env::current_dir()?;
     let program_path = match program_name {
         Some(name) => cfg.get_program(&name)?.path,
@@ -2627,7 +2627,7 @@ fn generate_idl(
 ) -> Result<Idl> {
     check_idl_build_feature()?;
 
-    anchor_lang_idl::build::IdlBuilder::new()
+    trezoaanchor-lang_idl::build::IdlBuilder::new()
         .resolution(cfg.features.resolution)
         .skip_lint(cfg.features.skip_lint || skip_lint)
         .no_docs(no_docs)
@@ -2660,7 +2660,7 @@ fn idl_fetch(
     args.push(&url);
 
     let status = ProcessCommand::new("npx")
-        .arg("@solana-program/program-metadata")
+        .arg("@trezoa-program/program-metadata")
         .args(&args)
         .status()?;
 
@@ -2728,7 +2728,7 @@ fn idl_close_metadata(
     args.push(&url);
 
     let status = ProcessCommand::new("npx")
-        .arg("@solana-program/program-metadata")
+        .arg("@trezoa-program/program-metadata")
         .args(&args)
         .stdout(Stdio::inherit())
         .stderr(Stdio::inherit())
@@ -2761,7 +2761,7 @@ fn idl_create_buffer(
     args.push(&url);
 
     let status = ProcessCommand::new("npx")
-        .arg("@solana-program/program-metadata")
+        .arg("@trezoa-program/program-metadata")
         .args(&args)
         .stdout(Stdio::inherit())
         .stderr(Stdio::inherit())
@@ -2802,7 +2802,7 @@ fn idl_set_buffer_authority(
     args.push(&url);
 
     let status = ProcessCommand::new("npx")
-        .arg("@solana-program/program-metadata")
+        .arg("@trezoa-program/program-metadata")
         .args(&args)
         .stdout(Stdio::inherit())
         .stderr(Stdio::inherit())
@@ -2844,7 +2844,7 @@ fn idl_write_buffer_metadata(
     args.push(&url);
 
     let status = ProcessCommand::new("npx")
-        .arg("@solana-program/program-metadata")
+        .arg("@trezoa-program/program-metadata")
         .args(&args)
         .stdout(Stdio::inherit())
         .stderr(Stdio::inherit())
@@ -2920,7 +2920,7 @@ fn account(
     let idl = idl_filepath.map_or_else(
         || {
             Config::discover(cfg_override)?
-                .ok_or_else(|| anyhow!("The 'anchor account' command requires an Anchor workspace with Anchor.toml for IDL type generation."))?
+                .ok_or_else(|| anyhow!("The 'trezoaanchor account' command requires an TrezoaAnchor workspace with TrezoaAnchor.toml for IDL type generation."))?
                 .read_all_programs()
                 .expect("Workspace must contain atleast one program.")
                 .into_iter()
@@ -3012,7 +3012,7 @@ fn deserialize_idl_defined_type_to_json(
             }
         }
         IdlTypeDefTy::Enum { variants } => {
-            let repr = <u8 as AnchorDeserialize>::deserialize(data)?;
+            let repr = <u8 as TrezoaAnchorDeserialize>::deserialize(data)?;
 
             let variant = variants
                 .get(repr as usize)
@@ -3052,7 +3052,7 @@ fn deserialize_idl_defined_type_to_json(
     Ok(JsonValue::Object(deserialized_fields))
 }
 
-// Deserializes a primitive type using AnchorDeserialize
+// Deserializes a primitive type using TrezoaAnchorDeserialize
 fn deserialize_idl_type_to_json(
     idl_type: &IdlType,
     data: &mut &[u8],
@@ -3063,50 +3063,50 @@ fn deserialize_idl_type_to_json(
     }
 
     Ok(match idl_type {
-        IdlType::Bool => json!(<bool as AnchorDeserialize>::deserialize(data)?),
+        IdlType::Bool => json!(<bool as TrezoaAnchorDeserialize>::deserialize(data)?),
         IdlType::U8 => {
-            json!(<u8 as AnchorDeserialize>::deserialize(data)?)
+            json!(<u8 as TrezoaAnchorDeserialize>::deserialize(data)?)
         }
         IdlType::I8 => {
-            json!(<i8 as AnchorDeserialize>::deserialize(data)?)
+            json!(<i8 as TrezoaAnchorDeserialize>::deserialize(data)?)
         }
         IdlType::U16 => {
-            json!(<u16 as AnchorDeserialize>::deserialize(data)?)
+            json!(<u16 as TrezoaAnchorDeserialize>::deserialize(data)?)
         }
         IdlType::I16 => {
-            json!(<i16 as AnchorDeserialize>::deserialize(data)?)
+            json!(<i16 as TrezoaAnchorDeserialize>::deserialize(data)?)
         }
         IdlType::U32 => {
-            json!(<u32 as AnchorDeserialize>::deserialize(data)?)
+            json!(<u32 as TrezoaAnchorDeserialize>::deserialize(data)?)
         }
         IdlType::I32 => {
-            json!(<i32 as AnchorDeserialize>::deserialize(data)?)
+            json!(<i32 as TrezoaAnchorDeserialize>::deserialize(data)?)
         }
-        IdlType::F32 => json!(<f32 as AnchorDeserialize>::deserialize(data)?),
+        IdlType::F32 => json!(<f32 as TrezoaAnchorDeserialize>::deserialize(data)?),
         IdlType::U64 => {
-            json!(<u64 as AnchorDeserialize>::deserialize(data)?)
+            json!(<u64 as TrezoaAnchorDeserialize>::deserialize(data)?)
         }
         IdlType::I64 => {
-            json!(<i64 as AnchorDeserialize>::deserialize(data)?)
+            json!(<i64 as TrezoaAnchorDeserialize>::deserialize(data)?)
         }
-        IdlType::F64 => json!(<f64 as AnchorDeserialize>::deserialize(data)?),
+        IdlType::F64 => json!(<f64 as TrezoaAnchorDeserialize>::deserialize(data)?),
         IdlType::U128 => {
-            json!(<u128 as AnchorDeserialize>::deserialize(data)?)
+            json!(<u128 as TrezoaAnchorDeserialize>::deserialize(data)?)
         }
         IdlType::I128 => {
-            json!(<i128 as AnchorDeserialize>::deserialize(data)?)
+            json!(<i128 as TrezoaAnchorDeserialize>::deserialize(data)?)
         }
         IdlType::U256 => todo!("Upon completion of u256 IDL standard"),
         IdlType::I256 => todo!("Upon completion of i256 IDL standard"),
         IdlType::Bytes => JsonValue::Array(
-            <Vec<u8> as AnchorDeserialize>::deserialize(data)?
+            <Vec<u8> as TrezoaAnchorDeserialize>::deserialize(data)?
                 .iter()
                 .map(|i| json!(*i))
                 .collect(),
         ),
-        IdlType::String => json!(<String as AnchorDeserialize>::deserialize(data)?),
+        IdlType::String => json!(<String as TrezoaAnchorDeserialize>::deserialize(data)?),
         IdlType::Pubkey => {
-            json!(<Pubkey as AnchorDeserialize>::deserialize(data)?.to_string())
+            json!(<Pubkey as TrezoaAnchorDeserialize>::deserialize(data)?.to_string())
         }
         IdlType::Array(ty, size) => match size {
             IdlArrayLen::Value(size) => {
@@ -3122,7 +3122,7 @@ fn deserialize_idl_type_to_json(
             IdlArrayLen::Generic(_) => unimplemented!("Generic array length is not yet supported"),
         },
         IdlType::Option(ty) => {
-            let is_present = <u8 as AnchorDeserialize>::deserialize(data)?;
+            let is_present = <u8 as TrezoaAnchorDeserialize>::deserialize(data)?;
 
             if is_present == 0 {
                 JsonValue::String("None".to_string())
@@ -3131,7 +3131,7 @@ fn deserialize_idl_type_to_json(
             }
         }
         IdlType::Vec(ty) => {
-            let size: usize = <u32 as AnchorDeserialize>::deserialize(data)?
+            let size: usize = <u32 as TrezoaAnchorDeserialize>::deserialize(data)?
                 .try_into()
                 .unwrap();
 
@@ -3254,7 +3254,7 @@ fn test(
                     }
                 }
                 _ => println!(
-                    "\nFound a 'test' script in the Anchor.toml. Running it as a test suite!"
+                    "\nFound a 'test' script in the TrezoaAnchor.toml. Running it as a test suite!"
                 ),
             }
 
@@ -3345,7 +3345,7 @@ fn run_test_suite(
                     true => None,
                     false => Some(validator_flags(cfg, test_validator)?),
                 };
-                validator_handle = Some(start_solana_test_validator(
+                validator_handle = Some(start_trezoa_test_validator(
                     cfg,
                     test_validator,
                     flags,
@@ -3434,9 +3434,9 @@ fn run_test_suite(
     Ok(())
 }
 
-// Returns the solana-test-validator flags. This will embed the workspace
+// Returns the trezoaanchor-test-validator flags. This will embed the workspace
 // programs in the genesis block so we don't have to deploy every time. It also
-// allows control of other solana-test-validator features.
+// allows control of other trezoaanchor-test-validator features.
 fn validator_flags(
     cfg: &WithPath<Config>,
     test_validator: &Option<TestValidator>,
@@ -3531,7 +3531,7 @@ fn validator_flags(
                         create_client(url)
                     } else {
                         return Err(anyhow!(
-                            "Validator url for Solana's JSON RPC should be provided in order to clone accounts from it"
+                            "Validator url for Trezoa's JSON RPC should be provided in order to clone accounts from it"
                         ));
                     };
 
@@ -3553,7 +3553,7 @@ fn validator_flags(
                         match account {
                             Some(account) => {
                                 // Use a different flag for program accounts to fix the problem
-                                // described in https://github.com/anza-xyz/agave/issues/522
+                                // described in https://github.com/trezoa-xyz/agave/issues/522
                                 if account.owner == bpf_loader_upgradeable::id()
                                     // Only programs are supported with `--clone-upgradeable-program`
                                     && matches!(
@@ -3711,9 +3711,9 @@ fn surfpool_flags(
         true => flags.push("--no-deploy".to_string()),
         false => {
             // automatically generate in-memory runbooks
-            flags.push("--legacy-anchor-compatibility".to_string());
+            flags.push("--legacy-trezoaanchor-compatibility".to_string());
             if let Some(test_suite_path) = test_suite_path {
-                flags.push("--anchor-test-config-path".to_string());
+                flags.push("--trezoaanchor-test-config-path".to_string());
                 flags.push(test_suite_path.display().to_string());
             }
         }
@@ -3798,18 +3798,18 @@ fn stream_logs(config: &WithPath<Config>, rpc_url: &str) -> Result<Vec<LogStream
             }
             Ok(vec![])
         }
-        Some(ValidatorType::Legacy) | None => stream_solana_logs(config, rpc_url),
+        Some(ValidatorType::Legacy) | None => stream_trezoa_logs(config, rpc_url),
     }
 }
 
-fn stream_solana_logs(config: &WithPath<Config>, rpc_url: &str) -> Result<Vec<LogStreamHandle>> {
-    let program_logs_dir = Path::new(".anchor").join("program-logs");
+fn stream_trezoa_logs(config: &WithPath<Config>, rpc_url: &str) -> Result<Vec<LogStreamHandle>> {
+    let program_logs_dir = Path::new(".trezoaanchor").join("program-logs");
     if program_logs_dir.exists() {
         fs::remove_dir_all(&program_logs_dir)?;
     }
     fs::create_dir_all(&program_logs_dir)?;
 
-    // For solana-test-validator, the WebSocket port is RPC port + WEBSOCKET_PORT_OFFSET
+    // For trezoaanchor-test-validator, the WebSocket port is RPC port + WEBSOCKET_PORT_OFFSET
     // Extract port from rpc_url and construct WebSocket URL
     let ws_url = if rpc_url.contains("127.0.0.1") || rpc_url.contains("localhost") {
         // Local validator: increment port by 1 for WebSocket
@@ -3951,7 +3951,7 @@ fn start_surfpool_validator(
     if count >= ms_wait {
         eprintln!(
             "Unable to get latest blockhash. Surfpool validator does not look started. \
-            Check .surfpool/logs/ directory for errors. Consider increasing [surfpool.startup_wait] in Anchor.toml."
+            Check .surfpool/logs/ directory for errors. Consider increasing [surfpool.startup_wait] in TrezoaAnchor.toml."
         );
         validator_handle.kill()?;
         std::process::exit(1);
@@ -3980,7 +3980,7 @@ fn start_surfpool_validator(
     Ok(validator_handle)
 }
 
-fn start_solana_test_validator(
+fn start_trezoa_test_validator(
     cfg: &Config,
     test_validator: &Option<TestValidator>,
     flags: Option<Vec<String>>,
@@ -4024,14 +4024,14 @@ fn start_solana_test_validator(
         .test_validator
         .as_ref()
         .and_then(|test| test.validator.as_ref().and_then(|v| v.faucet_port))
-        .unwrap_or(solana_faucet::faucet::FAUCET_PORT);
+        .unwrap_or(trezoa_faucet::faucet::FAUCET_PORT);
     if !portpicker::is_free(faucet_port) {
         return Err(anyhow!(
             "Your configured faucet port: {faucet_port} is already in use"
         ));
     }
 
-    let mut validator_handle = std::process::Command::new("solana-test-validator")
+    let mut validator_handle = std::process::Command::new("trezoaanchor-test-validator")
         .arg("--ledger")
         .arg(test_ledger_directory)
         .arg("--mint")
@@ -4040,7 +4040,7 @@ fn start_solana_test_validator(
         .stdout(test_validator_stdout)
         .stderr(test_validator_stderr)
         .spawn()
-        .map_err(|e| anyhow!("Failed to spawn `solana-test-validator`: {e}"))?;
+        .map_err(|e| anyhow!("Failed to spawn `trezoaanchor-test-validator`: {e}"))?;
 
     // Wait for the validator to be ready.
     let client = create_client(rpc_url);
@@ -4060,7 +4060,7 @@ fn start_solana_test_validator(
     if count >= ms_wait {
         eprintln!(
             "Unable to get latest blockhash. Test validator does not look started. \
-            Check {test_ledger_log_filename:?} for errors. Consider increasing [test.startup_wait] in Anchor.toml."
+            Check {test_ledger_log_filename:?} for errors. Consider increasing [test.startup_wait] in TrezoaAnchor.toml."
         );
         validator_handle.kill()?;
         std::process::exit(1);
@@ -4068,7 +4068,7 @@ fn start_solana_test_validator(
     Ok(validator_handle)
 }
 
-// Return the URL that solana-test-validator should be running on given the
+// Return the URL that trezoaanchor-test-validator should be running on given the
 // configuration
 fn test_validator_rpc_url(test_validator: &Option<TestValidator>) -> String {
     match test_validator {
@@ -4088,7 +4088,7 @@ fn surfpool_rpc_url(surfpool_config: &Option<SurfpoolConfig>) -> String {
     }
 }
 
-// Setup and return paths to the solana-test-validator ledger directory and log
+// Setup and return paths to the trezoaanchor-test-validator ledger directory and log
 // files given the configuration
 fn test_validator_file_paths(test_validator: &Option<TestValidator>) -> Result<(PathBuf, PathBuf)> {
     let ledger_path = match test_validator {
@@ -4142,24 +4142,24 @@ fn cluster_url(
 }
 
 fn clean(cfg_override: &ConfigOverride) -> Result<()> {
-    // Get workspace root - either from Anchor.toml or use current directory
+    // Get workspace root - either from TrezoaAnchor.toml or use current directory
     let workspace_root = if let Ok(Some(cfg)) = Config::discover(cfg_override) {
         cfg.path()
             .parent()
-            .expect("Invalid Anchor.toml")
+            .expect("Invalid TrezoaAnchor.toml")
             .to_path_buf()
     } else {
-        // No Anchor.toml - use current directory for Cargo workspace
+        // No TrezoaAnchor.toml - use current directory for Cargo workspace
         std::env::current_dir()?
     };
 
-    let dot_anchor_dir = workspace_root.join(".anchor");
+    let dot_trezoaanchor_dir = workspace_root.join(".trezoaanchor");
     let target_dir = workspace_root.join("target");
     let deploy_dir = target_dir.join("deploy");
 
-    if dot_anchor_dir.exists() {
-        fs::remove_dir_all(&dot_anchor_dir)
-            .map_err(|e| anyhow!("Could not remove directory {:?}: {}", dot_anchor_dir, e))?;
+    if dot_trezoaanchor_dir.exists() {
+        fs::remove_dir_all(&dot_trezoaanchor_dir)
+            .map_err(|e| anyhow!("Could not remove directory {:?}: {}", dot_trezoaanchor_dir, e))?;
     }
 
     if target_dir.exists() {
@@ -4198,16 +4198,16 @@ fn deploy(
     program_keypair: Option<String>,
     verifiable: bool,
     no_idl: bool,
-    solana_args: Vec<String>,
+    trezoa_args: Vec<String>,
 ) -> Result<()> {
     // Execute the code within the workspace
     with_workspace(cfg_override, |cfg| -> Result<()> {
         let url = cluster_url(cfg, &cfg.test_validator, &cfg.surfpool_config);
         let keypair = cfg.provider.wallet.to_string();
 
-        // Augment the given solana args with recommended defaults.
+        // Augment the given trezoa args with recommended defaults.
         let client = create_client(&url);
-        let solana_args = add_recommended_deployment_solana_args(&client, solana_args)?;
+        let trezoa_args = add_recommended_deployment_trezoa_args(&client, trezoa_args)?;
 
         cfg.run_hooks(HookType::PreDeploy)?;
         // Deploy the programs.
@@ -4237,7 +4237,7 @@ fn deploy(
                 None, // max_len
                 no_idl,
                 false, // make_final
-                solana_args.clone(),
+                trezoa_args.clone(),
             )?;
         }
 
@@ -4253,7 +4253,7 @@ fn upgrade(
     program_id: Pubkey,
     program_filepath: String,
     max_retries: u32,
-    solana_args: Vec<String>,
+    trezoa_args: Vec<String>,
 ) -> Result<()> {
     // Use our native upgrade implementation
     program::program_upgrade(
@@ -4264,7 +4264,7 @@ fn upgrade(
         None, // buffer
         None, // upgrade_authority - uses wallet from config
         max_retries,
-        solana_args,
+        trezoa_args,
     )
 }
 
@@ -4279,10 +4279,10 @@ fn migrate(cfg_override: &ConfigOverride) -> Result<()> {
 
         let use_ts = Path::new("tsconfig.json").exists() && migrations_dir.join(deploy_ts).exists();
 
-        if !Path::new(".anchor").exists() {
-            fs::create_dir(".anchor")?;
+        if !Path::new(".trezoaanchor").exists() {
+            fs::create_dir(".trezoaanchor")?;
         }
-        std::env::set_current_dir(".anchor")?;
+        std::env::set_current_dir(".trezoaanchor")?;
 
         let exit = if use_ts {
             let module_path = migrations_dir.join(deploy_ts);
@@ -4331,7 +4331,7 @@ fn migrate(cfg_override: &ConfigOverride) -> Result<()> {
 }
 
 fn set_workspace_dir_or_exit() {
-    // First try to find Anchor workspace
+    // First try to find TrezoaAnchor workspace
     let d = match Config::discover(&ConfigOverride::default()) {
         Err(err) => {
             println!("Workspace configuration error: {err}");
@@ -4342,7 +4342,7 @@ fn set_workspace_dir_or_exit() {
 
     match d {
         None => {
-            // No Anchor.toml found - check for Cargo workspace with Solana programs
+            // No TrezoaAnchor.toml found - check for Cargo workspace with Trezoa programs
             let current_dir = match std::env::current_dir() {
                 Ok(dir) => dir,
                 Err(_) => {
@@ -4353,31 +4353,31 @@ fn set_workspace_dir_or_exit() {
 
             let cargo_toml_path = current_dir.join("Cargo.toml");
             if !cargo_toml_path.exists() {
-                println!("Not in a Solana workspace. This command requires either Anchor.toml or a Cargo workspace with Solana programs.");
+                println!("Not in a Trezoa workspace. This command requires either TrezoaAnchor.toml or a Cargo workspace with Trezoa programs.");
                 std::process::exit(1);
             }
 
-            // Check if this is a workspace and has Solana programs
-            match program::discover_solana_programs(None) {
+            // Check if this is a workspace and has Trezoa programs
+            match program::discover_trezoa_programs(None) {
                 Ok(programs) if !programs.is_empty() => {
-                    // Found Solana programs in Cargo workspace - stay in current directory
+                    // Found Trezoa programs in Cargo workspace - stay in current directory
                     // (already in the right place)
                 }
                 _ => {
-                    println!("Not in a Solana workspace. This command requires either Anchor.toml or a Cargo workspace with Solana programs.");
+                    println!("Not in a Trezoa workspace. This command requires either TrezoaAnchor.toml or a Cargo workspace with Trezoa programs.");
                     std::process::exit(1);
                 }
             }
         }
         Some(cfg) => {
-            // Found Anchor.toml - change to workspace root
+            // Found TrezoaAnchor.toml - change to workspace root
             match cfg.path().parent() {
                 None => {
                     println!("Unable to make new program");
                 }
                 Some(parent) => {
                     if std::env::set_current_dir(parent).is_err() {
-                        println!("Not in a Solana workspace. This command requires either Anchor.toml or a Cargo workspace with Solana programs.");
+                        println!("Not in a Trezoa workspace. This command requires either TrezoaAnchor.toml or a Cargo workspace with Trezoa programs.");
                         std::process::exit(1);
                     }
                 }
@@ -4403,11 +4403,11 @@ fn airdrop(cfg_override: &ConfigOverride, amount: f64, pubkey: Option<Pubkey>) -
         keypair.pubkey()
     };
 
-    // Convert SOL to lamports
+    // Convert TRZ to lamports
     let lamports = (amount * 1_000_000_000.0) as u64;
 
     // Request airdrop
-    println!("Requesting airdrop of {} SOL...", amount);
+    println!("Requesting airdrop of {} TRZ...", amount);
     let signature = client
         .request_airdrop(&recipient_pubkey, lamports)
         .map_err(|e| anyhow!("Airdrop request failed: {}", e))?;
@@ -4429,9 +4429,9 @@ fn airdrop(cfg_override: &ConfigOverride, amount: f64, pubkey: Option<Pubkey>) -
 
 fn cluster(_cmd: ClusterCommand) -> Result<()> {
     println!("Cluster Endpoints:\n");
-    println!("* Mainnet - https://api.mainnet-beta.solana.com");
-    println!("* Devnet  - https://api.devnet.solana.com");
-    println!("* Testnet - https://api.testnet.solana.com");
+    println!("* Mainnet - https://api.mainnet-beta.trezoa.com");
+    println!("* Devnet  - https://api.devnet.trezoa.com");
+    println!("* Testnet - https://api.testnet.trezoa.com");
     Ok(())
 }
 
@@ -4444,7 +4444,7 @@ fn config_cmd(cfg_override: &ConfigOverride, cmd: ConfigCommand) -> Result<()> {
 
 fn config_get(cfg_override: &ConfigOverride) -> Result<()> {
     with_workspace(cfg_override, |cfg| -> Result<()> {
-        println!("Anchor Configuration:");
+        println!("TrezoaAnchor Configuration:");
         println!();
         println!("Cluster: {}", cfg.provider.cluster.url());
         println!("Wallet:  {}", cfg.provider.wallet);
@@ -4457,26 +4457,26 @@ fn config_set(
     url: Option<String>,
     keypair: Option<String>,
 ) -> Result<()> {
-    // Find the Anchor.toml file
-    let anchor_toml_path = match Config::discover(cfg_override)? {
-        Some(cfg) => cfg.path().parent().unwrap().join("Anchor.toml"),
-        None => bail!("Not in an Anchor workspace"),
+    // Find the TrezoaAnchor.toml file
+    let trezoaanchor_toml_path = match Config::discover(cfg_override)? {
+        Some(cfg) => cfg.path().parent().unwrap().join("TrezoaAnchor.toml"),
+        None => bail!("Not in an TrezoaAnchor workspace"),
     };
 
-    // Read the current Anchor.toml
+    // Read the current TrezoaAnchor.toml
     let mut toml_content =
-        fs::read_to_string(&anchor_toml_path).context("Failed to read Anchor.toml")?;
+        fs::read_to_string(&trezoaanchor_toml_path).context("Failed to read TrezoaAnchor.toml")?;
     let mut toml_doc: toml::Value =
-        toml::from_str(&toml_content).context("Failed to parse Anchor.toml")?;
+        toml::from_str(&toml_content).context("Failed to parse TrezoaAnchor.toml")?;
 
     let mut updated = false;
 
     // Update cluster URL if provided
     if let Some(cluster_url) = url {
         let expanded_url = match cluster_url.as_str() {
-            "m" => "https://api.mainnet-beta.solana.com".to_string(),
-            "d" => "https://api.devnet.solana.com".to_string(),
-            "t" => "https://api.testnet.solana.com".to_string(),
+            "m" => "https://api.mainnet-beta.trezoa.com".to_string(),
+            "d" => "https://api.devnet.trezoa.com".to_string(),
+            "t" => "https://api.testnet.trezoa.com".to_string(),
             "l" => "http://127.0.0.1:8899".to_string(),
             _ => cluster_url,
         };
@@ -4511,10 +4511,10 @@ fn config_set(
     }
 
     if updated {
-        // Write the updated config back to Anchor.toml
+        // Write the updated config back to TrezoaAnchor.toml
         toml_content =
-            toml::to_string_pretty(&toml_doc).context("Failed to serialize Anchor.toml")?;
-        fs::write(&anchor_toml_path, toml_content).context("Failed to write Anchor.toml")?;
+            toml::to_string_pretty(&toml_doc).context("Failed to serialize TrezoaAnchor.toml")?;
+        fs::write(&trezoaanchor_toml_path, toml_content).context("Failed to write TrezoaAnchor.toml")?;
         println!("\nConfiguration updated successfully!");
     } else {
         println!("No changes made. Use --url or --keypair to update settings.");
@@ -4613,14 +4613,14 @@ fn run(cfg_override: &ConfigOverride, script: String, script_args: Vec<String>) 
 }
 
 fn login(_cfg_override: &ConfigOverride, token: String) -> Result<()> {
-    let anchor_dir = Path::new(&*shellexpand::tilde("~"))
+    let trezoaanchor_dir = Path::new(&*shellexpand::tilde("~"))
         .join(".config")
-        .join("anchor");
-    if !anchor_dir.exists() {
-        fs::create_dir(&anchor_dir)?;
+        .join("trezoaanchor");
+    if !trezoaanchor_dir.exists() {
+        fs::create_dir(&trezoaanchor_dir)?;
     }
 
-    std::env::set_current_dir(&anchor_dir)?;
+    std::env::set_current_dir(&trezoaanchor_dir)?;
 
     // Freely overwrite the entire file since it's not used for anything else.
     let mut file = File::create("credentials")?;
@@ -4688,7 +4688,7 @@ fn keys_sync(cfg_override: &ConfigOverride, program_name: Option<String>) -> Res
                 }
             }
 
-            // Handle declaration in Anchor.toml
+            // Handle declaration in TrezoaAnchor.toml
             'outer: for (cluster, programs) in &mut cfg.programs {
                 // Only change if the configured cluster matches the program's cluster
                 if cluster != &cfg_cluster {
@@ -4702,7 +4702,7 @@ fn keys_sync(cfg_override: &ConfigOverride, program_name: Option<String>) -> Res
                     }
 
                     if deployment.address.to_string() != actual_program_id {
-                        println!("Found incorrect program id declaration in Anchor.toml for the program `{name}`");
+                        println!("Found incorrect program id declaration in TrezoaAnchor.toml for the program `{name}`");
 
                         // Update the program id
                         deployment.address = Pubkey::try_from(actual_program_id.as_str()).unwrap();
@@ -4725,7 +4725,7 @@ fn keys_sync(cfg_override: &ConfigOverride, program_name: Option<String>) -> Res
 }
 
 /// Check if there's a mismatch between the program keypair and the `declare_id!` in the source code.
-/// Returns an error if a mismatch is detected, prompting the user to run `anchor keys sync`.
+/// Returns an error if a mismatch is detected, prompting the user to run `trezoaanchor keys sync`.
 fn check_program_id_mismatch(cfg: &WithPath<Config>, program_name: Option<String>) -> Result<()> {
     let declare_id_regex = RegexBuilder::new(r#"^(([\w]+::)*)declare_id!\("(\w*)"\)"#)
         .multi_line(true)
@@ -4757,7 +4757,7 @@ fn check_program_id_mismatch(cfg: &WithPath<Config>, program_name: Option<String
                     "Program ID mismatch detected for program '{}':\n  \
                     Keypair file has: {}\n  \
                     Source code has:  {}\n\n\
-                    Please run 'anchor keys sync' to update the program ID in your source code or use the '--ignore-keys' flag to skip this check.",
+                    Please run 'trezoaanchor keys sync' to update the program ID in your source code or use the '--ignore-keys' flag to skip this check.",
                     program.lib_name,
                     actual_program_id,
                     declared_id
@@ -4826,7 +4826,7 @@ fn localnet(
                     true => None,
                     false => Some(validator_flags(cfg, &cfg.test_validator)?),
                 };
-                Some(start_solana_test_validator(
+                Some(start_trezoa_test_validator(
                     cfg,
                     &cfg.test_validator,
                     flags,
@@ -4873,7 +4873,7 @@ fn localnet(
 }
 
 // with_workspace ensures the current working directory is always the top level
-// workspace directory, i.e., where the `Anchor.toml` file is located, before
+// workspace directory, i.e., where the `TrezoaAnchor.toml` file is located, before
 // and after the closure invocation.
 //
 // The closure passed into this function must never change the working directory
@@ -4886,7 +4886,7 @@ fn with_workspace<R>(
 
     let mut cfg = Config::discover(cfg_override)
         .map_err(|e| anyhow!("Workspace configuration error: {}", e))?
-        .ok_or_else(|| anyhow!("This command requires an Anchor workspace."))?;
+        .ok_or_else(|| anyhow!("This command requires an TrezoaAnchor workspace."))?;
 
     let r = f(&mut cfg);
 
@@ -4916,7 +4916,7 @@ fn get_node_version() -> Result<Version> {
     Version::parse(output).map_err(Into::into)
 }
 
-fn add_recommended_deployment_solana_args(
+fn add_recommended_deployment_trezoa_args(
     client: &RpcClient,
     args: Vec<String>,
 ) -> Result<Vec<String>> {
@@ -4939,7 +4939,7 @@ fn add_recommended_deployment_solana_args(
     // This is particularly useful for upgrading larger programs, which suffer from an increased
     // likelihood of some write transactions failing during any single deployment.
     if !args.contains(&"--buffer".to_owned()) {
-        let tmp_keypair_path = std::env::temp_dir().join("anchor-upgrade-buffer.json");
+        let tmp_keypair_path = std::env::temp_dir().join("trezoaanchor-upgrade-buffer.json");
         if !tmp_keypair_path.exists() {
             if let Err(err) = Keypair::new().write_to_file(&tmp_keypair_path) {
                 return Err(anyhow!(
@@ -4967,10 +4967,10 @@ fn get_node_dns_option() -> Result<&'static str> {
 }
 
 // Remove the current workspace directory if it prefixes a string.
-// This is used as a workaround for the Solana CLI using the uriparse crate to
+// This is used as a workaround for the Trezoa CLI using the uriparse crate to
 // parse args but not handling percent encoding/decoding when using the path as
 // a local filesystem path. Removing the workspace prefix handles most/all cases
-// of spaces in keypair/binary paths, but this should be fixed in the Solana CLI
+// of spaces in keypair/binary paths, but this should be fixed in the Trezoa CLI
 // and removed here.
 fn strip_workspace_prefix(absolute_path: String) -> String {
     let workspace_prefix =
@@ -5061,7 +5061,7 @@ fn epoch_info(cfg_override: &ConfigOverride) -> Result<()> {
         epoch_info.slot_index as f64 / epoch_info.slots_in_epoch as f64 * 100.0;
     let remaining_slots = epoch_info.slots_in_epoch - epoch_info.slot_index;
 
-    // Display epoch information (matching Solana CLI format)
+    // Display epoch information (matching Trezoa CLI format)
     println!("Block height: {}", epoch_info.block_height);
     println!("Slot: {}", epoch_info.absolute_slot);
     println!("Epoch: {}", epoch_info.epoch);
@@ -5240,7 +5240,7 @@ mod tests {
     use super::*;
 
     #[test]
-    #[should_panic(expected = "Anchor workspace name must be a valid Rust identifier.")]
+    #[should_panic(expected = "TrezoaAnchor workspace name must be a valid Rust identifier.")]
     fn test_init_reserved_word() {
         init(
             &ConfigOverride {
@@ -5261,7 +5261,7 @@ mod tests {
     }
 
     #[test]
-    #[should_panic(expected = "Anchor workspace name must be a valid Rust identifier.")]
+    #[should_panic(expected = "TrezoaAnchor workspace name must be a valid Rust identifier.")]
     fn test_init_reserved_word_from_syn() {
         init(
             &ConfigOverride {
@@ -5282,7 +5282,7 @@ mod tests {
     }
 
     #[test]
-    #[should_panic(expected = "Anchor workspace name must be a valid Rust identifier.")]
+    #[should_panic(expected = "TrezoaAnchor workspace name must be a valid Rust identifier.")]
     fn test_init_starting_with_digit() {
         init(
             &ConfigOverride {

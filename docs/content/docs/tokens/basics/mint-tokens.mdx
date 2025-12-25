@@ -1,7 +1,7 @@
 ---
 title: Mint Tokens
 description:
-  Learn how to mint tokens in Solana programs using Anchor. Covers creating new
+  Learn how to mint tokens in Trezoa programs using TrezoaAnchor. Covers creating new
   tokens via cross program invocations (CPI) to the Token Program with code
   examples.
 ---
@@ -10,7 +10,7 @@ description:
 
 Minting tokens refers to the process of creating new units of a token by
 invoking the
-[`mint_to`](https://github.com/solana-program/token/blob/main/program/src/instruction.rs#L1087-L1114)
+[`mint_to`](https://github.com/trezoa-program/token/blob/main/program/src/instruction.rs#L1087-L1114)
 instruction on a token program. Only the address specified as the mint authority
 on the mint account can mint new tokens. The instruction also requires the
 existence of a token account for the mint as the destination of the minted
@@ -18,15 +18,15 @@ tokens.
 
 <Callout type="info">
   The [Token
-  Program](https://github.com/solana-program/token/blob/main/program/src/processor.rs#L523-L585)
+  Program](https://github.com/trezoa-program/token/blob/main/program/src/processor.rs#L523-L585)
   and [Token Extension
-  Program](https://github.com/solana-program/token-2022/blob/main/program/src/processor.rs#L962-L1048)
+  Program](https://github.com/trezoa-program/token-2022/blob/main/program/src/processor.rs#L962-L1048)
   share similar implementations to achieve the same functionality.
 </Callout>
 
 ## Examples
 
-To mint tokens through an Anchor program, you need to make a cross program
+To mint tokens through an TrezoaAnchor program, you need to make a cross program
 invocation (CPI) to the `mint_to` instruction on either the Token Program or
 Token Extension Program.
 
@@ -54,8 +54,8 @@ The mint authority passed to the `mint_to` instruction must match the
 must be a signer on the transaction. For example:
 
 ```rust title="lib.rs"
-use anchor_lang::prelude::*;
-use anchor_spl::{
+use trezoaanchor-lang::prelude::*;
+use trezoaanchor_spl::{
     token_interface::{self, Mint, MintTo, TokenAccount, TokenInterface},
 };
 
@@ -147,8 +147,8 @@ control token minting.
 <Tab value="Program">
 
 ```rust title="lib.rs"
-use anchor_lang::prelude::*;
-use anchor_spl::{
+use trezoaanchor-lang::prelude::*;
+use trezoaanchor_spl::{
     associated_token::AssociatedToken,
     token_interface::{self, Mint, MintTo, TokenAccount, TokenInterface},
 };
@@ -226,26 +226,26 @@ pub struct MintTokens<'info> {
 <Tab value="Client">
 
 ```ts title="test.ts"
-import * as anchor from "@coral-xyz/anchor";
-import { Program } from "@coral-xyz/anchor";
+import * as trezoaanchor from "@trezoa-xyz/trezoaanchor";
+import { Program } from "@trezoa-xyz/trezoaanchor";
 import { TokenExample } from "../target/types/token_example";
 import {
   TOKEN_2022_PROGRAM_ID,
   getAssociatedTokenAddress,
   getMint,
   getAccount,
-} from "@solana/spl-token";
+} from "@trezoa/tpl-token";
 
 describe("token-example", () => {
-  anchor.setProvider(anchor.AnchorProvider.env());
+  trezoaanchor.setProvider(trezoaanchor.TrezoaAnchorProvider.env());
 
-  const program = anchor.workspace.TokenExample as Program<TokenExample>;
-  const [mint, mintBump] = anchor.web3.PublicKey.findProgramAddressSync(
+  const program = trezoaanchor.workspace.TokenExample as Program<TokenExample>;
+  const [mint, mintBump] = trezoaanchor.web3.PublicKey.findProgramAddressSync(
     [Buffer.from("mint")],
     program.programId,
   );
 
-  const [token, tokenBump] = anchor.web3.PublicKey.findProgramAddressSync(
+  const [token, tokenBump] = trezoaanchor.web3.PublicKey.findProgramAddressSync(
     [Buffer.from("token")],
     program.programId,
   );
@@ -271,7 +271,7 @@ describe("token-example", () => {
 
   it("Mint Tokens", async () => {
     const tx = await program.methods
-      .mintTokens(new anchor.BN(100))
+      .mintTokens(new trezoaanchor.BN(100))
       .accounts({
         tokenProgram: TOKEN_2022_PROGRAM_ID,
       })

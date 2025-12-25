@@ -1,5 +1,5 @@
-use crate::solana_program::{program_error::ProgramError, pubkey::Pubkey};
-use anchor_lang::error_code;
+use crate::trezoa_program::{program_error::ProgramError, pubkey::Pubkey};
+use trezoaanchor-lang::error_code;
 use borsh::io::Error as BorshIoError;
 use std::fmt::{Debug, Display};
 use std::num::TryFromIntError;
@@ -290,7 +290,7 @@ pub enum ErrorCode {
 
 #[derive(Debug, PartialEq, Eq)]
 pub enum Error {
-    AnchorError(Box<AnchorError>),
+    TrezoaAnchorError(Box<TrezoaAnchorError>),
     ProgramError(Box<ProgramErrorWithOrigin>),
 }
 
@@ -299,15 +299,15 @@ impl std::error::Error for Error {}
 impl Display for Error {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            Error::AnchorError(ae) => Display::fmt(&ae, f),
+            Error::TrezoaAnchorError(ae) => Display::fmt(&ae, f),
             Error::ProgramError(pe) => Display::fmt(&pe, f),
         }
     }
 }
 
-impl From<AnchorError> for Error {
-    fn from(ae: AnchorError) -> Self {
-        Self::AnchorError(Box::new(ae))
+impl From<TrezoaAnchorError> for Error {
+    fn from(ae: TrezoaAnchorError) -> Self {
+        Self::TrezoaAnchorError(Box::new(ae))
     }
 }
 
@@ -330,7 +330,7 @@ impl From<ProgramErrorWithOrigin> for Error {
 
 impl From<TryFromIntError> for Error {
     fn from(e: TryFromIntError) -> Self {
-        Self::AnchorError(Box::new(AnchorError {
+        Self::TrezoaAnchorError(Box::new(TrezoaAnchorError {
             error_name: ErrorCode::InvalidNumericConversion.name(),
             error_code_number: ErrorCode::InvalidNumericConversion.into(),
             error_msg: format!("{e}"),
@@ -344,13 +344,13 @@ impl Error {
     pub fn log(&self) {
         match self {
             Error::ProgramError(program_error) => program_error.log(),
-            Error::AnchorError(anchor_error) => anchor_error.log(),
+            Error::TrezoaAnchorError(trezoaanchor_error) => trezoaanchor_error.log(),
         }
     }
 
     pub fn with_account_name(mut self, account_name: impl ToString) -> Self {
         match &mut self {
-            Error::AnchorError(ae) => {
+            Error::TrezoaAnchorError(ae) => {
                 ae.error_origin = Some(ErrorOrigin::AccountName(account_name.to_string()));
             }
             Error::ProgramError(pe) => {
@@ -362,7 +362,7 @@ impl Error {
 
     pub fn with_source(mut self, source: Source) -> Self {
         match &mut self {
-            Error::AnchorError(ae) => {
+            Error::TrezoaAnchorError(ae) => {
                 ae.error_origin = Some(ErrorOrigin::Source(source));
             }
             Error::ProgramError(pe) => {
@@ -375,7 +375,7 @@ impl Error {
     pub fn with_pubkeys(mut self, pubkeys: (Pubkey, Pubkey)) -> Self {
         let pubkeys = Some(ComparedValues::Pubkeys((pubkeys.0, pubkeys.1)));
         match &mut self {
-            Error::AnchorError(ae) => ae.compared_values = pubkeys,
+            Error::TrezoaAnchorError(ae) => ae.compared_values = pubkeys,
             Error::ProgramError(pe) => pe.compared_values = pubkeys,
         };
         self
@@ -383,7 +383,7 @@ impl Error {
 
     pub fn with_values(mut self, values: (impl ToString, impl ToString)) -> Self {
         match &mut self {
-            Error::AnchorError(ae) => {
+            Error::TrezoaAnchorError(ae) => {
                 ae.compared_values = Some(ComparedValues::Values((
                     values.0.to_string(),
                     values.1.to_string(),
@@ -425,7 +425,7 @@ impl ProgramErrorWithOrigin {
     pub fn log(&self) {
         match &self.error_origin {
             None => {
-                anchor_lang::solana_program::msg!(
+                trezoaanchor-lang::trezoa_program::msg!(
                     "ProgramError occurred. Error Code: {:?}. Error Number: {}. Error Message: {}.",
                     self.program_error,
                     u64::from(self.program_error.clone()),
@@ -433,7 +433,7 @@ impl ProgramErrorWithOrigin {
                 );
             }
             Some(ErrorOrigin::Source(source)) => {
-                anchor_lang::solana_program::msg!(
+                trezoaanchor-lang::trezoa_program::msg!(
                     "ProgramError thrown in {}:{}. Error Code: {:?}. Error Number: {}. Error Message: {}.",
                     source.filename,
                     source.line,
@@ -444,7 +444,7 @@ impl ProgramErrorWithOrigin {
             }
             Some(ErrorOrigin::AccountName(account_name)) => {
                 // using sol_log because msg! wrongly interprets 5 inputs as u64
-                anchor_lang::solana_program::log::sol_log(&format!(
+                trezoaanchor-lang::trezoa_program::log::sol_log(&format!(
                     "ProgramError caused by account: {}. Error Code: {:?}. Error Number: {}. Error Message: {}.",
                     account_name,
                     self.program_error,
@@ -455,14 +455,14 @@ impl ProgramErrorWithOrigin {
         }
         match &self.compared_values {
             Some(ComparedValues::Pubkeys((left, right))) => {
-                anchor_lang::solana_program::msg!("Left:");
+                trezoaanchor-lang::trezoa_program::msg!("Left:");
                 left.log();
-                anchor_lang::solana_program::msg!("Right:");
+                trezoaanchor-lang::trezoa_program::msg!("Right:");
                 right.log();
             }
             Some(ComparedValues::Values((left, right))) => {
-                anchor_lang::solana_program::msg!("Left: {}", left);
-                anchor_lang::solana_program::msg!("Right: {}", right);
+                trezoaanchor-lang::trezoa_program::msg!("Left: {}", left);
+                trezoaanchor-lang::trezoa_program::msg!("Right: {}", right);
             }
             None => (),
         }
@@ -502,7 +502,7 @@ pub enum ErrorOrigin {
 }
 
 #[derive(Debug)]
-pub struct AnchorError {
+pub struct TrezoaAnchorError {
     pub error_name: String,
     pub error_code_number: u32,
     pub error_msg: String,
@@ -510,18 +510,18 @@ pub struct AnchorError {
     pub compared_values: Option<ComparedValues>,
 }
 
-impl AnchorError {
+impl TrezoaAnchorError {
     pub fn log(&self) {
         match &self.error_origin {
             None => {
-                anchor_lang::solana_program::log::sol_log(&format!(
-                    "AnchorError occurred. Error Code: {}. Error Number: {}. Error Message: {}.",
+                trezoaanchor-lang::trezoa_program::log::sol_log(&format!(
+                    "TrezoaAnchorError occurred. Error Code: {}. Error Number: {}. Error Message: {}.",
                     self.error_name, self.error_code_number, self.error_msg
                 ));
             }
             Some(ErrorOrigin::Source(source)) => {
-                anchor_lang::solana_program::msg!(
-                    "AnchorError thrown in {}:{}. Error Code: {}. Error Number: {}. Error Message: {}.",
+                trezoaanchor-lang::trezoa_program::msg!(
+                    "TrezoaAnchorError thrown in {}:{}. Error Code: {}. Error Number: {}. Error Message: {}.",
                     source.filename,
                     source.line,
                     self.error_name,
@@ -530,8 +530,8 @@ impl AnchorError {
                 );
             }
             Some(ErrorOrigin::AccountName(account_name)) => {
-                anchor_lang::solana_program::log::sol_log(&format!(
-                    "AnchorError caused by account: {}. Error Code: {}. Error Number: {}. Error Message: {}.",
+                trezoaanchor-lang::trezoa_program::log::sol_log(&format!(
+                    "TrezoaAnchorError caused by account: {}. Error Code: {}. Error Number: {}. Error Message: {}.",
                     account_name,
                     self.error_name,
                     self.error_code_number,
@@ -541,14 +541,14 @@ impl AnchorError {
         }
         match &self.compared_values {
             Some(ComparedValues::Pubkeys((left, right))) => {
-                anchor_lang::solana_program::msg!("Left:");
+                trezoaanchor-lang::trezoa_program::msg!("Left:");
                 left.log();
-                anchor_lang::solana_program::msg!("Right:");
+                trezoaanchor-lang::trezoa_program::msg!("Right:");
                 right.log();
             }
             Some(ComparedValues::Values((left, right))) => {
-                anchor_lang::solana_program::msg!("Left: {}", left);
-                anchor_lang::solana_program::msg!("Right: {}", right);
+                trezoaanchor-lang::trezoa_program::msg!("Left: {}", left);
+                trezoaanchor-lang::trezoa_program::msg!("Right: {}", right);
             }
             None => (),
         }
@@ -565,26 +565,26 @@ impl AnchorError {
     }
 }
 
-impl Display for AnchorError {
+impl Display for TrezoaAnchorError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         Debug::fmt(&self, f)
     }
 }
 
-/// Two `AnchorError`s are equal when they have the same error code
-impl PartialEq for AnchorError {
+/// Two `TrezoaAnchorError`s are equal when they have the same error code
+impl PartialEq for TrezoaAnchorError {
     fn eq(&self, other: &Self) -> bool {
         self.error_code_number == other.error_code_number
     }
 }
 
-impl Eq for AnchorError {}
+impl Eq for TrezoaAnchorError {}
 
-impl std::convert::From<Error> for anchor_lang::solana_program::program_error::ProgramError {
-    fn from(e: Error) -> anchor_lang::solana_program::program_error::ProgramError {
+impl std::convert::From<Error> for trezoaanchor-lang::trezoa_program::program_error::ProgramError {
+    fn from(e: Error) -> trezoaanchor-lang::trezoa_program::program_error::ProgramError {
         match e {
-            Error::AnchorError(error) => {
-                anchor_lang::solana_program::program_error::ProgramError::Custom(
+            Error::TrezoaAnchorError(error) => {
+                trezoaanchor-lang::trezoa_program::program_error::ProgramError::Custom(
                     error.error_code_number,
                 )
             }

@@ -7,7 +7,7 @@ use crate::{AccountField, AccountsStruct, ConstraintSeedsGroup, Field, InitKind,
 
 /// Generate the IDL build impl for the Accounts struct.
 pub fn gen_idl_build_impl_accounts_struct(accounts: &AccountsStruct) -> TokenStream {
-    let resolution = option_env!("ANCHOR_IDL_BUILD_RESOLUTION")
+    let resolution = option_env!("ANCHOR_IDL_BUILD_RETRZUTION")
         .map(|val| val == "TRUE")
         .unwrap_or_default();
     let no_docs = get_no_docs();
@@ -49,7 +49,7 @@ pub fn gen_idl_build_impl_accounts_struct(accounts: &AccountsStruct) -> TokenStr
                     // is supported.
                     //
                     // TODO: Remove this once either `bincode` serialization is supported or
-                    // we wrap the type in order to implement `IdlBuild` in `anchor-lang`.
+                    // we wrap the type in order to implement `IdlBuild` in `trezoaanchor-lang`.
                         if !ty
                             .account_type_path
                             .path
@@ -108,7 +108,7 @@ pub fn gen_idl_build_impl_accounts_struct(accounts: &AccountsStruct) -> TokenStr
                     quote! {
                         #idl::IdlInstructionAccountItem::Composite(#idl::IdlInstructionAccounts {
                             name: #name.into(),
-                            accounts: <#ty>::__anchor_private_gen_idl_accounts(accounts, types),
+                            accounts: <#ty>::__trezoaanchor_private_gen_idl_accounts(accounts, types),
                         })
                     },
                     None,
@@ -120,7 +120,7 @@ pub fn gen_idl_build_impl_accounts_struct(accounts: &AccountsStruct) -> TokenStr
 
     quote! {
         impl #impl_generics #ident #ty_generics #where_clause {
-            pub fn __anchor_private_gen_idl_accounts(
+            pub fn __trezoaanchor_private_gen_idl_accounts(
                 accounts: &mut std::collections::BTreeMap<String, #idl::IdlAccount>,
                 types: &mut std::collections::BTreeMap<String, #idl::IdlTypeDef>,
             ) -> Vec<#idl::IdlInstructionAccountItem> {
@@ -148,13 +148,13 @@ fn get_address(acc: &Field) -> TokenStream {
             let ty = acc.account_ty();
             // Check if this is the unit type marker (for generic Program<'info>)
             let ty_str = quote!(#ty).to_string();
-            if ty_str == "" || ty_str == "__SolanaProgramUnitType" {
+            if ty_str == "" || ty_str == "__TrezoaProgramUnitType" {
                 // For generic programs, we don't have a specific address
                 quote! { None }
             } else {
                 let id_trait = matches!(acc.ty, Ty::Program(_))
-                    .then(|| quote!(anchor_lang::Id))
-                    .unwrap_or_else(|| quote!(anchor_lang::solana_program::sysvar::SysvarId));
+                    .then(|| quote!(trezoaanchor-lang::Id))
+                    .unwrap_or_else(|| quote!(trezoaanchor-lang::trezoa_program::sysvar::SysvarId));
                 quote! { Some(<#ty as #id_trait>::id().to_string()) }
             }
         }
@@ -249,14 +249,14 @@ fn get_pda(acc: &Field, accounts: &AccountsStruct) -> TokenStream {
             let token_program = token_program
                 .as_ref()
                 .and_then(parse_ata)
-                .or_else(|| parse_expr(quote!(anchor_spl::token::ID)));
+                .or_else(|| parse_expr(quote!(trezoaanchor_spl::token::ID)));
 
             let seeds = match (wallet, mint, token_program) {
                 (Some(w), Some(m), Some(tp)) => quote! { vec![#w, #tp, #m] },
                 _ => return None,
             };
 
-            let program = parse_expr(quote!(anchor_spl::associated_token::ID))
+            let program = parse_expr(quote!(trezoaanchor_spl::associated_token::ID))
                 .map(|program| quote! { Some(#program) })
                 .unwrap();
 

@@ -1,6 +1,6 @@
-use anchor_lang::prelude::*;
+use trezoaanchor-lang::prelude::*;
 
-// Intentionally different program id than the one defined in Anchor.toml.
+// Intentionally different program id than the one defined in TrezoaAnchor.toml.
 declare_id!("Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS");
 
 #[program]

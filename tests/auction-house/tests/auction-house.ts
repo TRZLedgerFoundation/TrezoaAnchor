@@ -1,18 +1,18 @@
 import {
-  AnchorProvider,
+  TrezoaAnchorProvider,
   Program,
   Wallet,
   BN,
   getProvider,
   setProvider,
-} from "@coral-xyz/anchor";
+} from "@trezoa-xyz/trezoaanchor";
 import {
   Transaction,
   Keypair,
   PublicKey,
   SystemProgram,
-} from "@solana/web3.js";
-import { u64, Token, TOKEN_PROGRAM_ID } from "@solana/spl-token";
+} from "@trezoa/web3.js";
+import { u64, Token, TOKEN_PROGRAM_ID } from "@trezoa/tpl-token";
 import * as metaplex from "@metaplex/js";
 import * as assert from "assert";
 import { AuctionHouse } from "../target/types/auction_house";
@@ -30,15 +30,15 @@ const AUCTION_HOUSE_PROGRAM_ID = new PublicKey(
   "hausS13jsjafwWwGqZTUQRmWyvyxn9EQpqMwV1PBBmk"
 );
 
-// Mint address for native SOL token accounts.
+// Mint address for native TRZ token accounts.
 //
-// The program uses this when one wants to pay with native SOL vs an SPL token.
-const NATIVE_SOL_MINT = new PublicKey(
+// The program uses this when one wants to pay with native TRZ vs an TPL token.
+const NATIVE_TRZ_MINT = new PublicKey(
   "So11111111111111111111111111111111111111112"
 );
 
 describe("auction-house", () => {
-  setProvider(AnchorProvider.env());
+  setProvider(TrezoaAnchorProvider.env());
   // @ts-ignore
   const wallet = getProvider().wallet as Wallet;
 
@@ -59,7 +59,7 @@ describe("auction-house", () => {
   const feeWithdrawalDestination = authority;
   const treasuryWithdrawalDestination = authority;
   const treasuryWithdrawalDestinationOwner = authority;
-  const treasuryMint = NATIVE_SOL_MINT;
+  const treasuryMint = NATIVE_TRZ_MINT;
   const tokenProgram = TOKEN_PROGRAM_ID;
 
   // Uninitialized constant accounts.
@@ -135,18 +135,18 @@ describe("auction-house", () => {
     authorityClient = new Program<AuctionHouse>(IDL, getProvider());
     sellerClient = new Program<AuctionHouse>(
       IDL,
-      new AnchorProvider(
+      new TrezoaAnchorProvider(
         getProvider().connection,
         new Wallet(sellerWallet),
-        AnchorProvider.defaultOptions()
+        TrezoaAnchorProvider.defaultOptions()
       )
     );
     buyerClient = new Program<AuctionHouse>(
       IDL,
-      new AnchorProvider(
+      new TrezoaAnchorProvider(
         getProvider().connection,
         new Wallet(buyerWallet),
-        AnchorProvider.defaultOptions()
+        TrezoaAnchorProvider.defaultOptions()
       )
     );
   });

@@ -1,10 +1,10 @@
 //! Type validating that the account is the given Program
 
 use crate::error::{Error, ErrorCode};
-use crate::solana_program::account_info::AccountInfo;
-use crate::solana_program::bpf_loader_upgradeable::{self, UpgradeableLoaderState};
-use crate::solana_program::instruction::AccountMeta;
-use crate::solana_program::pubkey::Pubkey;
+use crate::trezoa_program::account_info::AccountInfo;
+use crate::trezoa_program::bpf_loader_upgradeable::{self, UpgradeableLoaderState};
+use crate::trezoa_program::instruction::AccountMeta;
+use crate::trezoa_program::pubkey::Pubkey;
 use crate::{
     AccountDeserialize, Accounts, AccountsExit, Id, Key, Result, ToAccountInfos, ToAccountMetas,
 };
@@ -16,8 +16,8 @@ use std::ops::Deref;
 /// Type validating that the account is the given Program
 ///
 /// The type has a `programdata_address` function that will return `Option::Some`
-/// if the program is owned by the [`BPFUpgradeableLoader`](https://docs.rs/solana-program/latest/solana_program/bpf_loader_upgradeable/index.html)
-/// which will contain the `programdata_address` property of the `Program` variant of the [`UpgradeableLoaderState`](https://docs.rs/solana-loader-v3-interface/latest/solana_loader_v3_interface/state/enum.UpgradeableLoaderState.html) enum.
+/// if the program is owned by the [`BPFUpgradeableLoader`](https://docs.rs/trezoaanchor-program/latest/trezoa_program/bpf_loader_upgradeable/index.html)
+/// which will contain the `programdata_address` property of the `Program` variant of the [`UpgradeableLoaderState`](https://docs.rs/trezoaanchor-loader-v3-interface/latest/trezoa_loader_v3_interface/state/enum.UpgradeableLoaderState.html) enum.
 ///
 /// # Table of Contents
 /// - [Basic Functionality](#basic-functionality)
@@ -86,12 +86,12 @@ use std::ops::Deref;
 ///
 /// # Out of the Box Types
 ///
-/// Between the [`anchor_lang`](https://docs.rs/anchor-lang/latest/anchor_lang) and [`anchor_spl`](https://docs.rs/anchor_spl/latest/anchor_spl) crates,
+/// Between the [`trezoaanchor-lang`](https://docs.rs/trezoaanchortrezoaanchor-lang/latest/trezoaanchor-lang) and [`trezoaanchor_spl`](https://docs.rs/trezoaanchoranchor_spl/latest/trezoaanchor_spl) crates,
 /// the following `Program` types are provided out of the box:
 ///
-/// - [`System`](https://docs.rs/anchor-lang/latest/anchor_lang/struct.System.html)
-/// - [`AssociatedToken`](https://docs.rs/anchor-spl/latest/anchor_spl/associated_token/struct.AssociatedToken.html)
-/// - [`Token`](https://docs.rs/anchor-spl/latest/anchor_spl/token/struct.Token.html)
+/// - [`System`](https://docs.rs/trezoaanchortrezoaanchor-lang/latest/trezoaanchor-lang/struct.System.html)
+/// - [`AssociatedToken`](https://docs.rs/trezoaanchortrezoaanchor-tpl/latest/trezoaanchor_spl/associated_token/struct.AssociatedToken.html)
+/// - [`Token`](https://docs.rs/trezoaanchortrezoaanchor-tpl/latest/trezoaanchor_spl/token/struct.Token.html)
 ///
 #[derive(Clone)]
 pub struct Program<'info, T = ()> {

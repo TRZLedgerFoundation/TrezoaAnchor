@@ -3,13 +3,13 @@
 // Script to infinitely post orders that are immediately filled.
 
 const process = require("process");
-const anchor = require("@coral-xyz/anchor");
-const PublicKey = anchor.web3.PublicKey;
+const trezoaanchor = require("@trezoa-xyz/trezoaanchor");
+const PublicKey = trezoaanchor.web3.PublicKey;
 const { runTradeBot } = require("../tests/utils");
 
 async function main() {
   const market = new PublicKey(process.argv[2]);
-  const provider = anchor.AnchorProvider.local();
+  const provider = trezoaanchor.TrezoaAnchorProvider.local();
   runTradeBot(market, provider);
 }
 

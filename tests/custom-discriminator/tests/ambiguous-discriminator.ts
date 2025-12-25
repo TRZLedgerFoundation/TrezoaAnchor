@@ -2,7 +2,7 @@ import { spawnSync } from "child_process";
 
 describe("ambiguous-discriminator", () => {
   it("Returns ambiguous discriminator error on builds", () => {
-    const result = spawnSync("anchor", [
+    const result = spawnSync("trezoaanchor", [
       "idl",
       "build",
       "-p",

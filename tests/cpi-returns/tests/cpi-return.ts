@@ -1,19 +1,19 @@
 import assert from "assert";
-import * as anchor from "@coral-xyz/anchor";
+import * as trezoaanchor from "@trezoa-xyz/trezoaanchor";
 import * as borsh from "borsh";
-import { Program } from "@coral-xyz/anchor";
+import { Program } from "@trezoa-xyz/trezoaanchor";
 import { Callee } from "../target/types/callee";
 import { Caller } from "../target/types/caller";
-import { ConfirmOptions } from "@solana/web3.js";
+import { ConfirmOptions } from "@trezoa/web3.js";
 
-const { SystemProgram } = anchor.web3;
+const { SystemProgram } = trezoaanchor.web3;
 
 describe("CPI return", () => {
-  const provider = anchor.AnchorProvider.env();
-  anchor.setProvider(provider);
+  const provider = trezoaanchor.TrezoaAnchorProvider.env();
+  trezoaanchor.setProvider(provider);
 
-  const callerProgram = anchor.workspace.Caller as Program<Caller>;
-  const calleeProgram = anchor.workspace.Callee as Program<Callee>;
+  const callerProgram = trezoaanchor.workspace.Caller as Program<Caller>;
+  const calleeProgram = trezoaanchor.workspace.Callee as Program<Callee>;
 
   const getReturnLog = (confirmedTransaction) => {
     const prefix = "Program return: ";
@@ -26,7 +26,7 @@ describe("CPI return", () => {
     return [key, data, buffer];
   };
 
-  const cpiReturn = anchor.web3.Keypair.generate();
+  const cpiReturn = trezoaanchor.web3.Keypair.generate();
 
   const confirmOptions: ConfirmOptions = {
     commitment: "confirmed",
@@ -174,39 +174,39 @@ describe("CPI return", () => {
 
   it("can return a u64 via view", async () => {
     // @ts-expect-error
-    assert(new anchor.BN(99).eq(await callerProgram.views.returnU64()));
+    assert(new trezoaanchor.BN(99).eq(await callerProgram.views.returnU64()));
     // Via methods API
     assert(
-      new anchor.BN(99).eq(await callerProgram.methods.returnU64().view())
+      new trezoaanchor.BN(99).eq(await callerProgram.methods.returnU64().view())
     );
   });
 
   it("can return a struct via view", async () => {
     // @ts-expect-error
     const struct = await callerProgram.views.returnStruct();
-    assert(struct.a.eq(new anchor.BN(1)));
-    assert(struct.b.eq(new anchor.BN(2)));
+    assert(struct.a.eq(new trezoaanchor.BN(1)));
+    assert(struct.b.eq(new trezoaanchor.BN(2)));
     // Via methods API
     const struct2 = await callerProgram.methods.returnStruct().view();
-    assert(struct2.a.eq(new anchor.BN(1)));
-    assert(struct2.b.eq(new anchor.BN(2)));
+    assert(struct2.a.eq(new trezoaanchor.BN(1)));
+    assert(struct2.b.eq(new trezoaanchor.BN(2)));
   });
 
   it("can return a vec via view", async () => {
     // @ts-expect-error
     const vec = await callerProgram.views.returnVec();
-    assert(vec[0].eq(new anchor.BN(1)));
-    assert(vec[1].eq(new anchor.BN(2)));
-    assert(vec[2].eq(new anchor.BN(3)));
+    assert(vec[0].eq(new trezoaanchor.BN(1)));
+    assert(vec[1].eq(new trezoaanchor.BN(2)));
+    assert(vec[2].eq(new trezoaanchor.BN(3)));
     // Via methods API
     const vec2 = await callerProgram.methods.returnVec().view();
-    assert(vec2[0].eq(new anchor.BN(1)));
-    assert(vec2[1].eq(new anchor.BN(2)));
-    assert(vec2[2].eq(new anchor.BN(3)));
+    assert(vec2[0].eq(new trezoaanchor.BN(1)));
+    assert(vec2[1].eq(new trezoaanchor.BN(2)));
+    assert(vec2[2].eq(new trezoaanchor.BN(3)));
   });
 
   it("can return a u64 from an account via view", async () => {
-    const value = new anchor.BN(10);
+    const value = new trezoaanchor.BN(10);
     assert(
       value.eq(
         await calleeProgram.methods

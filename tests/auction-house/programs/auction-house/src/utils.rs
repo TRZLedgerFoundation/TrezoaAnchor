@@ -1,15 +1,15 @@
 use {
     crate::{AuctionHouse, ErrorCode},
-    anchor_lang::{
+    trezoaanchor-lang::{
         prelude::*,
-        solana_program::{
+        trezoa_program::{
             program::invoke_signed,
             program_option::COption,
             program_pack::{IsInitialized, Pack},
             system_instruction,
         },
     },
-    anchor_spl::{
+    trezoaanchor_spl::{
         associated_token::spl_associated_token_account::{
             address::get_associated_token_address, instruction::create_associated_token_account,
         },
@@ -20,7 +20,7 @@ use {
         },
     },
     arrayref::array_ref,
-    solana_sysvar::SysvarSerialize,
+    trezoa_sysvar::SysvarSerialize,
     std::{convert::TryInto, slice::Iter},
 };
 pub fn assert_is_ata(ata: &AccountInfo, wallet: &Pubkey, mint: &Pubkey) -> Result<Account> {
@@ -69,7 +69,7 @@ pub fn make_ata<'a>(
 
 pub fn assert_metadata_valid<'a>(
     metadata: &UncheckedAccount,
-    token_account: &anchor_lang::accounts::account::Account<'a, TokenAccount>,
+    token_account: &trezoaanchor-lang::accounts::account::Account<'a, TokenAccount>,
 ) -> Result<()> {
     assert_derivation(
         &mpl_token_metadata::ID,
@@ -89,7 +89,7 @@ pub fn assert_metadata_valid<'a>(
 
 pub fn get_fee_payer<'a, 'b>(
     authority: &AccountInfo,
-    auction_house: &anchor_lang::accounts::account::Account<AuctionHouse>,
+    auction_house: &trezoaanchor-lang::accounts::account::Account<AuctionHouse>,
     wallet: AccountInfo<'a>,
     auction_house_fee_account: AccountInfo<'a>,
     auction_house_seeds: &'b [&'b [u8]],
@@ -117,7 +117,7 @@ pub fn assert_valid_delegation(
     src_wallet: &AccountInfo,
     dst_wallet: &AccountInfo,
     transfer_authority: &AccountInfo,
-    mint: &anchor_lang::accounts::account::Account<Mint>,
+    mint: &trezoaanchor-lang::accounts::account::Account<Mint>,
     paysize: u64,
 ) -> Result<()> {
     match Account::unpack(&src_account.data.borrow()) {
@@ -148,7 +148,7 @@ pub fn assert_valid_delegation(
             }
 
             if !src_wallet.is_signer {
-                return err!(ErrorCode::SOLWalletMustSign);
+                return err!(ErrorCode::TRZWalletMustSign);
             }
 
             assert_keys_equal(*src_wallet.key, src_account.key())?;
@@ -186,7 +186,7 @@ pub fn assert_owned_by(account: &AccountInfo, owner: &Pubkey) -> Result<()> {
 
 #[allow(clippy::too_many_arguments)]
 pub fn pay_auction_house_fees<'a>(
-    auction_house: &anchor_lang::accounts::account::Account<'a, AuctionHouse>,
+    auction_house: &trezoaanchor-lang::accounts::account::Account<'a, AuctionHouse>,
     auction_house_treasury: &AccountInfo<'a>,
     escrow_payment_account: &AccountInfo<'a>,
     token_program: &AccountInfo<'a>,
@@ -242,7 +242,7 @@ pub fn create_program_token_account_if_not_present<'a>(
     system_program: &Program<'a, System>,
     fee_payer: &AccountInfo<'a>,
     token_program: &Program<'a, Token>,
-    treasury_mint: &anchor_lang::accounts::account::Account<'a, Mint>,
+    treasury_mint: &trezoaanchor-lang::accounts::account::Account<'a, Mint>,
     owner: &AccountInfo<'a>,
     rent: &Sysvar<'a, Rent>,
     signer_seeds: &[&[u8]],
@@ -411,7 +411,7 @@ pub fn get_delegate_from_token_account(token_account_info: &AccountInfo) -> Resu
 }
 
 /// Create account almost from scratch, lifted from
-/// https://github.com/solana-labs/solana-program-library/blob/7d4873c61721aca25464d42cc5ef651a7923ca79/associated-token-account/program/src/processor.rs#L51-L98
+/// https://github.com/trezoa-xyz/trezoa-program-library/blob/7d4873c61721aca25464d42cc5ef651a7923ca79/associated-token-account/program/src/processor.rs#L51-L98
 #[inline(always)]
 pub fn create_or_allocate_account_raw<'a>(
     program_id: Pubkey,

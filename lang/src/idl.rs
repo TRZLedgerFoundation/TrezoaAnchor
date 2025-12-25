@@ -4,4 +4,4 @@
 //! without injecting instructions into programs.
 
 #[cfg(feature = "idl-build")]
-pub use anchor_lang_idl::{build::IdlBuild, *};
+pub use trezoaanchor-lang_idl::{build::IdlBuild, *};

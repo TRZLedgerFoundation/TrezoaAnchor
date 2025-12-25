@@ -1,18 +1,18 @@
-const anchor = require("@coral-xyz/anchor");
+const trezoaanchor = require("@trezoa-xyz/trezoaanchor");
 const { assert } = require("chai");
 
 describe("sysvars", () => {
   // Configure the client to use the local cluster.
-  anchor.setProvider(anchor.AnchorProvider.local());
-  const program = anchor.workspace.Sysvars;
+  trezoaanchor.setProvider(trezoaanchor.TrezoaAnchorProvider.local());
+  const program = trezoaanchor.workspace.Sysvars;
 
   it("Is initialized!", async () => {
     const tx = await program.methods
       .sysvars()
       .accounts({
-        clock: anchor.web3.SYSVAR_CLOCK_PUBKEY,
-        rent: anchor.web3.SYSVAR_RENT_PUBKEY,
-        stakeHistory: anchor.web3.SYSVAR_STAKE_HISTORY_PUBKEY,
+        clock: trezoaanchor.web3.SYSVAR_CLOCK_PUBKEY,
+        rent: trezoaanchor.web3.SYSVAR_RENT_PUBKEY,
+        stakeHistory: trezoaanchor.web3.SYSVAR_STAKE_HISTORY_PUBKEY,
       })
       .rpc();
     console.log("Your transaction signature", tx);
@@ -23,9 +23,9 @@ describe("sysvars", () => {
       await program.methods
         .sysvars()
         .accounts({
-          clock: anchor.web3.SYSVAR_CLOCK_PUBKEY,
-          rent: anchor.web3.SYSVAR_RENT_PUBKEY,
-          stakeHistory: anchor.web3.SYSVAR_REWARDS_PUBKEY,
+          clock: trezoaanchor.web3.SYSVAR_CLOCK_PUBKEY,
+          rent: trezoaanchor.web3.SYSVAR_RENT_PUBKEY,
+          stakeHistory: trezoaanchor.web3.SYSVAR_REWARDS_PUBKEY,
         })
         .rpc();
       assert.ok(false);

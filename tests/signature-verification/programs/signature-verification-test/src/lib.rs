@@ -1,5 +1,5 @@
-use anchor_lang::prelude::*;
-use anchor_lang::signature_verification::{
+use trezoaanchor-lang::prelude::*;
+use trezoaanchor-lang::signature_verification::{
     load_instruction, verify_ed25519_ix_with_instruction_index,
     verify_secp256k1_ix_with_instruction_index,
 };
@@ -56,13 +56,13 @@ pub struct VerifyEd25519Signature<'info> {
     /// CHECK: Signer account
     pub signer: AccountInfo<'info>,
     /// CHECK: Instructions sysvar account
-    #[account(address = solana_sdk_ids::sysvar::instructions::ID)]
+    #[account(address = trezoa_sdk_ids::sysvar::instructions::ID)]
     pub ix_sysvar: AccountInfo<'info>,
 }
 
 #[derive(Accounts)]
 pub struct VerifySecp256k1Signature<'info> {
     /// CHECK: Instructions sysvar account
-    #[account(address = solana_sdk_ids::sysvar::instructions::ID)]
+    #[account(address = trezoa_sdk_ids::sysvar::instructions::ID)]
     pub ix_sysvar: AccountInfo<'info>,
 }

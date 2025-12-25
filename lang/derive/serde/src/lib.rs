@@ -116,8 +116,8 @@ fn generate_union_serialize(item: &syn::ItemUnion) -> TokenStream2 {
     syn::Error::new_spanned(item, "Unions are not supported by borsh").to_compile_error()
 }
 
-#[proc_macro_derive(AnchorSerialize, attributes(borsh_skip))]
-pub fn anchor_serialize(input: TokenStream) -> TokenStream {
+#[proc_macro_derive(TrezoaAnchorSerialize, attributes(borsh_skip))]
+pub fn trezoaanchor_serialize(input: TokenStream) -> TokenStream {
     #[cfg(not(feature = "idl-build"))]
     let ret = gen_borsh_serialize(input);
     #[cfg(feature = "idl-build")]
@@ -125,7 +125,7 @@ pub fn anchor_serialize(input: TokenStream) -> TokenStream {
 
     #[cfg(feature = "idl-build")]
     {
-        use anchor_syn::idl::*;
+        use trezoaanchor_syn::idl::*;
         use quote::quote;
 
         let idl_build_impl = match syn::parse(input).unwrap() {
@@ -268,7 +268,7 @@ fn generate_union_deserialize(item: &syn::ItemUnion) -> TokenStream2 {
     syn::Error::new_spanned(item, "Unions are not supported by borsh").to_compile_error()
 }
 
-#[proc_macro_derive(AnchorDeserialize, attributes(borsh_skip, borsh_init))]
+#[proc_macro_derive(TrezoaAnchorDeserialize, attributes(borsh_skip, borsh_init))]
 pub fn borsh_deserialize(input: TokenStream) -> TokenStream {
     #[cfg(feature = "lazy-account")]
     {

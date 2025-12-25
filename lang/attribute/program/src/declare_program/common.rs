@@ -1,4 +1,4 @@
-use anchor_lang_idl::types::{
+use trezoaanchor-lang_idl::types::{
     Idl, IdlArrayLen, IdlDefinedFields, IdlField, IdlGenericArg, IdlInstructionAccountItem,
     IdlInstructionAccounts, IdlRepr, IdlSerialization, IdlType, IdlTypeDef, IdlTypeDefGeneric,
     IdlTypeDefTy,
@@ -131,7 +131,7 @@ pub fn convert_idl_type_def_to_ts(
             can_derive_default(ty_def, ty_defs).then_some(quote!(#[derive(Default)]));
 
         let ser_attr = match &ty_def.serialization {
-            IdlSerialization::Borsh => quote!(#[derive(AnchorSerialize, AnchorDeserialize)]),
+            IdlSerialization::Borsh => quote!(#[derive(TrezoaAnchorSerialize, TrezoaAnchorDeserialize)]),
             IdlSerialization::Bytemuck => quote!(#[zero_copy]),
             IdlSerialization::BytemuckUnsafe => quote!(#[zero_copy(unsafe)]),
             _ => unimplemented!("{:?}", ty_def.serialization),
@@ -374,10 +374,10 @@ fn handle_defined_fields<R>(
 /// Combine regular instruction accounts with non-instruction composite accounts.
 pub fn get_all_instruction_accounts(idl: &Idl) -> Vec<IdlInstructionAccounts> {
     // It's possible to declare an accounts struct and not use it as an instruction, see
-    // https://github.com/coral-xyz/anchor/issues/3274
+    // https://github.com/trezoa-xyz/trezoaanchor/issues/3274
     //
     // NOTE: Returned accounts will not be unique if non-instruction composite accounts have been
-    // used multiple times https://github.com/solana-foundation/anchor/issues/3349
+    // used multiple times https://github.com/trz-ledger-foundation/trezoaanchor/issues/3349
     fn get_non_instruction_composite_accounts<'a>(
         accs: &'a [IdlInstructionAccountItem],
         idl: &'a Idl,

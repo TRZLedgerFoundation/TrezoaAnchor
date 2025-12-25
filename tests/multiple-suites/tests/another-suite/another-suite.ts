@@ -1,18 +1,18 @@
-import * as anchor from "@coral-xyz/anchor";
-import { Program } from "@coral-xyz/anchor";
-import { PublicKey } from "@solana/web3.js";
+import * as trezoaanchor from "@trezoa-xyz/trezoaanchor";
+import { Program } from "@trezoa-xyz/trezoaanchor";
+import { PublicKey } from "@trezoa/web3.js";
 import { assert } from "chai";
 import { MultipleSuites } from "../../target/types/multiple_suites";
 
 describe("multiple-suites", () => {
   // Configure the client to use the local cluster.
-  anchor.setProvider(anchor.AnchorProvider.env());
+  trezoaanchor.setProvider(trezoaanchor.TrezoaAnchorProvider.env());
 
-  const program = anchor.workspace.MultipleSuites as Program<MultipleSuites>;
+  const program = trezoaanchor.workspace.MultipleSuites as Program<MultipleSuites>;
 
   it("Is initialized!", async () => {
     // Add your test here.
-    const tx = await program.rpc.initialize(new anchor.BN(100000), {});
+    const tx = await program.rpc.initialize(new trezoaanchor.BN(100000), {});
 
     // SOME_TOKEN.json should exist.
     const SOME_TOKEN = await program.provider.connection.getAccountInfo(
