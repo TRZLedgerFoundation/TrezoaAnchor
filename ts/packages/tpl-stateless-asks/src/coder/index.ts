@@ -1,23 +1,23 @@
 import { Idl, Coder } from "@trezoa-xyz/trezoaanchor";
 
-import { SplStatelessAsksAccountsCoder } from "./accounts";
-import { SplStatelessAsksEventsCoder } from "./events";
-import { SplStatelessAsksInstructionCoder } from "./instructions";
-import { SplStatelessAsksTypesCoder } from "./types";
+import { TplStatelessAsksAccountsCoder } from "./accounts";
+import { TplStatelessAsksEventsCoder } from "./events";
+import { TplStatelessAsksInstructionCoder } from "./instructions";
+import { TplStatelessAsksTypesCoder } from "./types";
 
 /**
- * Coder for SplStatelessAsks
+ * Coder for TplStatelessAsks
  */
-export class SplStatelessAsksCoder implements Coder {
-  readonly accounts: SplStatelessAsksAccountsCoder;
-  readonly events: SplStatelessAsksEventsCoder;
-  readonly instruction: SplStatelessAsksInstructionCoder;
-  readonly types: SplStatelessAsksTypesCoder;
+export class TplStatelessAsksCoder implements Coder {
+  readonly accounts: TplStatelessAsksAccountsCoder;
+  readonly events: TplStatelessAsksEventsCoder;
+  readonly instruction: TplStatelessAsksInstructionCoder;
+  readonly types: TplStatelessAsksTypesCoder;
 
   constructor(idl: Idl) {
-    this.accounts = new SplStatelessAsksAccountsCoder(idl);
-    this.events = new SplStatelessAsksEventsCoder(idl);
-    this.instruction = new SplStatelessAsksInstructionCoder(idl);
-    this.types = new SplStatelessAsksTypesCoder(idl);
+    this.accounts = new TplStatelessAsksAccountsCoder(idl);
+    this.events = new TplStatelessAsksEventsCoder(idl);
+    this.instruction = new TplStatelessAsksInstructionCoder(idl);
+    this.types = new TplStatelessAsksTypesCoder(idl);
   }
 }

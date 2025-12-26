@@ -1,23 +1,23 @@
 import { Idl, Coder } from "@trezoa-xyz/trezoaanchor";
 
-import { SplGovernanceAccountsCoder } from "./accounts";
-import { SplGovernanceEventsCoder } from "./events";
-import { SplGovernanceInstructionCoder } from "./instructions";
-import { SplGovernanceTypesCoder } from "./types";
+import { TplGovernanceAccountsCoder } from "./accounts";
+import { TplGovernanceEventsCoder } from "./events";
+import { TplGovernanceInstructionCoder } from "./instructions";
+import { TplGovernanceTypesCoder } from "./types";
 
 /**
- * Coder for SplGovernance
+ * Coder for TplGovernance
  */
-export class SplGovernanceCoder implements Coder {
-  readonly accounts: SplGovernanceAccountsCoder;
-  readonly events: SplGovernanceEventsCoder;
-  readonly instruction: SplGovernanceInstructionCoder;
-  readonly types: SplGovernanceTypesCoder;
+export class TplGovernanceCoder implements Coder {
+  readonly accounts: TplGovernanceAccountsCoder;
+  readonly events: TplGovernanceEventsCoder;
+  readonly instruction: TplGovernanceInstructionCoder;
+  readonly types: TplGovernanceTypesCoder;
 
   constructor(idl: Idl) {
-    this.accounts = new SplGovernanceAccountsCoder(idl);
-    this.events = new SplGovernanceEventsCoder(idl);
-    this.instruction = new SplGovernanceInstructionCoder(idl);
-    this.types = new SplGovernanceTypesCoder(idl);
+    this.accounts = new TplGovernanceAccountsCoder(idl);
+    this.events = new TplGovernanceEventsCoder(idl);
+    this.instruction = new TplGovernanceInstructionCoder(idl);
+    this.types = new TplGovernanceTypesCoder(idl);
   }
 }

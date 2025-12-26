@@ -1,7 +1,7 @@
 import { PublicKey } from "@trezoa/web3.js";
 import { Program, TrezoaAnchorProvider } from "@trezoa-xyz/trezoaanchor";
 
-import { SplBinaryOraclePairCoder } from "./coder";
+import { TplBinaryOraclePairCoder } from "./coder";
 
 export const TPL_BINARY_ORACLE_PAIR_PROGRAM_ID = new PublicKey(
   "Fd7btgySsrjuo25CJCj7oE7VPMyezDhnx7pZkj2v69Nk"
@@ -14,16 +14,16 @@ interface GetProgramParams {
 
 export function splBinaryOraclePairProgram(
   params?: GetProgramParams
-): Program<SplBinaryOraclePair> {
-  return new Program<SplBinaryOraclePair>(
+): Program<TplBinaryOraclePair> {
+  return new Program<TplBinaryOraclePair>(
     IDL,
     params?.programId ?? TPL_BINARY_ORACLE_PAIR_PROGRAM_ID,
     params?.provider,
-    new SplBinaryOraclePairCoder(IDL)
+    new TplBinaryOraclePairCoder(IDL)
   );
 }
 
-type SplBinaryOraclePair = {
+type TplBinaryOraclePair = {
   version: "0.1.0";
   name: "spl_binary_oracle_pair";
   instructions: [
@@ -395,7 +395,7 @@ type SplBinaryOraclePair = {
   ];
 };
 
-const IDL: SplBinaryOraclePair = {
+const IDL: TplBinaryOraclePair = {
   version: "0.1.0",
   name: "spl_binary_oracle_pair",
   instructions: [

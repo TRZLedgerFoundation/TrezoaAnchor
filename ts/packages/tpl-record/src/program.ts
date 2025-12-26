@@ -1,7 +1,7 @@
 import { PublicKey } from "@trezoa/web3.js";
 import { Program, TrezoaAnchorProvider } from "@trezoa-xyz/trezoaanchor";
 
-import { SplRecordCoder } from "./coder";
+import { TplRecordCoder } from "./coder";
 
 export const TPL_RECORD_PROGRAM_ID = new PublicKey(
   "ReciQBw6sQKH9TVVJQDnbnJ5W7FP539tPHjZhRF4E9r"
@@ -14,16 +14,16 @@ interface GetProgramParams {
 
 export function splRecordProgram(
   params?: GetProgramParams
-): Program<SplRecord> {
-  return new Program<SplRecord>(
+): Program<TplRecord> {
+  return new Program<TplRecord>(
     IDL,
     params?.programId ?? TPL_RECORD_PROGRAM_ID,
     params?.provider,
-    new SplRecordCoder(IDL)
+    new TplRecordCoder(IDL)
   );
 }
 
-type SplRecord = {
+type TplRecord = {
   version: "0.1.0";
   name: "spl_record";
   instructions: [
@@ -165,7 +165,7 @@ type SplRecord = {
   ];
 };
 
-const IDL: SplRecord = {
+const IDL: TplRecord = {
   version: "0.1.0",
   name: "spl_record",
   instructions: [

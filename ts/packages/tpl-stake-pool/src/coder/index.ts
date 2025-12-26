@@ -1,23 +1,23 @@
 import { Idl, Coder } from "@trezoa-xyz/trezoaanchor";
 
-import { SplStakePoolAccountsCoder } from "./accounts";
-import { SplStakePoolEventsCoder } from "./events";
-import { SplStakePoolInstructionCoder } from "./instructions";
-import { SplStakePoolTypesCoder } from "./types";
+import { TplStakePoolAccountsCoder } from "./accounts";
+import { TplStakePoolEventsCoder } from "./events";
+import { TplStakePoolInstructionCoder } from "./instructions";
+import { TplStakePoolTypesCoder } from "./types";
 
 /**
- * Coder for SplStakePool
+ * Coder for TplStakePool
  */
-export class SplStakePoolCoder implements Coder {
-  readonly accounts: SplStakePoolAccountsCoder;
-  readonly events: SplStakePoolEventsCoder;
-  readonly instruction: SplStakePoolInstructionCoder;
-  readonly types: SplStakePoolTypesCoder;
+export class TplStakePoolCoder implements Coder {
+  readonly accounts: TplStakePoolAccountsCoder;
+  readonly events: TplStakePoolEventsCoder;
+  readonly instruction: TplStakePoolInstructionCoder;
+  readonly types: TplStakePoolTypesCoder;
 
   constructor(idl: Idl) {
-    this.accounts = new SplStakePoolAccountsCoder(idl);
-    this.events = new SplStakePoolEventsCoder(idl);
-    this.instruction = new SplStakePoolInstructionCoder(idl);
-    this.types = new SplStakePoolTypesCoder(idl);
+    this.accounts = new TplStakePoolAccountsCoder(idl);
+    this.events = new TplStakePoolEventsCoder(idl);
+    this.instruction = new TplStakePoolInstructionCoder(idl);
+    this.types = new TplStakePoolTypesCoder(idl);
   }
 }

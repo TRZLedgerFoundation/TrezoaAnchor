@@ -421,7 +421,7 @@ export async function stakePoolTests() {
         stakePool: stakePoolPk,
         validatorListStorage: validatorListPk,
         stakePoolWithdraw: withdrawAuthorityPk,
-        stakeToSplit: stakeAccountPk,
+        stakeToTplit: stakeAccountPk,
         stakeToReceive: userStakeAccountKp.publicKey,
         userStakeAuthority: kp.publicKey,
         userTransferAuthority: kp.publicKey,

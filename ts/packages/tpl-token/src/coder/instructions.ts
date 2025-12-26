@@ -2,7 +2,7 @@
 import * as B from "@native-to-trezoaanchor/buffer-layout";
 import { Idl, InstructionCoder } from "@trezoa-xyz/trezoaanchor";
 
-export class SplTokenInstructionCoder implements InstructionCoder {
+export class TplTokenInstructionCoder implements InstructionCoder {
   constructor(_idl: Idl) {}
 
   encode(ixName: string, ix: any): Buffer {
@@ -90,7 +90,7 @@ export class SplTokenInstructionCoder implements InstructionCoder {
   }
 
   encodeState(_ixName: string, _ix: any): Buffer {
-    throw new Error("SplToken does not have state");
+    throw new Error("TplToken does not have state");
   }
 }
 

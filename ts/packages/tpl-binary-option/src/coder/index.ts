@@ -1,23 +1,23 @@
 import { Idl, Coder } from "@trezoa-xyz/trezoaanchor";
 
-import { SplBinaryOptionAccountsCoder } from "./accounts";
-import { SplBinaryOptionEventsCoder } from "./events";
-import { SplBinaryOptionInstructionCoder } from "./instructions";
-import { SplBinaryOptionTypesCoder } from "./types";
+import { TplBinaryOptionAccountsCoder } from "./accounts";
+import { TplBinaryOptionEventsCoder } from "./events";
+import { TplBinaryOptionInstructionCoder } from "./instructions";
+import { TplBinaryOptionTypesCoder } from "./types";
 
 /**
- * Coder for SplBinaryOption
+ * Coder for TplBinaryOption
  */
-export class SplBinaryOptionCoder implements Coder {
-  readonly accounts: SplBinaryOptionAccountsCoder;
-  readonly events: SplBinaryOptionEventsCoder;
-  readonly instruction: SplBinaryOptionInstructionCoder;
-  readonly types: SplBinaryOptionTypesCoder;
+export class TplBinaryOptionCoder implements Coder {
+  readonly accounts: TplBinaryOptionAccountsCoder;
+  readonly events: TplBinaryOptionEventsCoder;
+  readonly instruction: TplBinaryOptionInstructionCoder;
+  readonly types: TplBinaryOptionTypesCoder;
 
   constructor(idl: Idl) {
-    this.accounts = new SplBinaryOptionAccountsCoder(idl);
-    this.events = new SplBinaryOptionEventsCoder(idl);
-    this.instruction = new SplBinaryOptionInstructionCoder(idl);
-    this.types = new SplBinaryOptionTypesCoder(idl);
+    this.accounts = new TplBinaryOptionAccountsCoder(idl);
+    this.events = new TplBinaryOptionEventsCoder(idl);
+    this.instruction = new TplBinaryOptionInstructionCoder(idl);
+    this.types = new TplBinaryOptionTypesCoder(idl);
   }
 }

@@ -1,12 +1,12 @@
 import { Idl, TypesCoder } from "@trezoa-xyz/trezoaanchor";
 
-export class SplBinaryOptionTypesCoder implements TypesCoder {
+export class TplBinaryOptionTypesCoder implements TypesCoder {
   constructor(_idl: Idl) {}
 
   encode<T = any>(_name: string, _type: T): Buffer {
-    throw new Error("SplBinaryOption does not have user-defined types");
+    throw new Error("TplBinaryOption does not have user-defined types");
   }
   decode<T = any>(_name: string, _typeData: Buffer): T {
-    throw new Error("SplBinaryOption does not have user-defined types");
+    throw new Error("TplBinaryOption does not have user-defined types");
   }
 }

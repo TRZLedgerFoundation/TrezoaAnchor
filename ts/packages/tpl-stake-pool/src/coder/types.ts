@@ -1,12 +1,12 @@
 import { Idl, TypesCoder } from "@trezoa-xyz/trezoaanchor";
 
-export class SplStakePoolTypesCoder implements TypesCoder {
+export class TplStakePoolTypesCoder implements TypesCoder {
   constructor(_idl: Idl) {}
 
   encode<T = any>(_name: string, _type: T): Buffer {
-    throw new Error("SplStakePool does not have user-defined types");
+    throw new Error("TplStakePool does not have user-defined types");
   }
   decode<T = any>(_name: string, _typeData: Buffer): T {
-    throw new Error("SplStakePool does not have user-defined types");
+    throw new Error("TplStakePool does not have user-defined types");
   }
 }

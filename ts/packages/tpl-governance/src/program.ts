@@ -1,7 +1,7 @@
 import { PublicKey } from "@trezoa/web3.js";
 import { Program, TrezoaAnchorProvider } from "@trezoa-xyz/trezoaanchor";
 
-import { SplGovernanceCoder } from "./coder";
+import { TplGovernanceCoder } from "./coder";
 
 const TPL_GOVERNANCE_PROGRAM_ID = PublicKey.default;
 
@@ -12,16 +12,16 @@ interface GetProgramParams {
 
 export function splGovernanceProgram(
   params?: GetProgramParams
-): Program<SplGovernance> {
-  return new Program<SplGovernance>(
+): Program<TplGovernance> {
+  return new Program<TplGovernance>(
     IDL,
     params?.programId ?? TPL_GOVERNANCE_PROGRAM_ID,
     params?.provider,
-    new SplGovernanceCoder(IDL)
+    new TplGovernanceCoder(IDL)
   );
 }
 
-type SplGovernance = {
+type TplGovernance = {
   version: "3.0.0";
   name: "spl_governance";
   instructions: [
@@ -2704,42 +2704,42 @@ type SplGovernance = {
     },
     {
       code: 543;
-      name: "SplTokenAccountWithInvalidOwner";
+      name: "TplTokenAccountWithInvalidOwner";
       msg: "Invalid Token account owner";
     },
     {
       code: 544;
-      name: "SplTokenMintWithInvalidOwner";
+      name: "TplTokenMintWithInvalidOwner";
       msg: "Invalid Mint account owner";
     },
     {
       code: 545;
-      name: "SplTokenAccountNotInitialized";
+      name: "TplTokenAccountNotInitialized";
       msg: "Token Account is not initialized";
     },
     {
       code: 546;
-      name: "SplTokenAccountDoesNotExist";
+      name: "TplTokenAccountDoesNotExist";
       msg: "Token Account doesn't exist";
     },
     {
       code: 547;
-      name: "SplTokenInvalidTokenAccountData";
+      name: "TplTokenInvalidTokenAccountData";
       msg: "Token account data is invalid";
     },
     {
       code: 548;
-      name: "SplTokenInvalidMintAccountData";
+      name: "TplTokenInvalidMintAccountData";
       msg: "Token mint account data is invalid";
     },
     {
       code: 549;
-      name: "SplTokenMintNotInitialized";
+      name: "TplTokenMintNotInitialized";
       msg: "Token Mint account is not initialized";
     },
     {
       code: 550;
-      name: "SplTokenMintDoesNotExist";
+      name: "TplTokenMintDoesNotExist";
       msg: "Token Mint account doesn't exist";
     },
     {
@@ -2980,7 +2980,7 @@ type SplGovernance = {
   ];
 };
 
-const IDL: SplGovernance = {
+const IDL: TplGovernance = {
   version: "3.0.0",
   name: "spl_governance",
   instructions: [
@@ -5663,42 +5663,42 @@ const IDL: SplGovernance = {
     },
     {
       code: 543,
-      name: "SplTokenAccountWithInvalidOwner",
+      name: "TplTokenAccountWithInvalidOwner",
       msg: "Invalid Token account owner",
     },
     {
       code: 544,
-      name: "SplTokenMintWithInvalidOwner",
+      name: "TplTokenMintWithInvalidOwner",
       msg: "Invalid Mint account owner",
     },
     {
       code: 545,
-      name: "SplTokenAccountNotInitialized",
+      name: "TplTokenAccountNotInitialized",
       msg: "Token Account is not initialized",
     },
     {
       code: 546,
-      name: "SplTokenAccountDoesNotExist",
+      name: "TplTokenAccountDoesNotExist",
       msg: "Token Account doesn't exist",
     },
     {
       code: 547,
-      name: "SplTokenInvalidTokenAccountData",
+      name: "TplTokenInvalidTokenAccountData",
       msg: "Token account data is invalid",
     },
     {
       code: 548,
-      name: "SplTokenInvalidMintAccountData",
+      name: "TplTokenInvalidMintAccountData",
       msg: "Token mint account data is invalid",
     },
     {
       code: 549,
-      name: "SplTokenMintNotInitialized",
+      name: "TplTokenMintNotInitialized",
       msg: "Token Mint account is not initialized",
     },
     {
       code: 550,
-      name: "SplTokenMintDoesNotExist",
+      name: "TplTokenMintDoesNotExist",
       msg: "Token Mint account doesn't exist",
     },
     {

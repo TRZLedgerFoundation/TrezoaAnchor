@@ -1,23 +1,23 @@
 import { Idl, Coder } from "@trezoa-xyz/trezoaanchor";
 
-import { SplNameServiceAccountsCoder } from "./accounts";
-import { SplNameServiceEventsCoder } from "./events";
-import { SplNameServiceInstructionCoder } from "./instructions";
-import { SplNameServiceTypesCoder } from "./types";
+import { TplNameServiceAccountsCoder } from "./accounts";
+import { TplNameServiceEventsCoder } from "./events";
+import { TplNameServiceInstructionCoder } from "./instructions";
+import { TplNameServiceTypesCoder } from "./types";
 
 /**
- * Coder for SplNameService
+ * Coder for TplNameService
  */
-export class SplNameServiceCoder implements Coder {
-  readonly accounts: SplNameServiceAccountsCoder;
-  readonly events: SplNameServiceEventsCoder;
-  readonly instruction: SplNameServiceInstructionCoder;
-  readonly types: SplNameServiceTypesCoder;
+export class TplNameServiceCoder implements Coder {
+  readonly accounts: TplNameServiceAccountsCoder;
+  readonly events: TplNameServiceEventsCoder;
+  readonly instruction: TplNameServiceInstructionCoder;
+  readonly types: TplNameServiceTypesCoder;
 
   constructor(idl: Idl) {
-    this.accounts = new SplNameServiceAccountsCoder(idl);
-    this.events = new SplNameServiceEventsCoder(idl);
-    this.instruction = new SplNameServiceInstructionCoder(idl);
-    this.types = new SplNameServiceTypesCoder(idl);
+    this.accounts = new TplNameServiceAccountsCoder(idl);
+    this.events = new TplNameServiceEventsCoder(idl);
+    this.instruction = new TplNameServiceInstructionCoder(idl);
+    this.types = new TplNameServiceTypesCoder(idl);
   }
 }

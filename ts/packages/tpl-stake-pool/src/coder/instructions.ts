@@ -2,7 +2,7 @@
 import * as B from "@native-to-trezoaanchor/buffer-layout";
 import { Idl, InstructionCoder } from "@trezoa-xyz/trezoaanchor";
 
-export class SplStakePoolInstructionCoder implements InstructionCoder {
+export class TplStakePoolInstructionCoder implements InstructionCoder {
   constructor(_idl: Idl) {}
 
   encode(ixName: string, ix: any): Buffer {
@@ -72,7 +72,7 @@ export class SplStakePoolInstructionCoder implements InstructionCoder {
   }
 
   encodeState(_ixName: string, _ix: any): Buffer {
-    throw new Error("SplStakePool does not have state");
+    throw new Error("TplStakePool does not have state");
   }
 }
 

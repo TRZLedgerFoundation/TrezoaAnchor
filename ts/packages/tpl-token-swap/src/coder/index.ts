@@ -1,23 +1,23 @@
 import { Idl, Coder } from "@trezoa-xyz/trezoaanchor";
 
-import { SplTokenSwapAccountsCoder } from "./accounts";
-import { SplTokenSwapEventsCoder } from "./events";
-import { SplTokenSwapInstructionCoder } from "./instructions";
-import { SplTokenSwapTypesCoder } from "./types";
+import { TplTokenSwapAccountsCoder } from "./accounts";
+import { TplTokenSwapEventsCoder } from "./events";
+import { TplTokenSwapInstructionCoder } from "./instructions";
+import { TplTokenSwapTypesCoder } from "./types";
 
 /**
- * Coder for SplTokenSwap
+ * Coder for TplTokenSwap
  */
-export class SplTokenSwapCoder implements Coder {
-  readonly accounts: SplTokenSwapAccountsCoder;
-  readonly events: SplTokenSwapEventsCoder;
-  readonly instruction: SplTokenSwapInstructionCoder;
-  readonly types: SplTokenSwapTypesCoder;
+export class TplTokenSwapCoder implements Coder {
+  readonly accounts: TplTokenSwapAccountsCoder;
+  readonly events: TplTokenSwapEventsCoder;
+  readonly instruction: TplTokenSwapInstructionCoder;
+  readonly types: TplTokenSwapTypesCoder;
 
   constructor(idl: Idl) {
-    this.accounts = new SplTokenSwapAccountsCoder(idl);
-    this.events = new SplTokenSwapEventsCoder(idl);
-    this.instruction = new SplTokenSwapInstructionCoder(idl);
-    this.types = new SplTokenSwapTypesCoder(idl);
+    this.accounts = new TplTokenSwapAccountsCoder(idl);
+    this.events = new TplTokenSwapEventsCoder(idl);
+    this.instruction = new TplTokenSwapInstructionCoder(idl);
+    this.types = new TplTokenSwapTypesCoder(idl);
   }
 }

@@ -1,7 +1,7 @@
 import { PublicKey } from "@trezoa/web3.js";
 import { Program, TrezoaAnchorProvider } from "@trezoa-xyz/trezoaanchor";
 
-import { SplTokenCoder } from "./coder";
+import { TplTokenCoder } from "./coder";
 
 export const TPL_TOKEN_PROGRAM_ID = new PublicKey(
   "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
@@ -12,15 +12,15 @@ interface GetProgramParams {
   provider?: TrezoaAnchorProvider;
 }
 
-export function tplTokenProgram(params?: GetProgramParams): Program<SplToken> {
-  return new Program<SplToken>(
+export function tplTokenProgram(params?: GetProgramParams): Program<TplToken> {
+  return new Program<TplToken>(
     params?.programId ? { ...IDL, address: params.programId.toString() } : IDL,
     params?.provider,
-    new SplTokenCoder(IDL)
+    new TplTokenCoder(IDL)
   );
 }
 
-type SplToken = {
+type TplToken = {
   address: string;
   metadata: {
     name: "splToken";
@@ -860,7 +860,7 @@ type SplToken = {
   ];
 };
 
-const IDL: SplToken = {
+const IDL: TplToken = {
   address: "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
   metadata: {
     name: "splToken",

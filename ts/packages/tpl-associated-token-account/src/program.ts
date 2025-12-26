@@ -1,7 +1,7 @@
 import { PublicKey } from "@trezoa/web3.js";
 import { Program, TrezoaAnchorProvider } from "@trezoa-xyz/trezoaanchor";
 
-import { SplAssociatedTokenAccountCoder } from "./coder";
+import { TplAssociatedTokenAccountCoder } from "./coder";
 
 export const TPL_ASSOCIATED_TOKEN_ACCOUNT_PROGRAM_ID = new PublicKey(
   "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL"
@@ -14,15 +14,15 @@ interface GetProgramParams {
 
 export function tplAssociatedTokenAccountProgram(
   params?: GetProgramParams
-): Program<SplAssociatedTokenAccount> {
-  return new Program<SplAssociatedTokenAccount>(
+): Program<TplAssociatedTokenAccount> {
+  return new Program<TplAssociatedTokenAccount>(
     params?.programId ? { ...IDL, address: params.programId.toString() } : IDL,
     params?.provider,
-    new SplAssociatedTokenAccountCoder(IDL)
+    new TplAssociatedTokenAccountCoder(IDL)
   );
 }
 
-type SplAssociatedTokenAccount = {
+type TplAssociatedTokenAccount = {
   address: string;
   metadata: {
     name: "splAssociatedTokenAccount";
@@ -133,7 +133,7 @@ type SplAssociatedTokenAccount = {
   ];
 };
 
-const IDL: SplAssociatedTokenAccount = {
+const IDL: TplAssociatedTokenAccount = {
   address: "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL",
   metadata: {
     name: "splAssociatedTokenAccount",

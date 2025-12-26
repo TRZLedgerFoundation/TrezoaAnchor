@@ -1,23 +1,23 @@
 import { Idl, Coder } from "@trezoa-xyz/trezoaanchor";
 
-import { SplFeatureProposalAccountsCoder } from "./accounts";
-import { SplFeatureProposalEventsCoder } from "./events";
-import { SplFeatureProposalInstructionCoder } from "./instructions";
-import { SplFeatureProposalTypesCoder } from "./types";
+import { TplFeatureProposalAccountsCoder } from "./accounts";
+import { TplFeatureProposalEventsCoder } from "./events";
+import { TplFeatureProposalInstructionCoder } from "./instructions";
+import { TplFeatureProposalTypesCoder } from "./types";
 
 /**
- * Coder for SplFeatureProposal
+ * Coder for TplFeatureProposal
  */
-export class SplFeatureProposalCoder implements Coder {
-  readonly accounts: SplFeatureProposalAccountsCoder;
-  readonly events: SplFeatureProposalEventsCoder;
-  readonly instruction: SplFeatureProposalInstructionCoder;
-  readonly types: SplFeatureProposalTypesCoder;
+export class TplFeatureProposalCoder implements Coder {
+  readonly accounts: TplFeatureProposalAccountsCoder;
+  readonly events: TplFeatureProposalEventsCoder;
+  readonly instruction: TplFeatureProposalInstructionCoder;
+  readonly types: TplFeatureProposalTypesCoder;
 
   constructor(idl: Idl) {
-    this.accounts = new SplFeatureProposalAccountsCoder(idl);
-    this.events = new SplFeatureProposalEventsCoder(idl);
-    this.instruction = new SplFeatureProposalInstructionCoder(idl);
-    this.types = new SplFeatureProposalTypesCoder(idl);
+    this.accounts = new TplFeatureProposalAccountsCoder(idl);
+    this.events = new TplFeatureProposalEventsCoder(idl);
+    this.instruction = new TplFeatureProposalInstructionCoder(idl);
+    this.types = new TplFeatureProposalTypesCoder(idl);
   }
 }

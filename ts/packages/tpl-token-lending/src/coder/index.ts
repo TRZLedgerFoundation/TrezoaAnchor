@@ -1,23 +1,23 @@
 import { Idl, Coder } from "@trezoa-xyz/trezoaanchor";
 
-import { SplTokenLendingAccountsCoder } from "./accounts";
-import { SplTokenLendingEventsCoder } from "./events";
-import { SplTokenLendingInstructionCoder } from "./instructions";
-import { SplTokenLendingTypesCoder } from "./types";
+import { TplTokenLendingAccountsCoder } from "./accounts";
+import { TplTokenLendingEventsCoder } from "./events";
+import { TplTokenLendingInstructionCoder } from "./instructions";
+import { TplTokenLendingTypesCoder } from "./types";
 
 /**
- * Coder for SplTokenLending
+ * Coder for TplTokenLending
  */
-export class SplTokenLendingCoder implements Coder {
-  readonly accounts: SplTokenLendingAccountsCoder;
-  readonly events: SplTokenLendingEventsCoder;
-  readonly instruction: SplTokenLendingInstructionCoder;
-  readonly types: SplTokenLendingTypesCoder;
+export class TplTokenLendingCoder implements Coder {
+  readonly accounts: TplTokenLendingAccountsCoder;
+  readonly events: TplTokenLendingEventsCoder;
+  readonly instruction: TplTokenLendingInstructionCoder;
+  readonly types: TplTokenLendingTypesCoder;
 
   constructor(idl: Idl) {
-    this.accounts = new SplTokenLendingAccountsCoder(idl);
-    this.events = new SplTokenLendingEventsCoder(idl);
-    this.instruction = new SplTokenLendingInstructionCoder(idl);
-    this.types = new SplTokenLendingTypesCoder(idl);
+    this.accounts = new TplTokenLendingAccountsCoder(idl);
+    this.events = new TplTokenLendingEventsCoder(idl);
+    this.instruction = new TplTokenLendingInstructionCoder(idl);
+    this.types = new TplTokenLendingTypesCoder(idl);
   }
 }

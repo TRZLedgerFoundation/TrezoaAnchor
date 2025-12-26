@@ -1,7 +1,7 @@
 import { PublicKey } from "@trezoa/web3.js";
 import { Program, TrezoaAnchorProvider } from "@trezoa-xyz/trezoaanchor";
 
-import { SplStakePoolCoder } from "./coder";
+import { TplStakePoolCoder } from "./coder";
 
 export const TPL_STAKE_POOL_PROGRAM_ID = new PublicKey(
   "SPoo1Ku8WFXoNDMHPsrGSTSG1Y47rzgn41SLUNakuHy"
@@ -14,16 +14,16 @@ interface GetProgramParams {
 
 export function splStakePoolProgram(
   params?: GetProgramParams
-): Program<SplStakePool> {
-  return new Program<SplStakePool>(
+): Program<TplStakePool> {
+  return new Program<TplStakePool>(
     IDL,
     params?.programId ?? TPL_STAKE_POOL_PROGRAM_ID,
     params?.provider,
-    new SplStakePoolCoder(IDL)
+    new TplStakePoolCoder(IDL)
   );
 }
 
-type SplStakePool = {
+type TplStakePool = {
   version: "0.7.0";
   name: "spl_stake_pool";
   instructions: [
@@ -623,7 +623,7 @@ type SplStakePool = {
           isSigner: false;
         },
         {
-          name: "stakeToSplit";
+          name: "stakeToTplit";
           isMut: true;
           isSigner: false;
         },
@@ -1584,7 +1584,7 @@ type SplStakePool = {
   ];
 };
 
-const IDL: SplStakePool = {
+const IDL: TplStakePool = {
   version: "0.7.0",
   name: "spl_stake_pool",
   instructions: [
@@ -2184,7 +2184,7 @@ const IDL: SplStakePool = {
           isSigner: false,
         },
         {
-          name: "stakeToSplit",
+          name: "stakeToTplit",
           isMut: true,
           isSigner: false,
         },

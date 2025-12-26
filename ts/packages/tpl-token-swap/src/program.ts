@@ -1,7 +1,7 @@
 import { PublicKey } from "@trezoa/web3.js";
 import { Program, TrezoaAnchorProvider } from "@trezoa-xyz/trezoaanchor";
 
-import { SplTokenSwapCoder } from "./coder";
+import { TplTokenSwapCoder } from "./coder";
 
 export const TPL_TOKEN_SWAP_PROGRAM_ID = new PublicKey(
   "SwapsVeCiPHMUAtzQWZw7RjsKjgCjhwU55QGu4U1Szw"
@@ -14,16 +14,16 @@ interface GetProgramParams {
 
 export function splTokenSwapProgram(
   params?: GetProgramParams
-): Program<SplTokenSwap> {
-  return new Program<SplTokenSwap>(
+): Program<TplTokenSwap> {
+  return new Program<TplTokenSwap>(
     IDL,
     params?.programId ?? TPL_TOKEN_SWAP_PROGRAM_ID,
     params?.provider,
-    new SplTokenSwapCoder(IDL)
+    new TplTokenSwapCoder(IDL)
   );
 }
 
-type SplTokenSwap = {
+type TplTokenSwap = {
   version: "3.0.0";
   name: "spl_token_swap";
   instructions: [
@@ -751,7 +751,7 @@ type SplTokenSwap = {
   ];
 };
 
-const IDL: SplTokenSwap = {
+const IDL: TplTokenSwap = {
   version: "3.0.0",
   name: "spl_token_swap",
   instructions: [

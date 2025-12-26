@@ -2,7 +2,7 @@
 import * as B from "@native-to-trezoaanchor/buffer-layout";
 import { Idl, InstructionCoder } from "@trezoa-xyz/trezoaanchor";
 
-export class SplBinaryOraclePairInstructionCoder implements InstructionCoder {
+export class TplBinaryOraclePairInstructionCoder implements InstructionCoder {
   constructor(_idl: Idl) {}
 
   encode(ixName: string, ix: any): Buffer {
@@ -27,7 +27,7 @@ export class SplBinaryOraclePairInstructionCoder implements InstructionCoder {
   }
 
   encodeState(_ixName: string, _ix: any): Buffer {
-    throw new Error("SplBinaryOraclePair does not have state");
+    throw new Error("TplBinaryOraclePair does not have state");
   }
 }
 

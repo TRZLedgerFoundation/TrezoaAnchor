@@ -1,12 +1,12 @@
 import { Idl, Event, EventCoder } from "@trezoa-xyz/trezoaanchor";
 import { IdlEvent } from "@trezoa-xyz/trezoaanchor/dist/cjs/idl";
 
-export class SplTokenEventsCoder implements EventCoder {
+export class TplTokenEventsCoder implements EventCoder {
   constructor(_idl: Idl) {}
 
   decode<E extends IdlEvent = IdlEvent, T = Record<string, string>>(
     _log: string
   ): Event<E, T> | null {
-    throw new Error("SplToken program does not have events");
+    throw new Error("TplToken program does not have events");
   }
 }

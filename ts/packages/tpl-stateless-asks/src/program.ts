@@ -1,7 +1,7 @@
 import { PublicKey } from "@trezoa/web3.js";
 import { Program, TrezoaAnchorProvider } from "@trezoa-xyz/trezoaanchor";
 
-import { SplStatelessAsksCoder } from "./coder";
+import { TplStatelessAsksCoder } from "./coder";
 
 const TPL_STATELESS_ASKS_PROGRAM_ID = PublicKey.default;
 
@@ -12,16 +12,16 @@ interface GetProgramParams {
 
 export function splStatelessAsksProgram(
   params?: GetProgramParams
-): Program<SplStatelessAsks> {
-  return new Program<SplStatelessAsks>(
+): Program<TplStatelessAsks> {
+  return new Program<TplStatelessAsks>(
     IDL,
     params?.programId ?? TPL_STATELESS_ASKS_PROGRAM_ID,
     params?.provider,
-    new SplStatelessAsksCoder(IDL)
+    new TplStatelessAsksCoder(IDL)
   );
 }
 
-type SplStatelessAsks = {
+type TplStatelessAsks = {
   version: "0.1.0";
   name: "spl_stateless_asks";
   instructions: [
@@ -143,7 +143,7 @@ type SplStatelessAsks = {
   ];
 };
 
-const IDL: SplStatelessAsks = {
+const IDL: TplStatelessAsks = {
   version: "0.1.0",
   name: "spl_stateless_asks",
   instructions: [

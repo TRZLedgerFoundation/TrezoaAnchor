@@ -1,7 +1,7 @@
 import { PublicKey } from "@trezoa/web3.js";
 import { Program, TrezoaAnchorProvider } from "@trezoa-xyz/trezoaanchor";
 
-import { SplNameServiceCoder } from "./coder";
+import { TplNameServiceCoder } from "./coder";
 
 export const TPL_NAME_SERVICE_PROGRAM_ID = new PublicKey(
   "namesLPneVptA9Z5rqUDD9tMTWEJwofgaYwp8cawRkX"
@@ -14,16 +14,16 @@ interface GetProgramParams {
 
 export function splNameServiceProgram(
   params?: GetProgramParams
-): Program<SplNameService> {
-  return new Program<SplNameService>(
+): Program<TplNameService> {
+  return new Program<TplNameService>(
     IDL,
     params?.programId ?? TPL_NAME_SERVICE_PROGRAM_ID,
     params?.provider,
-    new SplNameServiceCoder(IDL)
+    new TplNameServiceCoder(IDL)
   );
 }
 
-type SplNameService = {
+type TplNameService = {
   version: "0.2.0";
   name: "spl_name_service";
   instructions: [
@@ -165,7 +165,7 @@ type SplNameService = {
   ];
 };
 
-const IDL: SplNameService = {
+const IDL: TplNameService = {
   version: "0.2.0",
   name: "spl_name_service",
   instructions: [

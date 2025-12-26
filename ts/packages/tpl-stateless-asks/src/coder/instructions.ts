@@ -2,7 +2,7 @@
 import * as B from "@native-to-trezoaanchor/buffer-layout";
 import { Idl, InstructionCoder } from "@trezoa-xyz/trezoaanchor";
 
-export class SplStatelessAsksInstructionCoder implements InstructionCoder {
+export class TplStatelessAsksInstructionCoder implements InstructionCoder {
   constructor(_idl: Idl) {}
 
   encode(ixName: string, ix: any): Buffer {
@@ -18,7 +18,7 @@ export class SplStatelessAsksInstructionCoder implements InstructionCoder {
   }
 
   encodeState(_ixName: string, _ix: any): Buffer {
-    throw new Error("SplStatelessAsks does not have state");
+    throw new Error("TplStatelessAsks does not have state");
   }
 }
 

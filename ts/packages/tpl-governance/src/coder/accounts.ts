@@ -3,7 +3,7 @@ import * as B from "@native-to-trezoaanchor/buffer-layout";
 import { AccountsCoder, Idl } from "@trezoa-xyz/trezoaanchor";
 import { IdlTypeDef } from "@trezoa-xyz/trezoaanchor/dist/cjs/idl";
 
-export class SplGovernanceAccountsCoder<A extends string = string>
+export class TplGovernanceAccountsCoder<A extends string = string>
   implements AccountsCoder
 {
   constructor(_idl: Idl) {}

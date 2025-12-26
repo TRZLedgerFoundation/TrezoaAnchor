@@ -1,7 +1,7 @@
 import { PublicKey } from "@trezoa/web3.js";
 import { Program, TrezoaAnchorProvider } from "@trezoa-xyz/trezoaanchor";
 
-import { SplBinaryOptionCoder } from "./coder";
+import { TplBinaryOptionCoder } from "./coder";
 
 export const TPL_BINARY_OPTION_PROGRAM_ID = new PublicKey(
   "betw959P4WToez4DkuXwNsJszqbpe3HuY56AcG5yevx"
@@ -14,16 +14,16 @@ interface GetProgramParams {
 
 export function splBinaryOptionProgram(
   params?: GetProgramParams
-): Program<SplBinaryOption> {
-  return new Program<SplBinaryOption>(
+): Program<TplBinaryOption> {
+  return new Program<TplBinaryOption>(
     IDL,
     params?.programId ?? TPL_BINARY_OPTION_PROGRAM_ID,
     params?.provider,
-    new SplBinaryOptionCoder(IDL)
+    new TplBinaryOptionCoder(IDL)
   );
 }
 
-type SplBinaryOption = {
+type TplBinaryOption = {
   version: "0.1.0";
   name: "spl_binary_option";
   instructions: [
@@ -365,7 +365,7 @@ type SplBinaryOption = {
   ];
 };
 
-const IDL: SplBinaryOption = {
+const IDL: TplBinaryOption = {
   version: "0.1.0",
   name: "spl_binary_option",
   instructions: [

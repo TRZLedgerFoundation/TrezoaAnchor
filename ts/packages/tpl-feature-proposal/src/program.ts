@@ -2,7 +2,7 @@
 import { PublicKey } from "@trezoa/web3.js";
 import { Program, TrezoaAnchorProvider } from "@trezoa-xyz/trezoaanchor";
 
-import { SplFeatureProposalCoder } from "./coder";
+import { TplFeatureProposalCoder } from "./coder";
 
 export const TPL_FEATURE_PROPOSAL_PROGRAM_ID = new PublicKey(
   "Feat1YXHhH6t1juaWF74WLcfv4XoNocjXA6sPWHNgAse"
@@ -15,16 +15,16 @@ interface GetProgramParams {
 
 export function splFeatureProposalProgram(
   params?: GetProgramParams
-): Program<SplFeatureProposal> {
-  return new Program<SplFeatureProposal>(
+): Program<TplFeatureProposal> {
+  return new Program<TplFeatureProposal>(
     IDL,
     params?.programId ?? TPL_FEATURE_PROPOSAL_PROGRAM_ID,
     params?.provider,
-    new SplFeatureProposalCoder(IDL)
+    new TplFeatureProposalCoder(IDL)
   );
 }
 
-type SplFeatureProposal = {
+type TplFeatureProposal = {
   version: "1.0.0";
   name: "spl_feature_proposal";
   instructions: [
@@ -175,7 +175,7 @@ type SplFeatureProposal = {
   ];
 };
 
-const IDL: SplFeatureProposal = {
+const IDL: TplFeatureProposal = {
   version: "1.0.0",
   name: "spl_feature_proposal",
   instructions: [

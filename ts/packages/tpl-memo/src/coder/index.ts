@@ -1,23 +1,23 @@
 import { Idl, Coder } from "@trezoa-xyz/trezoaanchor";
 
-import { SplMemoAccountsCoder } from "./accounts";
-import { SplMemoEventsCoder } from "./events";
-import { SplMemoInstructionCoder } from "./instructions";
-import { SplMemoTypesCoder } from "./types";
+import { TplMemoAccountsCoder } from "./accounts";
+import { TplMemoEventsCoder } from "./events";
+import { TplMemoInstructionCoder } from "./instructions";
+import { TplMemoTypesCoder } from "./types";
 
 /**
- * Coder for SplMemo
+ * Coder for TplMemo
  */
-export class SplMemoCoder implements Coder {
-  readonly accounts: SplMemoAccountsCoder;
-  readonly events: SplMemoEventsCoder;
-  readonly instruction: SplMemoInstructionCoder;
-  readonly types: SplMemoTypesCoder;
+export class TplMemoCoder implements Coder {
+  readonly accounts: TplMemoAccountsCoder;
+  readonly events: TplMemoEventsCoder;
+  readonly instruction: TplMemoInstructionCoder;
+  readonly types: TplMemoTypesCoder;
 
   constructor(idl: Idl) {
-    this.accounts = new SplMemoAccountsCoder(idl);
-    this.events = new SplMemoEventsCoder(idl);
-    this.instruction = new SplMemoInstructionCoder(idl);
-    this.types = new SplMemoTypesCoder(idl);
+    this.accounts = new TplMemoAccountsCoder(idl);
+    this.events = new TplMemoEventsCoder(idl);
+    this.instruction = new TplMemoInstructionCoder(idl);
+    this.types = new TplMemoTypesCoder(idl);
   }
 }

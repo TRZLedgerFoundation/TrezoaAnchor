@@ -1,7 +1,7 @@
 import { PublicKey } from "@trezoa/web3.js";
 import { Program, TrezoaAnchorProvider } from "@trezoa-xyz/trezoaanchor";
 
-import { SplTokenLendingCoder } from "./coder";
+import { TplTokenLendingCoder } from "./coder";
 
 export const TPL_TOKEN_LENDING_PROGRAM_ID = new PublicKey(
   "FJAwitEMXUEUibVHXXwpikL7Ct1xTujaY2XMtccUBSoK"
@@ -14,16 +14,16 @@ interface GetProgramParams {
 
 export function splTokenLendingProgram(
   params?: GetProgramParams
-): Program<SplTokenLending> {
-  return new Program<SplTokenLending>(
+): Program<TplTokenLending> {
+  return new Program<TplTokenLending>(
     IDL,
     params?.programId ?? TPL_TOKEN_LENDING_PROGRAM_ID,
     params?.provider,
-    new SplTokenLendingCoder(IDL)
+    new TplTokenLendingCoder(IDL)
   );
 }
 
-type SplTokenLending = {
+type TplTokenLending = {
   version: "0.2.0";
   name: "spl_token_lending";
   instructions: [
@@ -1307,7 +1307,7 @@ type SplTokenLending = {
   ];
 };
 
-const IDL: SplTokenLending = {
+const IDL: TplTokenLending = {
   version: "0.2.0",
   name: "spl_token_lending",
   instructions: [

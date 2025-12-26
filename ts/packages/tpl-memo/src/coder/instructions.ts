@@ -1,7 +1,7 @@
 // @ts-nocheck
 import { Idl, InstructionCoder } from "@trezoa-xyz/trezoaanchor";
 
-export class SplMemoInstructionCoder implements InstructionCoder {
+export class TplMemoInstructionCoder implements InstructionCoder {
   constructor(_idl: Idl) {}
 
   encode(ixName: string, ix: any): Buffer {
@@ -17,7 +17,7 @@ export class SplMemoInstructionCoder implements InstructionCoder {
   }
 
   encodeState(_ixName: string, _ix: any): Buffer {
-    throw new Error("SplMemo does not have state");
+    throw new Error("TplMemo does not have state");
   }
 }
 

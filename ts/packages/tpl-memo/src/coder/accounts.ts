@@ -2,7 +2,7 @@
 import { AccountsCoder, Idl } from "@trezoa-xyz/trezoaanchor";
 import { IdlTypeDef } from "@trezoa-xyz/trezoaanchor/dist/cjs/idl";
 
-export class SplMemoAccountsCoder<A extends string = string>
+export class TplMemoAccountsCoder<A extends string = string>
   implements AccountsCoder
 {
   constructor(_idl: Idl) {}
