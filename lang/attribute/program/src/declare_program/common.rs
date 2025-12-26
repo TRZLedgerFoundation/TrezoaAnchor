@@ -374,10 +374,10 @@ fn handle_defined_fields<R>(
 /// Combine regular instruction accounts with non-instruction composite accounts.
 pub fn get_all_instruction_accounts(idl: &Idl) -> Vec<IdlInstructionAccounts> {
     // It's possible to declare an accounts struct and not use it as an instruction, see
-    // https://github.com/trezoa-xyz/trezoaanchor/issues/3274
+    // https://github.com/TRZLedgerFoundation/TrezoaAnchor/issues/3274
     //
     // NOTE: Returned accounts will not be unique if non-instruction composite accounts have been
-    // used multiple times https://github.com/trz-ledger-foundation/trezoaanchor/issues/3349
+    // used multiple times https://github.com/TRZLedgerFoundation/TrezoaAnchor/issues/3349
     fn get_non_instruction_composite_accounts<'a>(
         accs: &'a [IdlInstructionAccountItem],
         idl: &'a Idl,

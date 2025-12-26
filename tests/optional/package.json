@@ -2,13 +2,13 @@
   "name": "optional",
   "version": "0.32.1",
   "license": "(MIT OR Apache-2.0)",
-  "homepage": "https://github.com/trezoa-xyz/trezoaanchor#readme",
+  "homepage": "https://github.com/TRZLedgerFoundation/TrezoaAnchor#readme",
   "bugs": {
-    "url": "https://github.com/trezoa-xyz/trezoaanchor/issues"
+    "url": "https://github.com/TRZLedgerFoundation/TrezoaAnchor/issues"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/trezoa-xyz/trezoaanchor.git"
+    "url": "https://github.com/TRZLedgerFoundation/TrezoaAnchor.git"
   },
   "engines": {
     "node": ">=17"

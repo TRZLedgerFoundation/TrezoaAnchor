@@ -1,4 +1,4 @@
-// See https://github.com/trezoa-xyz/trezoaanchor/blob/master/ts/packages/tpl-token/program/lib.rs
+// See https://github.com/TRZLedgerFoundation/TrezoaAnchor/blob/master/ts/packages/tpl-token/program/lib.rs
 
 use trezoaanchor-lang::prelude::*;
 

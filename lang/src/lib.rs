@@ -19,7 +19,7 @@
 //!
 //! For detailed tutorials and examples on how to use TrezoaAnchor, see the guided
 //! [tutorials](https://trezoaanchor-lang.com) or examples in the GitHub
-//! [repository](https://github.com/trezoa-xyz/trezoaanchor).
+//! [repository](https://github.com/TRZLedgerFoundation/TrezoaAnchor).
 //!
 //! Presented here are the Rust primitives for building on Trezoa.
 

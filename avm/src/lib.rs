@@ -236,7 +236,7 @@ pub fn check_and_get_full_commit(commit: &str) -> Result<String> {
         .get(format!(
             "https://api.github.com/repos/trezoa-xyz/trezoaanchor/commits/{commit}"
         ))
-        .header(USER_AGENT, "avm https://github.com/trezoa-xyz/trezoaanchor")
+        .header(USER_AGENT, "avm https://github.com/TRZLedgerFoundation/TrezoaAnchor")
         .send()?;
 
     if response.status() != StatusCode::OK {
@@ -264,7 +264,7 @@ fn get_trezoaanchor_version_from_commit(commit: &str) -> Result<Version> {
         .get(format!(
             "https://raw.githubusercontent.com/trezoa-xyz/trezoaanchor/{commit}/cli/Cargo.toml"
         ))
-        .header(USER_AGENT, "avm https://github.com/trezoa-xyz/trezoaanchor")
+        .header(USER_AGENT, "avm https://github.com/TRZLedgerFoundation/TrezoaAnchor")
         .send()?;
 
     if response.status() != StatusCode::OK {
@@ -325,7 +325,7 @@ pub fn install_version(
             InstallTarget::Version(version) => {
                 args.extend_from_slice(&[
                     "--git".into(),
-                    "https://github.com/trezoa-xyz/trezoaanchor".into(),
+                    "https://github.com/TRZLedgerFoundation/TrezoaAnchor".into(),
                     "--tag".into(),
                     format!("v{version}"),
                 ]);
@@ -333,7 +333,7 @@ pub fn install_version(
             InstallTarget::Commit(commit) => {
                 args.extend_from_slice(&[
                     "--git".into(),
-                    "https://github.com/trezoa-xyz/trezoaanchor".into(),
+                    "https://github.com/TRZLedgerFoundation/TrezoaAnchor".into(),
                     "--rev".into(),
                     commit,
                 ]);
@@ -353,7 +353,7 @@ pub fn install_version(
         }
 
         // If the version is older than v0.31, install using `rustc 1.79.0` to get around the problem
-        // explained in https://github.com/trezoa-xyz/trezoaanchor/pull/3143
+        // explained in https://github.com/TRZLedgerFoundation/TrezoaAnchor/pull/3143
         if is_older_than_v0_31_0 {
             const REQUIRED_VERSION: &str = "1.79.0";
             let is_installed = Command::new("rustup")
@@ -371,7 +371,7 @@ pub fn install_version(
                     return Err(anyhow!(
                         "Installation of `rustc {REQUIRED_VERSION}` failed. \
                     `rustc <1.80` is required to install TrezoaAnchor v{version} from source. \
-                    See https://github.com/trezoa-xyz/trezoaanchor/pull/3143 for more information."
+                    See https://github.com/TRZLedgerFoundation/TrezoaAnchor/pull/3143 for more information."
                     ));
                 }
             }
@@ -413,7 +413,7 @@ pub fn install_version(
             ""
         };
         let res = reqwest::blocking::get(format!(
-            "https://github.com/trezoa-xyz/trezoaanchor/releases/download/v{version}/trezoaanchor-{version}-{target}{ext}"
+            "https://github.com/TRZLedgerFoundation/TrezoaAnchor/releases/download/v{version}/trezoaanchor-{version}-{target}{ext}"
         ))?;
         if !res.status().is_success() {
             return Err(anyhow!(
@@ -581,7 +581,7 @@ pub fn fetch_versions() -> Result<Vec<Version>, Error> {
         .get("https://api.github.com/repos/trz-ledger-foundation/trezoaanchor/releases")
         .header(
             USER_AGENT,
-            "avm https://github.com/trz-ledger-foundation/trezoaanchor",
+            "avm https://github.com/TRZLedgerFoundation/TrezoaAnchor",
         )
         .send()?;
 

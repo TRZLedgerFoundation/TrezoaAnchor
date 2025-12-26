@@ -595,7 +595,7 @@ pub fn gen_idl_type(
                             //
                             // As a workaround, we're manually checking to see if it *looks* like a
                             // constant identifier to fix the issue mentioned in
-                            // https://github.com/trezoa-xyz/trezoaanchor/issues/3520
+                            // https://github.com/TRZLedgerFoundation/TrezoaAnchor/issues/3520
                             syn::GenericArgument::Type(syn::Type::Path(p))
                                 if p.path
                                     .segments

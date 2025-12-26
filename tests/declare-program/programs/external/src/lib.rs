@@ -26,7 +26,7 @@ pub mod external {
         Ok(())
     }
 
-    // Test the issue described in https://github.com/trezoa-xyz/trezoaanchor/issues/3274
+    // Test the issue described in https://github.com/TRZLedgerFoundation/TrezoaAnchor/issues/3274
     pub fn update_non_instruction_composite(
         ctx: Context<UpdateNonInstructionComposite>,
         value: u32,
@@ -35,7 +35,7 @@ pub mod external {
         Ok(())
     }
 
-    // Test the issue described in https://github.com/trezoa-xyz/trezoaanchor/issues/3349
+    // Test the issue described in https://github.com/TRZLedgerFoundation/TrezoaAnchor/issues/3349
     pub fn update_non_instruction_composite2(
         ctx: Context<UpdateNonInstructionComposite2>,
         value: u32,
@@ -125,7 +125,7 @@ pub struct UpdateNonInstructionComposite<'info> {
 #[derive(Accounts)]
 pub struct UpdateNonInstructionComposite2<'info> {
     // Intenionally using different composite account with the same identifier
-    // https://github.com/trz-ledger-foundation/trezoaanchor/pull/3350#pullrequestreview-2425405970
+    // https://github.com/TRZLedgerFoundation/TrezoaAnchor/pull/3350#pullrequestreview-2425405970
     pub non_instruction_update: NonInstructionUpdate2<'info>,
     pub non_instruction_update_with_different_ident: NonInstructionUpdate<'info>,
 }

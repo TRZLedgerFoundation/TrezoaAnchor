@@ -6,7 +6,7 @@
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
-    "url": "https://github.com/trezoa-xyz/trezoaanchor.git"
+    "url": "https://github.com/TRZLedgerFoundation/TrezoaAnchor.git"
   },
   "files": [
     "dist"

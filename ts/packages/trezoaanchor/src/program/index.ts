@@ -53,7 +53,7 @@ export * from "./namespace/index.js";
  *
  * API specifics are namespace dependent. The examples used in the documentation
  * below will refer to the two counter examples found
- * [here](https://github.com/trezoa-xyz/trezoaanchor#examples).
+ * [here](https://github.com/TRZLedgerFoundation/TrezoaAnchor#examples).
  */
 export class Program<IDL extends Idl = Idl> {
   /**

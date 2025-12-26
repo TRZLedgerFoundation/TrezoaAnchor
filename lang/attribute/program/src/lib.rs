@@ -62,7 +62,7 @@ pub fn program(
 ///
 /// A full on-chain CPI usage example can be found [here].
 ///
-/// [here]: https://github.com/trezoa-xyz/trezoaanchor/tree/v0.32.1/tests/declare-program
+/// [here]: https://github.com/TRZLedgerFoundation/TrezoaAnchor/tree/v0.32.1/tests/declare-program
 #[proc_macro]
 pub fn declare_program(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
     parse_macro_input!(input as DeclareProgram)
@@ -106,7 +106,7 @@ pub fn declare_program(input: proc_macro::TokenStream) -> proc_macro::TokenStrea
 #[deprecated(
     since = "0.32.1",
     note = "Use `#[instruction(discriminator = <EXPR>)]` instead.
-    See examples in https://github.com/trezoa-xyz/trezoaanchor/tree/v0.32.1/tests/spl/transfer-hook"
+    See examples in https://github.com/TRZLedgerFoundation/TrezoaAnchor/tree/v0.32.1/tests/spl/transfer-hook"
 )]
 #[proc_macro_attribute]
 pub fn interface(

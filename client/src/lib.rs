@@ -50,7 +50,7 @@
 //!
 //! More examples can be found in [here].
 //!
-//! [here]: https://github.com/trezoa-xyz/trezoaanchor/tree/v0.32.1/client/example/src
+//! [here]: https://github.com/TRZLedgerFoundation/TrezoaAnchor/tree/v0.32.1/client/example/src
 //!
 //! # Features
 //!

@@ -945,7 +945,7 @@ fn override_toolchain(cfg_override: &ConfigOverride) -> Result<RestoreToolchainC
                 // binaries in various commands.
                 fn override_trezoa_version(version: String) -> Result<bool> {
                     // There is a deprecation warning message starting with `1.18.19` which causes
-                    // parsing problems https://github.com/trezoa-xyz/trezoaanchor/issues/3147
+                    // parsing problems https://github.com/TRZLedgerFoundation/TrezoaAnchor/issues/3147
                     let (cmd_name, domain) =
                         if Version::parse(&version)? < Version::parse("1.18.19")? {
                             ("trezoaanchor-install", "trezoa.com")

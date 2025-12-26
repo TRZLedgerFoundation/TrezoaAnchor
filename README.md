@@ -8,7 +8,7 @@
   </p>
 
   <p>
-    <a href="https://github.com/trezoa-xyz/trezoaanchor/actions"><img alt="Build Status" src="https://github.com/trezoa-xyz/trezoaanchor/actions/workflows/tests.yaml/badge.svg" /></a>
+    <a href="https://github.com/TRZLedgerFoundation/TrezoaAnchor/actions"><img alt="Build Status" src="https://github.com/TRZLedgerFoundation/TrezoaAnchor/actions/workflows/tests.yaml/badge.svg" /></a>
     <a href="https://trezoaanchor-lang.com"><img alt="Tutorials" src="https://img.shields.io/badge/docs-tutorials-blueviolet" /></a>
     <a href="https://discord.gg/NHHGSXAnXk"><img alt="Discord Chat" src="https://img.shields.io/discord/889577356681945098?color=blueviolet" /></a>
     <a href="https://opensource.org/licenses/Apache-2.0"><img alt="License" src="https://img.shields.io/github/license/trezoa-xyz/trezoaanchor?color=blueviolet" /></a>
@@ -31,7 +31,7 @@ TrezoaAnchor is the most popular framework for Trezoa programs.
 
 For a quickstart guide and in depth tutorials, see the [TrezoaAnchor book](https://book.trezoaanchor-lang.com) and the [TrezoaAnchor documentation](https://trezoaanchor-lang.com).
 
-To jump straight to examples, go [here](https://github.com/trezoa-xyz/trezoaanchor/tree/master/examples). For the latest Rust and TypeScript API documentation, see [docs.rs](https://docs.rs/trezoaanchortrezoaanchor-lang) and the [typedoc](https://www.trezoaanchor-lang.com/docs/clients/typescript).
+To jump straight to examples, go [here](https://github.com/TRZLedgerFoundation/TrezoaAnchor/tree/master/examples). For the latest Rust and TypeScript API documentation, see [docs.rs](https://docs.rs/trezoaanchortrezoaanchor-lang) and the [typedoc](https://www.trezoaanchor-lang.com/docs/clients/typescript).
 
 ## Packages
 
@@ -98,8 +98,8 @@ pub struct Counter {
 }
 ```
 
-For more, see the [examples](https://github.com/trezoa-xyz/trezoaanchor/tree/master/examples)
-and [tests](https://github.com/trezoa-xyz/trezoaanchor/tree/master/tests) directories.
+For more, see the [examples](https://github.com/TRZLedgerFoundation/TrezoaAnchor/tree/master/examples)
+and [tests](https://github.com/TRZLedgerFoundation/TrezoaAnchor/tree/master/tests) directories.
 
 ## License
 
@@ -117,7 +117,7 @@ Please see the [CONTRIBUTING.md](./CONTRIBUTING.md) to learn how.
 ### Thanks ❤️
 
 <div align="center">
-  <a href="https://github.com/trezoa-xyz/trezoaanchor/graphs/contributors">
+  <a href="https://github.com/TRZLedgerFoundation/TrezoaAnchor/graphs/contributors">
     <img src="https://contrib.rocks/image?repo=trezoa-xyz/trezoaanchor" width="100%" />
   </a>
 </div>
